@@ -1,24 +1,66 @@
 // Selected approximate digitization carried over from the researched ZENIT prototype.
 // NASA Apollo 11 Mission Report, figure 12-3(a), PDF page 268.
 // Activity start times: table 12-II, PDF page 265. Not clinical thresholds.
-export const apolloSource = 'https://www.nasa.gov/wp-content/uploads/static/apollo50th/pdf/A11_MissionReport.pdf#page=268';
+export const apolloSource =
+  'https://www.nasa.gov/wp-content/uploads/static/apollo50th/pdf/A11_MissionReport.pdf#page=268';
 export const apolloPoints: [number, number][] = [
-    [13, 94], [16, 109], [19, 124], [20, 105], [23, 120], [24, 110],
-    [26, 97], [30, 110], [33, 122], [34, 123], [36, 104], [39, 114],
-    [44, 93], [49, 106], [53, 96], [57, 105], [62, 91], [66, 106],
-    [71, 118], [75, 102], [79, 102], [82, 93], [87, 112], [91, 113],
-    [93, 121], [96, 106], [100, 92], [103, 98], [107, 89], [112, 104],
-    [116, 93], [120, 102], [123, 104], [128, 83], [130, 92], [133, 148],
-    [136, 116], [140, 127], [144, 144], [148, 131], [151, 155], [155, 141]
-  ];
+  [13, 94],
+  [16, 109],
+  [19, 124],
+  [20, 105],
+  [23, 120],
+  [24, 110],
+  [26, 97],
+  [30, 110],
+  [33, 122],
+  [34, 123],
+  [36, 104],
+  [39, 114],
+  [44, 93],
+  [49, 106],
+  [53, 96],
+  [57, 105],
+  [62, 91],
+  [66, 106],
+  [71, 118],
+  [75, 102],
+  [79, 102],
+  [82, 93],
+  [87, 112],
+  [91, 113],
+  [93, 121],
+  [96, 106],
+  [100, 92],
+  [103, 98],
+  [107, 89],
+  [112, 104],
+  [116, 93],
+  [120, 102],
+  [123, 104],
+  [128, 83],
+  [130, 92],
+  [133, 148],
+  [136, 116],
+  [140, 127],
+  [144, 144],
+  [148, 131],
+  [151, 155],
+  [155, 141],
+];
 export const apolloActivities: [number, string][] = [
-    [13, "Start of egress"], [24, "Surface familiarization"], [27, "Photography"],
-    [34, "Contingency sample"], [39, "Observing the lunar module pilot"],
-    [43, "Camera deployment"], [66, "Flag and presidential message"],
-    [78, "Sample collection"], [101, "Lunar module inspection"],
-    [119, "Experiment deployment"], [131, "Documented sample collection"],
-    [150, "Sample container transfer"]
-  ];
+  [13, 'Start of egress'],
+  [24, 'Surface familiarization'],
+  [27, 'Photography'],
+  [34, 'Contingency sample'],
+  [39, 'Observing the lunar module pilot'],
+  [43, 'Camera deployment'],
+  [66, 'Flag and presidential message'],
+  [78, 'Sample collection'],
+  [101, 'Lunar module inspection'],
+  [119, 'Experiment deployment'],
+  [131, 'Documented sample collection'],
+  [150, 'Sample container transfer'],
+];
 export function missionTime(minute: number) {
   return `${109 + Math.floor(minute / 60)}:${String(minute % 60).padStart(2, '0')}`;
 }

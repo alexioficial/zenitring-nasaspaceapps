@@ -50,6 +50,7 @@ An emergency remains **active** until acknowledged on the monitor. Acknowledgeme
 - Device clocks should be synchronized; the monitor displays sender measurement/capture time and separate server receipt time. Server rejects timestamps more than one minute ahead. Heart rate, HRV, SpO₂, respiration and skin-temperature deviation are conceptual simulated metrics; skin deviation is not core temperature. No classifier infers symptoms or diagnoses.
 - English interface copy preserves the existing product language. Original single-person demo remains `/legacy` with its previous browser session key. NASA Apollo 11 historical explorer remains `/archive`, separate from the fictional crew measurements.
 - AI assisted software implementation. No AI model interprets crew health. The data and exports identify simulation explicitly.
+
 # Additional demonstration: ring → suit → recovery
 
 Open `/ring?astronaut=vega` and `/suit?astronaut=vega` in separate tabs or devices and link both. In the central monitor's **My health**, select **Spacewalk**. The primary source changes to **Suit ECG** and the suit atmosphere appears separately. The ring retains its own connection and data. Select **Recovery** to return to the ring, preserving the history and original source labels.
@@ -59,3 +60,13 @@ For the outage demo, leave the ring connected and press **Disconnect suit**. The
 Open **NASA context** to inspect actual historical DosTel1 radiation observations from ISS Columbus. Move the historical observation slider, inspect the date, instrument and μGy/h value, and open the original API query. **Refresh NASA record** refreshes that historical window, not current mission conditions. If NASA is unavailable, the checked-in response remains labelled as saved. RadLab radiation is never assigned to an astronaut's personal dose or used to diagnose the recorded symptom.
 
 Suit atmosphere field selection is linked to NASA-STD-3001 §11.3. The Apollo explorer remains a separate historical resource. No real suit, commercial wearable or life-support controller is connected.
+
+## Automatic interpretation demo
+
+1. Open `/research` and choose **Persistent pulse rise**.
+2. Select **Replay incoming readings**. ZENIT waits for sufficient history, then identifies the persistent pattern without symptom entry.
+3. Select **Enable Gemini explanations**. The server key must be configured; otherwise the UI explicitly keeps local analysis.
+4. Answer **Yes, finished** to supply exercise context, or **I feel unwell** for direct crew-contact guidance.
+5. Compare **One isolated spike** and **Signal lost**: the app must not present those as a persistent physiological diagnosis.
+6. Choose **Suit atmosphere change** and show how environmental readings remain distinct from blood measurements.
+7. In `/astronaut/vega`, use the ring's existing Progressive change/Outside demo ranges simulator settings to drive actual WebSocket readings. Automatic detection appears above the optional manual check-in. Its rules are presentation triggers, not clinical limits.

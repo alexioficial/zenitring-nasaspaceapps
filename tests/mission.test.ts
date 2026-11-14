@@ -1,9 +1,23 @@
 import { describe, expect, test } from 'bun:test';
-import { createMission, tick, setMonitor, addEntry, captureMoment, annotateMoment, syncDemoInstruments, restoreMission } from '../src/lib/mission';
+import {
+  createMission,
+  tick,
+  setMonitor,
+  addEntry,
+  captureMoment,
+  annotateMoment,
+  syncDemoInstruments,
+  restoreMission,
+} from '../src/lib/mission';
 
 import type { Entry } from '../src/lib/mission';
 
-const report: Pick<Entry, 'kind' | 'summary' | 'notes' | 'manualPulse'> = { kind: 'recovery', summary: 'Fatigue', notes: 'After the spacewalk', manualPulse: null };
+const report: Pick<Entry, 'kind' | 'summary' | 'notes' | 'manualPulse'> = {
+  kind: 'recovery',
+  summary: 'Fatigue',
+  notes: 'After the spacewalk',
+  manualPulse: null,
+};
 
 describe('independent telemetry failures', () => {
   test('samples keep arriving locally while the remote reading stays frozen', () => {
@@ -36,7 +50,11 @@ describe('independent telemetry failures', () => {
     expect(mission.entries[0].receivedAt).toBe(1804);
   });
   test('manual readings remain distinct from missing wearable data', () => {
-    const mission = addEntry({ ...createMission(), sensorConnected: false }, { ...report, manualPulse: 88 }, 'manual-1');
+    const mission = addEntry(
+      { ...createMission(), sensorConnected: false },
+      { ...report, manualPulse: 88 },
+      'manual-1',
+    );
     expect(mission.entries[0].manualPulse).toBe(88);
     expect(mission.entries[0].sensorConnected).toBe(false);
     expect(mission.latest.pulse).toBe(86);
@@ -50,7 +68,9 @@ describe('gesture capture and deferred context', () => {
     expect(captured.entries[0].kind).toBe('moment');
     expect(captured.entries[0].summary).toBe('Moment captured');
     expect(captured.entries[0].origin).toBe('ring-double-tap');
-    expect(captured.entries[0].observations?.find(o => o.id === 'pressure')?.available).toBe(false);
+    expect(captured.entries[0].observations?.find((o) => o.id === 'pressure')?.available).toBe(
+      false,
+    );
   });
   test('later symptom uses the captured evidence, with a separate annotation time', () => {
     let mission = captureMoment(createMission(), 'moment-1', 'ring-hold');
@@ -62,13 +82,15 @@ describe('gesture capture and deferred context', () => {
     expect(mission.entries[1].reading).toEqual(mission.entries[0].reading);
     expect(mission.entries[1].observations).toEqual(mission.entries[0].observations);
     expect(JSON.stringify(mission.entries[0])).toBe(snapshot);
-    expect(mission.entries[1].observations?.find(o => o.id === 'pressure')?.available).toBe(false);
-    expect(mission.observations.find(o => o.id === 'pressure')?.available).toBe(true);
+    expect(mission.entries[1].observations?.find((o) => o.id === 'pressure')?.available).toBe(
+      false,
+    );
+    expect(mission.observations.find((o) => o.id === 'pressure')?.available).toBe(true);
   });
   test('offline classification does not change what the medical monitor already received', () => {
     let mission = captureMoment(setMonitor(createMission(), true), 'moment-1', 'ring-hold');
     mission = annotateMoment(tick(setMonitor(mission, false)), 'moment-1', 'Fatigue', 'symptom-1');
-    expect(mission.entries.filter(e => e.receivedAt !== null)).toHaveLength(1);
+    expect(mission.entries.filter((e) => e.receivedAt !== null)).toHaveLength(1);
     expect(mission.entries[0].summary).toBe('Moment captured');
     expect(mission.entries[1].receivedAt).toBeNull();
     mission = setMonitor(mission, true);
@@ -80,8 +102,10 @@ describe('gesture capture and deferred context', () => {
     expect(captureMoment(mission, 'ring', 'ring-double-tap').entries).toHaveLength(0);
     const tablet = captureMoment(mission, 'tablet', 'screen');
     expect(tablet.entries[0].sensorConnected).toBe(false);
-    expect(tablet.entries[0].observations?.find(o => o.id === 'respiration')?.available).toBe(false);
-    expect(tablet.entries[0].observations?.find(o => o.id === 'sleep')?.available).toBe(true);
+    expect(tablet.entries[0].observations?.find((o) => o.id === 'respiration')?.available).toBe(
+      false,
+    );
+    expect(tablet.entries[0].observations?.find((o) => o.id === 'sleep')?.available).toBe(true);
   });
   test('gestures and symptoms remain idempotent across duplicate input and storage', () => {
     let mission = captureMoment(createMission(), 'moment-1', 'ring-double-tap');
@@ -116,7 +140,9 @@ describe('device persistence and report validation', () => {
     expect(restoreMission('{')).toBeNull();
     expect(restoreMission('{}')).toBeNull();
     expect(restoreMission(JSON.stringify({ ...createMission(), entries: [{}] }))).toBeNull();
-    expect(restoreMission(JSON.stringify({ ...createMission(), latest: { pulse: -1 } }))).toBeNull();
+    expect(
+      restoreMission(JSON.stringify({ ...createMission(), latest: { pulse: -1 } })),
+    ).toBeNull();
   });
   test('blank reports and impossible manual values are rejected', () => {
     expect(() => addEntry(createMission(), { ...report, summary: '   ' }, '1')).toThrow();

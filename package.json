@@ -11,7 +11,9 @@
     "start": "bun server/start.ts",
     "prepare": "svelte-kit sync",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "test": "bun test tests"
+    "test": "bun test tests",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@sveltejs/adapter-node": "5.5.7",
@@ -22,6 +24,8 @@
     "@types/node": "24.19.2",
     "@types/three": "^0.187.0",
     "@types/ws": "^8.18.2",
+    "prettier": "3.10.1",
+    "prettier-plugin-svelte": "4.1.1",
     "svelte": "5.57.3",
     "svelte-check": "4.7.8",
     "tailwindcss": "4.3.4",

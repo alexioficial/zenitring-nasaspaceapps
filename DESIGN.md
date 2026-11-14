@@ -10,15 +10,15 @@ The source of truth for the current implementation is `src/lib/crew/crew.css`. P
 
 ## Tokens
 
-| Role | Color | Purpose |
-| --- | --- | --- |
-| Instrument ink | `#102332` | Mission frame, primary text, primary controls |
-| Signal paper | `#eef2ef` | Quiet working field |
-| Instrument white | `#ffffff` | Measurement and editing surfaces |
-| Muted ink | `#526772` | Secondary labels and provenance |
-| Navigation cyan | `#236c80` | Selection, focus, actual traces |
-| Reference amber | `#8b5b13` | Presentation excursions and stale-signal explanation |
-| Emergency vermilion | `#b33231` | Explicit emergency gestures and response |
+| Role                | Color     | Purpose                                              |
+| ------------------- | --------- | ---------------------------------------------------- |
+| Instrument ink      | `#102332` | Mission frame, primary text, primary controls        |
+| Signal paper        | `#eef2ef` | Quiet working field                                  |
+| Instrument white    | `#ffffff` | Measurement and editing surfaces                     |
+| Muted ink           | `#526772` | Secondary labels and provenance                      |
+| Navigation cyan     | `#236c80` | Selection, focus, actual traces                      |
+| Reference amber     | `#8b5b13` | Presentation excursions and stale-signal explanation |
+| Emergency vermilion | `#b33231` | Explicit emergency gestures and response             |
 
 No gradients, glass surfaces, neon effects, decorative starfields or continuous animations. Crew insignias identify call signs; their colors are identity markers, not health scores.
 

@@ -2,122 +2,122 @@
 name: ZENIT
 description: An ink-blue mission timeline for astronaut health context and follow-up.
 colors:
-  bg: "#0a121c"
-  panel: "#101d2b"
-  line: "#293a4b"
-  muted: "#a5b6c8"
-  foreground: "#edf3fa"
-  mint: "#87e2c2"
-  violet: "#b9adf7"
-  amber: "#f3c580"
-  selected: "#142e32"
-  rail: "#0d1723"
-  navigation-active: "#1a3338"
-  navigation-hover: "#162635"
-  primary-ink: "#102d27"
-  primary-hover: "#b1efda"
-  secondary-surface: "#152331"
-  secondary-foreground: "#e2eaf2"
-  secondary-hover: "#223746"
-  field-surface: "#0b1723"
-  field-border: "#4b6075"
+  bg: '#0a121c'
+  panel: '#101d2b'
+  line: '#293a4b'
+  muted: '#a5b6c8'
+  foreground: '#edf3fa'
+  mint: '#87e2c2'
+  violet: '#b9adf7'
+  amber: '#f3c580'
+  selected: '#142e32'
+  rail: '#0d1723'
+  navigation-active: '#1a3338'
+  navigation-hover: '#162635'
+  primary-ink: '#102d27'
+  primary-hover: '#b1efda'
+  secondary-surface: '#152331'
+  secondary-foreground: '#e2eaf2'
+  secondary-hover: '#223746'
+  field-surface: '#0b1723'
+  field-border: '#4b6075'
 typography:
   display:
     fontFamily: "'Segoe UI', ui-sans-serif, system-ui, sans-serif"
-    fontSize: "clamp(27px, 2.65vw, 40px)"
+    fontSize: 'clamp(27px, 2.65vw, 40px)'
     fontWeight: 550
     lineHeight: 1.2
-    letterSpacing: "-.035em"
+    letterSpacing: '-.035em'
   headline:
     fontFamily: "'Segoe UI', ui-sans-serif, system-ui, sans-serif"
-    fontSize: "20px"
+    fontSize: '20px'
     fontWeight: 550
-    letterSpacing: "-.025em"
+    letterSpacing: '-.025em'
   title:
     fontFamily: "'Segoe UI', ui-sans-serif, system-ui, sans-serif"
-    fontSize: "15px"
+    fontSize: '15px'
     fontWeight: 600
   body:
     fontFamily: "'Segoe UI', ui-sans-serif, system-ui, sans-serif"
-    fontSize: "12px"
+    fontSize: '12px'
     lineHeight: 1.6
   label:
     fontFamily: "'Segoe UI', ui-sans-serif, system-ui, sans-serif"
-    fontSize: "11px"
+    fontSize: '11px'
   button:
     fontFamily: "'Segoe UI', ui-sans-serif, system-ui, sans-serif"
-    fontSize: "11px"
+    fontSize: '11px'
     fontWeight: 600
   measurement:
     fontFamily: "ui-monospace, 'SFMono-Regular', Consolas, monospace"
-    fontSize: "34px"
+    fontSize: '34px'
     fontWeight: 450
     lineHeight: 1.1
 rounded:
-  tag: "4px"
-  field: "5px"
-  button: "6px"
-  navigation: "7px"
-  panel: "14px"
+  tag: '4px'
+  field: '5px'
+  button: '6px'
+  navigation: '7px'
+  panel: '14px'
 spacing:
-  tight: "8px"
-  compact: "12px"
-  regular: "16px"
-  workspace: "18px"
-  panel: "24px"
-  section: "32px"
-  desktop-gutter: "36px"
+  tight: '8px'
+  compact: '12px'
+  regular: '16px'
+  workspace: '18px'
+  panel: '24px'
+  section: '32px'
+  desktop-gutter: '36px'
 components:
   button-primary:
-    backgroundColor: "{colors.mint}"
-    textColor: "{colors.primary-ink}"
-    typography: "{typography.button}"
-    rounded: "{rounded.button}"
-    padding: "10px 13px"
+    backgroundColor: '{colors.mint}'
+    textColor: '{colors.primary-ink}'
+    typography: '{typography.button}'
+    rounded: '{rounded.button}'
+    padding: '10px 13px'
   button-primary-hover:
-    backgroundColor: "{colors.primary-hover}"
+    backgroundColor: '{colors.primary-hover}'
   button-secondary:
-    backgroundColor: "{colors.secondary-surface}"
-    textColor: "{colors.secondary-foreground}"
-    typography: "{typography.button}"
-    rounded: "{rounded.button}"
-    padding: "10px 13px"
+    backgroundColor: '{colors.secondary-surface}'
+    textColor: '{colors.secondary-foreground}'
+    typography: '{typography.button}'
+    rounded: '{rounded.button}'
+    padding: '10px 13px'
   button-secondary-hover:
-    backgroundColor: "{colors.secondary-hover}"
+    backgroundColor: '{colors.secondary-hover}'
   button-text:
-    textColor: "{colors.mint}"
-    typography: "{typography.label}"
-    padding: "5px 0"
+    textColor: '{colors.mint}'
+    typography: '{typography.label}'
+    padding: '5px 0'
   field:
-    backgroundColor: "{colors.field-surface}"
-    textColor: "{colors.foreground}"
-    rounded: "{rounded.field}"
-    padding: "9px 10px"
+    backgroundColor: '{colors.field-surface}'
+    textColor: '{colors.foreground}'
+    rounded: '{rounded.field}'
+    padding: '9px 10px'
   navigation-active:
-    backgroundColor: "{colors.navigation-active}"
-    textColor: "{colors.mint}"
-    rounded: "{rounded.navigation}"
-    padding: "10px 12px"
+    backgroundColor: '{colors.navigation-active}'
+    textColor: '{colors.mint}'
+    rounded: '{rounded.navigation}'
+    padding: '10px 12px'
   source-tag:
-    textColor: "#c8d4e0"
-    rounded: "{rounded.tag}"
-    padding: "4px 7px"
+    textColor: '#c8d4e0'
+    rounded: '{rounded.tag}'
+    padding: '4px 7px'
   panel:
-    backgroundColor: "{colors.panel}"
-    rounded: "{rounded.panel}"
+    backgroundColor: '{colors.panel}'
+    rounded: '{rounded.panel}'
   ring-pad:
-    textColor: "{colors.mint}"
-    width: "100%"
-    padding: "0"
+    textColor: '{colors.mint}'
+    width: '100%'
+    padding: '0'
   observation:
-    textColor: "{colors.foreground}"
-    padding: "15px 18px 15px 0"
+    textColor: '{colors.foreground}'
+    padding: '15px 18px 15px 0'
   moment-row:
-    width: "100%"
-    padding: "18px 0"
+    width: '100%'
+    padding: '18px 0'
   phase-selected:
-    backgroundColor: "{colors.selected}"
-    padding: "10px 7px 8px"
+    backgroundColor: '{colors.selected}'
+    padding: '10px 7px 8px'
 ---
 
 # Design System: ZENIT
@@ -131,6 +131,7 @@ ZENIT uses the confirmed ink-blue flight-plan aesthetic: a calm, compact operati
 Dark blue surfaces, thin rules, and restrained mint and violet signals create depth without shadows. System sans-serif text carries instructions; tabular monospace carries measurements and mission times. The NASA historical archive remains visibly separate from the personal simulation, even where it shares the same component vocabulary.
 
 **Key Characteristics:**
+
 - Mission timeline as the operational anchor.
 - Mint ZENIT Ring cabin readings and violet suit readings, each paired with source text.
 - Capture-first moments, one-tap context, and automatically populated measurement summaries.
@@ -143,16 +144,20 @@ Dark blue surfaces, thin rules, and restrained mint and violet signals create de
 The palette combines dark ink-blue structure with measured, source-specific accents. Frontmatter values are normative and are extracted from `src/app.css`; names describe their existing roles.
 
 ### Primary
+
 - **Cabin Mint (`mint`):** conceptual ZENIT Ring cabin traces and readings, the gesture pad, primary actions, active navigation, connected status, links, and keyboard focus. Its presence does not itself indicate a clinical assessment.
 - **Primary Ink / Primary Hover:** dark text on the mint action and its lighter hover surface.
 
 ### Secondary
+
 - **Suit Violet (`violet`):** simulated suit ECG and the separately labeled Apollo historical explorer. Shared hue does not imply shared data provenance.
 
 ### Tertiary
+
 - **Pending Amber (`amber`):** pending delivery, interrupted connections, storage notices, and captured moments awaiting context. A moment’s context label changes to mint once annotated; its icon retains amber.
 
 ### Neutral
+
 - **Background / Panel / Rail:** the page canvas, bounded work surfaces, and navigation surround.
 - **Foreground / Muted:** primary information and supporting labels.
 - **Line:** panel outlines, chart grids, and content dividers.
@@ -250,6 +255,7 @@ The historical explorer has a dedicated view, historical tag, approximate-value 
 ## Do's and Don'ts
 
 ### Do:
+
 - Do pair source and connection colors with readable text.
 - Do preserve gaps for missing samples and distinguish capture, annotation, and reception timestamps.
 - Do keep source and measurement period visible for current, nightly, and external observations.
@@ -258,6 +264,7 @@ The historical explorer has a dedicated view, historical tag, approximate-value 
 - Do keep NASA provenance visible in the archive and separate historical observations from simulated personal readings.
 
 ### Don't:
+
 - Don't imply diagnosis or personal health thresholds through color, scores, or archive readings.
 - Don't join missing samples with a fabricated continuous trace.
 - Don't infer a symptom from readings or overwrite an immutable snapshot when context arrives.

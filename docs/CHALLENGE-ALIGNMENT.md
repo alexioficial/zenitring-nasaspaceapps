@@ -2,16 +2,16 @@
 
 The objective is astronaut self-assessment and understandable guidance toward care and health improvement. ZENIT opens on My health. Ring, suit and environmental data support the assessment; they are not the product's end goal.
 
-| Challenge need | Implemented experience |
-| --- | --- |
-| Assess one's own health | Choose activity/recovery, sleep/attention, wellbeing, or food/hydration; explicitly report feeling as usual, noticing a change, or needing help. No sensor is required to report a concern. |
-| Use multiple input types | Ring/suit snapshots, an optional note and simple choices. Existing captured moments can be attached without transcribing values. |
-| Explain why an indicator matters | A plain-language risk explanation and linked NASA source accompanies each next-step preview. Ring HRV does not infer mental state; atmosphere oxygen is not SpO₂. |
-| Guide action and improvement | Educational next steps address context, an appropriate measurement, an assigned routine or crew medical review. The user can record completing a step. Treatment decisions refer to mission-approved procedures and the crew medical officer. |
-| Recognize when to seek attention | An explicit request for help immediately prompts direct crew contact, including offline. Reported changes and demo-reference excursions prompt review; an apparently ordinary reading does not override the user's concern. |
-| Follow the result | Save a follow-up of better, same, worse or contacted crew. Worsening displays a help prompt. Completion or reported improvement does not grant medical/task clearance or close an emergency. |
-| Space environments | Cabin, Spacewalk and Recovery retain independent ring/suit provenance. Missing primary signals stay missing. |
-| Real NASA resources | HRP/behavioral-health and NASA health/medical-operations references inform explanations. Apollo observations and RadLab radiation are explicitly separate historical resources. |
+| Challenge need                   | Implemented experience                                                                                                                                                                                                                        |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Assess one's own health          | Choose activity/recovery, sleep/attention, wellbeing, or food/hydration; explicitly report feeling as usual, noticing a change, or needing help. No sensor is required to report a concern.                                                   |
+| Use multiple input types         | Ring/suit snapshots, an optional note and simple choices. Existing captured moments can be attached without transcribing values.                                                                                                              |
+| Explain why an indicator matters | A plain-language risk explanation and linked NASA source accompanies each next-step preview. Ring HRV does not infer mental state; atmosphere oxygen is not SpO₂.                                                                             |
+| Guide action and improvement     | Educational next steps address context, an appropriate measurement, an assigned routine or crew medical review. The user can record completing a step. Treatment decisions refer to mission-approved procedures and the crew medical officer. |
+| Recognize when to seek attention | An explicit request for help immediately prompts direct crew contact, including offline. Reported changes and demo-reference excursions prompt review; an apparently ordinary reading does not override the user's concern.                   |
+| Follow the result                | Save a follow-up of better, same, worse or contacted crew. Worsening displays a help prompt. Completion or reported improvement does not grant medical/task clearance or close an emergency.                                                  |
+| Space environments               | Cabin, Spacewalk and Recovery retain independent ring/suit provenance. Missing primary signals stay missing.                                                                                                                                  |
+| Real NASA resources              | HRP/behavioral-health and NASA health/medical-operations references inform explanations. Apollo observations and RadLab radiation are explicitly separate historical resources.                                                               |
 
 ## Sources and boundaries
 

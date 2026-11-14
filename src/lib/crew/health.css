@@ -1,14 +1,548 @@
-.health-checkin{padding:27px;background:#fff;border:1px solid #b9cecb;border-top:4px solid #236c80;border-radius:7px;margin-bottom:25px;color:#16313e;min-width:0}.checkin-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px}.checkin-heading h2{font-size:30px;letter-spacing:-.045em;line-height:1.1;margin:10px 0}.checkin-heading p{font-size:13px;color:#5b7480}.health-checkin fieldset{border:0;padding:0;margin:20px 0}.health-checkin legend{font-size:13px;font-weight:600;margin-bottom:12px}.checkin-topics{display:flex;flex-wrap:wrap;gap:7px}.checkin-topics button{padding:10px 12px;border:1px solid #c6d5d3;background:#f5f8f6;border-radius:4px;font-size:12px;color:#36515c;cursor:pointer}.checkin-topics button[aria-pressed=true]{background:#173e4b;color:#f4faf8;border-color:#173e4b}.checkin-feelings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.checkin-feelings label{display:flex;gap:8px;align-items:center;padding:14px 10px;border:1px solid #cbd9d6;border-radius:5px;font-size:12px;cursor:pointer;line-height:1.4}.checkin-feelings label.chosen{border-color:#236c80;background:#edf5f2}.checkin-feelings input,.checkin-step input{accent-color:#236c80;width:16px;height:16px;flex-shrink:0}.checkin-inputs{display:grid;gap:16px}.checkin-inputs label,.checkin-history{display:block;font-size:12px;font-weight:600}.checkin-inputs small{font-size:10px;font-weight:400;color:#657a83;display:block;margin-top:4px}.checkin-inputs textarea,.checkin-inputs select,.checkin-history select{display:block;width:100%;margin-top:8px;border:1px solid #b9c9cd;border-radius:4px;background:#fff;padding:11px;font-size:13px;color:#1d3946;box-sizing:border-box;min-width:0}.checkin-evidence,.checkin-scope{font-size:11px;line-height:1.6;color:#617984;margin:13px 0}.checkin-scope{margin:18px 0 0;border-top:1px solid #dde6e2;padding-top:13px}.checkin-plan{margin-top:23px;background:#eef5f2;padding:22px;border-left:3px solid #467b69}.checkin-plan.plan-review{background:#f8f3e8;border-color:#8b6f37}.checkin-plan h3{font-size:24px;line-height:1.2;margin:12px 0;letter-spacing:-.025em}.checkin-plan>p{font-size:13px;line-height:1.65}.checkin-plan h4{font-size:13px;margin:19px 0 10px}.checkin-plan ol{padding-left:22px;margin:12px 0}.checkin-plan li{padding:5px 0 8px;font-size:13px;line-height:1.65}.checkin-plan a,.health-learning a{color:#236c80;text-decoration:underline;text-underline-offset:3px}.checkin-step{display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.65;padding:12px 0;border-bottom:1px solid #d4dfd7}.checkin-step input{margin-top:3px}.checkin-treatment{font-size:11px!important;color:#5f716f;margin:18px 0}.checkin-followup{display:flex;flex-wrap:wrap;gap:8px}.checkin-followup .crew-button{font-size:11px;padding:10px 12px}.checkin-followup-note{font-size:11px!important}.checkin-plan blockquote{margin:16px 0;padding:10px 12px;border-left:2px solid #889d99;font-size:13px;overflow-wrap:anywhere}.checkin-help{padding:15px 17px;border-left:4px solid #a44534;background:#fff1eb;margin-bottom:20px}.checkin-help strong{font-size:15px}.checkin-help p{font-size:12px;line-height:1.7;margin-top:7px}.checkin-history{margin-top:22px}.health-learning h2{font-size:22px;margin-bottom:15px}.health-learning h3{font-size:14px}.health-learning p{font-size:12px;color:#59717c;line-height:1.7;margin:7px 0 12px}.health-learning article{padding:15px 0;border-top:1px solid #cfdcda}.health-learning a{font-size:11px}.health-checkin button:focus-visible,.health-checkin input:focus-visible,.health-checkin select:focus-visible,.health-checkin textarea:focus-visible{outline:3px solid #81a9b4;outline-offset:3px}.health-review-summary{margin:24px 0;border-top:1px solid #cbd9d4;padding-top:18px}.health-review-summary article{padding:15px 0;border-bottom:1px solid #d8e2df}.health-review-summary h3{font-size:15px}.health-review-summary p{font-size:12px;margin:7px 0;line-height:1.6}.health-review-summary small{color:#607983;font-size:10px}
-@media(max-width:760px){.health-checkin{padding:20px}.checkin-heading{flex-wrap:wrap}.checkin-heading h2{font-size:27px}.checkin-feelings{grid-template-columns:1fr}.checkin-feelings label{padding:12px}.checkin-plan{padding:16px}.checkin-plan h3{font-size:22px}.checkin-topics button{flex-grow:1}.checkin-heading .crew-eyebrow{font-size:9px!important}}
+.health-checkin {
+  padding: 27px;
+  background: #fff;
+  border: 1px solid #b9cecb;
+  border-top: 4px solid #236c80;
+  border-radius: 7px;
+  margin-bottom: 25px;
+  color: #16313e;
+  min-width: 0;
+}
+.checkin-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.checkin-heading h2 {
+  font-size: 30px;
+  letter-spacing: -0.045em;
+  line-height: 1.1;
+  margin: 10px 0;
+}
+.checkin-heading p {
+  font-size: 13px;
+  color: #5b7480;
+}
+.health-checkin fieldset {
+  border: 0;
+  padding: 0;
+  margin: 20px 0;
+}
+.health-checkin legend {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.checkin-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.checkin-topics button {
+  padding: 10px 12px;
+  border: 1px solid #c6d5d3;
+  background: #f5f8f6;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #36515c;
+  cursor: pointer;
+}
+.checkin-topics button[aria-pressed='true'] {
+  background: #173e4b;
+  color: #f4faf8;
+  border-color: #173e4b;
+}
+.checkin-feelings {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.checkin-feelings label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 14px 10px;
+  border: 1px solid #cbd9d6;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  line-height: 1.4;
+}
+.checkin-feelings label.chosen {
+  border-color: #236c80;
+  background: #edf5f2;
+}
+.checkin-feelings input,
+.checkin-step input {
+  accent-color: #236c80;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.checkin-inputs {
+  display: grid;
+  gap: 16px;
+}
+.checkin-inputs label,
+.checkin-history {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+}
+.checkin-inputs small {
+  font-size: 10px;
+  font-weight: 400;
+  color: #657a83;
+  display: block;
+  margin-top: 4px;
+}
+.checkin-inputs textarea,
+.checkin-inputs select,
+.checkin-history select {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  border: 1px solid #b9c9cd;
+  border-radius: 4px;
+  background: #fff;
+  padding: 11px;
+  font-size: 13px;
+  color: #1d3946;
+  box-sizing: border-box;
+  min-width: 0;
+}
+.checkin-evidence,
+.checkin-scope {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #617984;
+  margin: 13px 0;
+}
+.checkin-scope {
+  margin: 18px 0 0;
+  border-top: 1px solid #dde6e2;
+  padding-top: 13px;
+}
+.checkin-plan {
+  margin-top: 23px;
+  background: #eef5f2;
+  padding: 22px;
+  border-left: 3px solid #467b69;
+}
+.checkin-plan.plan-review {
+  background: #f8f3e8;
+  border-color: #8b6f37;
+}
+.checkin-plan h3 {
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 12px 0;
+  letter-spacing: -0.025em;
+}
+.checkin-plan > p {
+  font-size: 13px;
+  line-height: 1.65;
+}
+.checkin-plan h4 {
+  font-size: 13px;
+  margin: 19px 0 10px;
+}
+.checkin-plan ol {
+  padding-left: 22px;
+  margin: 12px 0;
+}
+.checkin-plan li {
+  padding: 5px 0 8px;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.checkin-plan a,
+.health-learning a {
+  color: #236c80;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.checkin-step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 13px;
+  line-height: 1.65;
+  padding: 12px 0;
+  border-bottom: 1px solid #d4dfd7;
+}
+.checkin-step input {
+  margin-top: 3px;
+}
+.checkin-treatment {
+  font-size: 11px !important;
+  color: #5f716f;
+  margin: 18px 0;
+}
+.checkin-followup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.checkin-followup .crew-button {
+  font-size: 11px;
+  padding: 10px 12px;
+}
+.checkin-followup-note {
+  font-size: 11px !important;
+}
+.checkin-plan blockquote {
+  margin: 16px 0;
+  padding: 10px 12px;
+  border-left: 2px solid #889d99;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.checkin-help {
+  padding: 15px 17px;
+  border-left: 4px solid #a44534;
+  background: #fff1eb;
+  margin-bottom: 20px;
+}
+.checkin-help strong {
+  font-size: 15px;
+}
+.checkin-help p {
+  font-size: 12px;
+  line-height: 1.7;
+  margin-top: 7px;
+}
+.checkin-history {
+  margin-top: 22px;
+}
+.health-learning h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+.health-learning h3 {
+  font-size: 14px;
+}
+.health-learning p {
+  font-size: 12px;
+  color: #59717c;
+  line-height: 1.7;
+  margin: 7px 0 12px;
+}
+.health-learning article {
+  padding: 15px 0;
+  border-top: 1px solid #cfdcda;
+}
+.health-learning a {
+  font-size: 11px;
+}
+.health-checkin button:focus-visible,
+.health-checkin input:focus-visible,
+.health-checkin select:focus-visible,
+.health-checkin textarea:focus-visible {
+  outline: 3px solid #81a9b4;
+  outline-offset: 3px;
+}
+.health-review-summary {
+  margin: 24px 0;
+  border-top: 1px solid #cbd9d4;
+  padding-top: 18px;
+}
+.health-review-summary article {
+  padding: 15px 0;
+  border-bottom: 1px solid #d8e2df;
+}
+.health-review-summary h3 {
+  font-size: 15px;
+}
+.health-review-summary p {
+  font-size: 12px;
+  margin: 7px 0;
+  line-height: 1.6;
+}
+.health-review-summary small {
+  color: #607983;
+  font-size: 10px;
+}
+@media (max-width: 760px) {
+  .health-checkin {
+    padding: 20px;
+  }
+  .checkin-heading {
+    flex-wrap: wrap;
+  }
+  .checkin-heading h2 {
+    font-size: 27px;
+  }
+  .checkin-feelings {
+    grid-template-columns: 1fr;
+  }
+  .checkin-feelings label {
+    padding: 12px;
+  }
+  .checkin-plan {
+    padding: 16px;
+  }
+  .checkin-plan h3 {
+    font-size: 22px;
+  }
+  .checkin-topics button {
+    flex-grow: 1;
+  }
+  .checkin-heading .crew-eyebrow {
+    font-size: 9px !important;
+  }
+}
 /* Keep native choice controls compact within the shared form reset. */
-.crew-app .checkin-feelings label,.crew-app .checkin-step{display:flex;align-items:center;gap:10px}
-.crew-app .checkin-step{align-items:flex-start}
-.crew-app .checkin-feelings input,.crew-app .checkin-step input{width:18px;height:18px;min-height:18px;padding:0;margin:0;flex:0 0 18px;accent-color:#236c80}
-.crew-app .checkin-step input{margin-top:3px}
-.crew-app .checkin-heading h2{font-size:30px;line-height:1.15}
-.crew-app .checkin-plan h3{font-size:24px;line-height:1.25}
-.crew-app .checkin-plan>p{font-size:13px}
-.crew-app .health-checkin .checkin-evidence,.crew-app .health-checkin .checkin-scope,.crew-app .health-checkin .checkin-followup-note{font-size:11px}
-.crew-app .health-learning p{font-size:12px}
-.checkin-symptoms{display:flex;flex-wrap:wrap;gap:8px}.checkin-symptoms legend span{font-weight:400;color:#607983;font-size:11px}.checkin-symptoms button{padding:10px 13px;border:1px solid #b9ccca;border-radius:4px;background:#fff;color:#36515c;font-size:12px;cursor:pointer;min-height:44px}.checkin-symptoms button[aria-pressed=true]{background:#173e4b;border-color:#173e4b;color:#fff}.checkin-symptoms button[aria-pressed=true]::before{content:'✓ ';font-weight:700}.crew-app .checkin-activity{display:block;font-size:12px;font-weight:600;margin-bottom:18px}.checkin-activity select{display:block;width:100%;min-height:44px;margin-top:8px;padding:10px;border:1px solid #b9c9cd;background:#fff;color:#1d3946;border-radius:4px;font-size:13px}.health-interpretation{margin:20px 0 26px;padding-bottom:22px;border-bottom:1px solid #c4d5cf;min-width:0}.interpretation-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.interpretation-status{font-size:10px;font-weight:600;border:1px solid #adbfbb;padding:5px 8px;border-radius:3px;color:#375954}.crew-app .health-interpretation h3{font-size:28px;margin:16px 0 9px;line-height:1.15}.crew-app .interpretation-headline{font-size:16px;font-weight:600;color:#173e4b;line-height:1.5}.crew-app .interpretation-intro{font-size:11px;color:#60736f;line-height:1.6;margin:8px 0 17px}.interpretation-evidence{background:#fff;padding:16px 18px;border:1px solid #ccdad5;border-radius:4px}.crew-app .health-interpretation h4{margin:0 0 10px;font-size:14px;line-height:1.5}.health-interpretation ul{padding-left:18px;margin:0}.health-interpretation li{font-size:12px;line-height:1.65;padding:3px 0}.crew-app .interpretation-time{font-size:10px;color:#607983;line-height:1.7;margin-top:12px}.interpretation-comparison{display:flex;align-items:center;gap:16px;border-top:1px solid #dce5e1;padding-top:14px;margin-top:12px}.interpretation-comparison>strong{font-size:30px;letter-spacing:-.04em;white-space:nowrap;color:#236c80;font-variant-numeric:tabular-nums}.interpretation-comparison small{font-size:12px;letter-spacing:0}.crew-app .interpretation-comparison p{font-size:12px;line-height:1.6}.interpretation-comparison span{display:block;font-size:10px;color:#607983;margin-top:4px}.interpretation-possibilities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:20px 0}.interpretation-possibilities article{border-top:2px solid #889f96;padding-top:12px;min-width:0}.interpretation-possibilities article:only-child{grid-column:1/-1}.crew-app .interpretation-possibilities p{font-size:12px;line-height:1.65;margin:10px 0;color:#4b655f}.interpretation-possibilities p strong{display:block;color:#233f38;font-size:10px;margin-bottom:3px}.interpretation-possibilities a{font-size:11px;line-height:1.6}.health-interpretation .crew-disclosure{margin-bottom:0}.health-interpretation .crew-disclosure p{font-size:11px;line-height:1.7}.health-interpretation a{color:#236c80;text-decoration:underline;text-underline-offset:3px}.crew-app .checkin-action-title{font-size:16px}.health-review-summary .health-interpretation{margin:12px 0}.health-review-summary .interpretation-possibilities{grid-template-columns:1fr}
-@media(max-width:760px){.interpretation-possibilities{grid-template-columns:1fr}.interpretation-comparison{align-items:flex-start;flex-direction:column;gap:5px}.interpretation-evidence{padding:14px}.crew-app .health-interpretation h3{font-size:25px}.checkin-symptoms button{flex-grow:1}}
+.crew-app .checkin-feelings label,
+.crew-app .checkin-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.crew-app .checkin-step {
+  align-items: flex-start;
+}
+.crew-app .checkin-feelings input,
+.crew-app .checkin-step input {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  padding: 0;
+  margin: 0;
+  flex: 0 0 18px;
+  accent-color: #236c80;
+}
+.crew-app .checkin-step input {
+  margin-top: 3px;
+}
+.crew-app .checkin-heading h2 {
+  font-size: 30px;
+  line-height: 1.15;
+}
+.crew-app .checkin-plan h3 {
+  font-size: 24px;
+  line-height: 1.25;
+}
+.crew-app .checkin-plan > p {
+  font-size: 13px;
+}
+.crew-app .health-checkin .checkin-evidence,
+.crew-app .health-checkin .checkin-scope,
+.crew-app .health-checkin .checkin-followup-note {
+  font-size: 11px;
+}
+.crew-app .health-learning p {
+  font-size: 12px;
+}
+.checkin-symptoms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.checkin-symptoms legend span {
+  font-weight: 400;
+  color: #607983;
+  font-size: 11px;
+}
+.checkin-symptoms button {
+  padding: 10px 13px;
+  border: 1px solid #b9ccca;
+  border-radius: 4px;
+  background: #fff;
+  color: #36515c;
+  font-size: 12px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.checkin-symptoms button[aria-pressed='true'] {
+  background: #173e4b;
+  border-color: #173e4b;
+  color: #fff;
+}
+.checkin-symptoms button[aria-pressed='true']::before {
+  content: '✓ ';
+  font-weight: 700;
+}
+.crew-app .checkin-activity {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.checkin-activity select {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px solid #b9c9cd;
+  background: #fff;
+  color: #1d3946;
+  border-radius: 4px;
+  font-size: 13px;
+}
+.health-interpretation {
+  margin: 20px 0 26px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #c4d5cf;
+  min-width: 0;
+}
+.interpretation-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.interpretation-status {
+  font-size: 10px;
+  font-weight: 600;
+  border: 1px solid #adbfbb;
+  padding: 5px 8px;
+  border-radius: 3px;
+  color: #375954;
+}
+.crew-app .health-interpretation h3 {
+  font-size: 28px;
+  margin: 16px 0 9px;
+  line-height: 1.15;
+}
+.crew-app .interpretation-headline {
+  font-size: 16px;
+  font-weight: 600;
+  color: #173e4b;
+  line-height: 1.5;
+}
+.crew-app .interpretation-intro {
+  font-size: 11px;
+  color: #60736f;
+  line-height: 1.6;
+  margin: 8px 0 17px;
+}
+.interpretation-evidence {
+  background: #fff;
+  padding: 16px 18px;
+  border: 1px solid #ccdad5;
+  border-radius: 4px;
+}
+.crew-app .health-interpretation h4 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.health-interpretation ul {
+  padding-left: 18px;
+  margin: 0;
+}
+.health-interpretation li {
+  font-size: 12px;
+  line-height: 1.65;
+  padding: 3px 0;
+}
+.crew-app .interpretation-time {
+  font-size: 10px;
+  color: #607983;
+  line-height: 1.7;
+  margin-top: 12px;
+}
+.interpretation-comparison {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-top: 1px solid #dce5e1;
+  padding-top: 14px;
+  margin-top: 12px;
+}
+.interpretation-comparison > strong {
+  font-size: 30px;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  color: #236c80;
+  font-variant-numeric: tabular-nums;
+}
+.interpretation-comparison small {
+  font-size: 12px;
+  letter-spacing: 0;
+}
+.crew-app .interpretation-comparison p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.interpretation-comparison span {
+  display: block;
+  font-size: 10px;
+  color: #607983;
+  margin-top: 4px;
+}
+.interpretation-possibilities {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 20px 0;
+}
+.interpretation-possibilities article {
+  border-top: 2px solid #889f96;
+  padding-top: 12px;
+  min-width: 0;
+}
+.interpretation-possibilities article:only-child {
+  grid-column: 1/-1;
+}
+.crew-app .interpretation-possibilities p {
+  font-size: 12px;
+  line-height: 1.65;
+  margin: 10px 0;
+  color: #4b655f;
+}
+.interpretation-possibilities p strong {
+  display: block;
+  color: #233f38;
+  font-size: 10px;
+  margin-bottom: 3px;
+}
+.interpretation-possibilities a {
+  font-size: 11px;
+  line-height: 1.6;
+}
+.health-interpretation .crew-disclosure {
+  margin-bottom: 0;
+}
+.health-interpretation .crew-disclosure p {
+  font-size: 11px;
+  line-height: 1.7;
+}
+.health-interpretation a {
+  color: #236c80;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.crew-app .checkin-action-title {
+  font-size: 16px;
+}
+.health-review-summary .health-interpretation {
+  margin: 12px 0;
+}
+.health-review-summary .interpretation-possibilities {
+  grid-template-columns: 1fr;
+}
+@media (max-width: 760px) {
+  .interpretation-possibilities {
+    grid-template-columns: 1fr;
+  }
+  .interpretation-comparison {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .interpretation-evidence {
+    padding: 14px;
+  }
+  .crew-app .health-interpretation h3 {
+    font-size: 25px;
+  }
+  .checkin-symptoms button {
+    flex-grow: 1;
+  }
+}

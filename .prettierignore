@@ -1,0 +1,15 @@
+.git/
+node_modules/
+.svelte-kit/
+build/
+dist/
+coverage/
+data/
+.env
+.env.*
+bun.lock
+*.log
+.idea/
+.impeccable/
+jakiando/
+docs/superpowers/

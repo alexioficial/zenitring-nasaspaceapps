@@ -6,8 +6,11 @@ let expires = 0;
 let inflight: Promise<RadiationSeries> | undefined;
 export async function GET() {
   if (!cached || Date.now() >= expires) {
-    inflight ??= refreshRadiation().finally(() => { inflight = undefined; });
-    cached = await inflight; expires = Date.now() + (cached.mode === 'refreshed' ? 300_000 : 30_000);
+    inflight ??= refreshRadiation().finally(() => {
+      inflight = undefined;
+    });
+    cached = await inflight;
+    expires = Date.now() + (cached.mode === 'refreshed' ? 300_000 : 30_000);
   }
   return json(cached, { headers: { 'Cache-Control': 'no-store' } });
 }

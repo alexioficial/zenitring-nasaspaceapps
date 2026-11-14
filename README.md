@@ -13,16 +13,16 @@ bun run dev
 
 Open `http://localhost:3000` on the server computer. For separate phones/tablets, use the computer's LAN IP, for example:
 
-| Interface | Address |
-| --- | --- |
-| Central tablet monitor | `http://192.168.1.20:3000/` |
-| VEGA personal monitor | `http://192.168.1.20:3000/astronaut/vega` |
-| NOVA personal monitor | `http://192.168.1.20:3000/astronaut/nova` |
-| VEGA phone ring | `http://192.168.1.20:3000/ring?astronaut=vega` |
-| NOVA phone ring | `http://192.168.1.20:3000/ring?astronaut=nova` |
-| VEGA spacesuit | `http://192.168.1.20:3000/suit?astronaut=vega` |
-| Historical Apollo explorer | `/archive` |
-| Preserved single-person prototype | `/legacy` |
+| Interface                         | Address                                        |
+| --------------------------------- | ---------------------------------------------- |
+| Central tablet monitor            | `http://192.168.1.20:3000/`                    |
+| VEGA personal monitor             | `http://192.168.1.20:3000/astronaut/vega`      |
+| NOVA personal monitor             | `http://192.168.1.20:3000/astronaut/nova`      |
+| VEGA phone ring                   | `http://192.168.1.20:3000/ring?astronaut=vega` |
+| NOVA phone ring                   | `http://192.168.1.20:3000/ring?astronaut=nova` |
+| VEGA spacesuit                    | `http://192.168.1.20:3000/suit?astronaut=vega` |
+| Historical Apollo explorer        | `/archive`                                     |
+| Preserved single-person prototype | `/legacy`                                      |
 
 Other crew IDs are `atlas` and `lyra`. The central monitor opens directly to the crew overview without the personal navigation bar. Its **Astronaut links** view offers one **Copy astronaut link** action per person. This opens their health workspace; **My devices → Open my ring** opens the simulator from there. Ring replacement is a secondary action inside **Device options**. Personal monitors have their own navigation and a fixed astronaut identity from the URL; their WebSocket session receives only that astronaut's records. These links select a demo context, not authenticated accounts.
 
@@ -34,7 +34,7 @@ The personal My devices view also opens the independent suit simulator. Each sou
 
 ## Demonstrate
 
-Open the personal link (for example `/astronaut/vega`) and start with **My health → Understand this moment.** Choose a health topic, tap any symptoms and select the activity context, optionally attach a captured ring/suit moment, and select **Understand my signals**. The preview shows possible contributors, actual source readings and a recent same-device pulse comparison when available, explains what the evidence can and cannot establish, links its NASA health context and offers actions to discuss or complete. Save the check-in, mark steps, and record whether you feel better, the same or worse. Saved reports and follow-ups appear in the crew detail. Draft guidance remains usable in an already-loaded page while offline; drafts are not shared until explicitly saved after reconnecting.
+Open the personal link (for example `/astronaut/vega`). **My health now leads with automatic assessment**: nine comparable readings are enough to evaluate a persistent demo change without filling a form. The astronaut answers one contextual question when needed. Expand **Report symptoms or review saved check-ins → Understand this moment.** for the existing manual workflow. Choose a health topic, tap any symptoms and select the activity context, optionally attach a captured ring/suit moment, and select **Understand my signals**. The preview shows possible contributors, actual source readings and a recent same-device pulse comparison when available, explains what the evidence can and cannot establish, links its NASA health context and offers actions to discuss or complete. Save the check-in, mark steps, and record whether you feel better, the same or worse. Saved reports and follow-ups appear in the crew detail. Draft guidance remains usable in an already-loaded page while offline; drafts are not shared until explicitly saved after reconnecting.
 
 The challenge-to-feature mapping, research links, treatment-guidance boundary and demonstration are documented in [Challenge alignment](docs/CHALLENGE-ALIGNMENT.md). Educational guidance is not a diagnosis, medical clearance or a NASA-approved clinical protocol. Asking for help in the UI does not call the crew; the screen directs the astronaut to contact them directly.
 
@@ -110,3 +110,15 @@ Apollo 11's 42 selected approximate digitized observations remain separate from 
 Preserved context includes [NASA exercise overview](https://www.nasa.gov/ochmo-tb-031-exercise-overview-2/), [NASA behavioral health evidence](https://humanresearchroadmap.nasa.gov/evidence/reports/HRP-ER-BMED-HFBP-20250210.pdf#page=43) and the [NASA suit investigation report](https://www.nasa.gov/wp-content/uploads/2023/07/suit_water_intrusion_mishap_investigation_report.pdf#page=39). The initial research links [NASA human spaceflight risks](https://www.nasa.gov/hrp/risks/) and [five hazards](https://www.nasa.gov/hrp/hazards/) to the motivation for contextual monitoring and continuity of onboard records.
 
 AI assisted software development, documentation and prior transcription. No AI model assesses an astronaut. All current ring metrics, scenarios and reference ranges are explicitly simulated; skin-temperature deviation is not core temperature. Legacy behavior and its limitations are documented in [the original README](docs/LEGACY.md) and [original design](docs/LEGACY-DESIGN.md).
+
+## Automatic assessment and Gemini
+
+Open `/research` for six isolated synthetic scenarios with predefined detector expectations. Replay the readings, compare the observed pattern with the expectation, and optionally enable a real Gemini explanation. These experiments do not modify mission records. See [research mapping and boundaries](docs/AUTOMATIC-ASSESSMENT.md).
+
+Set `GEMINI_API_KEY` in the server's private `.env` and restart the app. `GEMINI_MODEL` defaults to `gemini-3.5-flash-lite`. The key never goes to the browser. Gemini receives calculated numeric observations and the selected contextual answer, without astronaut names or free-text notes. The server recomputes the detector result from bounded, validated samples; the model cannot change local next steps or control the suit.
+
+The API uses a 12-second timeout, structured output validation and a global demo limit of 15 requests/minute. An episode/context change triggers an explanation; every incoming sample does not trigger a model call. The AI panel labels its original evidence time while live measurements continue. Missing configuration, provider failure, or interrupted signals leave the local analysis available. A reported concern remains visible through signal loss until the user records contacting the crew. This is an experimental interpretation workflow, not a clinical diagnosis or authenticated medical service.
+
+## Code formatting
+
+Run `bun run format` to format source, tests, documentation and configuration with Prettier and its Svelte plugin. Run `bun run format:check` to verify formatting without changing files. The shared configuration uses two-space indentation, single quotes and a 100-column target. Generated output, runtime data, environment files and the Bun lockfile are excluded.
