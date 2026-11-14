@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '$lib/components/Icon.svelte';
+  import PersonalHealth from '$lib/components/crew/PersonalHealth.svelte';
   import Trend from '$lib/components/crew/Trend.svelte';
   import EventCard from '$lib/components/crew/EventCard.svelte';
   import SimulationSettings from '$lib/components/crew/SimulationSettings.svelte';
@@ -9,16 +10,16 @@
   import type { MissionState, ClientMessage, MetricKey, ServerMessage } from '$lib/crew/types';
   import '$lib/crew/crew.css';
 
-  type View='overview'|'events'|'pair'|'lab';
+  type View='personal'|'overview'|'events'|'pair'|'lab';
   let mission=$state<MissionState>({crew:initialCrew(),events:[],serverTime:0});
-  let view=$state<View>('overview');let selected=$state<string|null>(null);let metric=$state<MetricKey>('pulse');
+  let personalId=$state('vega');let view=$state<View>('personal');let selected=$state<string|null>(null);let metric=$state<MetricKey>('pulse');
   let link=$state('connecting');let message=$state('');let now=$state(Date.now());let baseUrl=$state('');let historyFilter=$state('all');
   let serverEpoch=Date.now();let monotonicEpoch=0;
   let connection:MissionConnection;const requests=new Map<string,(ok:boolean)=>void>();
   let member=$derived(mission.crew.find(c=>c.id===selected));
   let emergencies=$derived(mission.events.filter(e=>e.kind==='emergency' && e.status!=='resolved'));
   let live=$derived(mission.crew.filter(c=>link==='online' && freshness(c.connected,c.latest?.receivedAt??null,c.config.intervalMs,now)==='live').length);
-  let attention=$derived(mission.crew.filter(c=>outsideDemo(c.latest?.values??null,c.config).length>0).length);
+  let attention=$derived(mission.crew.filter(c=>link==='online' && freshness(c.connected,c.latest?.receivedAt??null,c.config.intervalMs,now)==='live' && outsideDemo(c.latest?.values??null,c.config).length>0).length);
   let visibleEvents=$derived(mission.events.filter(e=>(!selected || e.astronautId===selected) && (historyFilter==='all' || e.kind===historyFilter)));
   function receive(m:ServerMessage){
     if(m.type==='state'){mission=m.state;serverEpoch=m.state.serverTime;monotonicEpoch=performance.now();now=serverEpoch;}
@@ -37,6 +38,7 @@
     return()=>{clearInterval(clock);connection.dispose();for(const resolve of requests.values())resolve(false);};
   });
   function focus(id:string){selected=id;view='overview';historyFilter='all';message='';}
+  function history(id:string){selected=id;view='events';historyFilter='all';message='';}
   function navigate(next:View){view=next;if(next==='overview'||next==='events')selected=null;message='';}
   const ringUrl=(id:string)=>`${baseUrl.replace(/\/$/,'')}/ring?astronaut=${id}`;
   async function copyLink(id:string){try{await navigator.clipboard.writeText(ringUrl(id));message='Ring link copied.';}catch{message='Copy the visible ring URL. Clipboard access may be unavailable on LAN HTTP.';}}
@@ -54,17 +56,19 @@
     <div class="masthead-right"><span class="crew-link-status" class:unavailable={link!=='online'}><span class="status-dot"></span>{link==='online'?'Central link online':link==='connecting'?'Connecting to mission server':'Monitor offline'}</span><time>{clockLabel(now)}</time></div>
   </header>
   <nav class="crew-navigation" aria-label="Mission views">
-    {#each [{id:'overview',label:'Crew overview',icon:'monitor'},{id:'events',label:'Event log',icon:'book'},{id:'pair',label:'Link rings',icon:'link'},{id:'lab',label:'Simulation lab',icon:'pulse'}] as tab}<button aria-current={view===tab.id?'page':undefined} onclick={()=>navigate(tab.id as View)}><Icon name={tab.icon as 'monitor'} size={18}/>{tab.label}{#if tab.id==='events'}<span class="nav-event-count">{mission.events.length}</span>{/if}</button>{/each}
+    {#each [{id:'personal',label:'My health',icon:'heart'},{id:'overview',label:'Crew monitor',icon:'monitor'},{id:'events',label:'Event log',icon:'book'},{id:'pair',label:'Link rings',icon:'link'},{id:'lab',label:'Simulation lab',icon:'pulse'}] as tab}<button aria-current={view===tab.id?'page':undefined} onclick={()=>navigate(tab.id as View)}><Icon name={tab.icon as 'monitor'} size={18}/>{tab.label}{#if tab.id==='events'}<span class="nav-event-count">{mission.events.length}</span>{/if}</button>{/each}
     <span class="sim-stamp">SIMULATED BIOMETRICS · REAL CONNECTION</span>
   </nav>
   {#if emergencies.length}
-    <aside class="crew-emergency-strip" aria-label="Open emergencies"><span class="emergency-label"><Icon name="pulse" size={23}/>{emergencies.length} open {emergencies.length===1?'emergency':'emergencies'}</span><div>{#each emergencies as emergency (emergency.id)}<button onclick={()=>focus(emergency.astronautId)}>{mission.crew.find(c=>c.id===emergency.astronautId)?.callsign} <span>{emergency.status==='active'?'Active · respond now':'Acknowledged · still open'}</span><Icon name="arrow" size={16}/></button>{/each}</div></aside>
+    <aside class="crew-emergency-strip" aria-label="Open emergencies"><span class="emergency-label"><Icon name="pulse" size={23}/>{emergencies.length} open {emergencies.length===1?'emergency':'emergencies'}</span><div>{#each emergencies as emergency (emergency.id)}<button onclick={()=>history(emergency.astronautId)}>{mission.crew.find(c=>c.id===emergency.astronautId)?.callsign} <span>{emergency.status==='active'?'Active · respond now':'Acknowledged · still open'}</span><Icon name="arrow" size={16}/></button>{/each}</div></aside>
   {/if}
   {#if link!=='online'}<p class="monitor-offline" role="status">The monitor is not receiving updates. All displayed readings are last known values. {#if link==='offline'}<button class="crew-inline-button" onclick={()=>connection.connect()}>Reconnect</button>{/if}</p>{/if}
   <main id="crew-content" class="crew-content">
     {#if message}<div class="crew-notice" role="status"><span>{message}</span><button aria-label="Dismiss message" onclick={()=>message=''}>×</button></div>{/if}
-    {#if view==='overview' && !member}
-      <section class="crew-page-intro"><div><span class="crew-eyebrow">ONBOARD HEALTH / CREW MANIFEST</span><h1>Crew, in view.</h1><p>Signals and context from every ring. Select an astronaut to look closer.</p></div><div class="crew-summary"><div><strong>{live}<small> / {mission.crew.length}</small></strong><span>current signals</span></div><div class:summary-alert={attention>0}><strong>{attention}</strong><span>outside demo ranges</span></div></div></section>
+    {#if view==='personal'}
+      <PersonalHealth bind:identity={personalId} {mission} online={link==='online'} {now} ondetail={focus} onhistory={history}/>
+    {:else if view==='overview' && !member}
+      <section class="crew-page-intro"><div><span class="crew-eyebrow">ONBOARD HEALTH / CREW MANIFEST</span><h1>Crew health monitor</h1><p>Signals and context from every ring. Select an astronaut to look closer.</p></div><div class="crew-summary"><div><strong>{live}<small> / {mission.crew.length}</small></strong><span>current signals</span></div><div class:summary-alert={attention>0}><strong>{attention}</strong><span>outside demo ranges</span></div></div></section>
       <div class="overview-layout">
         <section class="crew-manifest" aria-label="Crew telemetry overview">
           <div class="manifest-labels"><span>Crew / source</span><span>Signal status</span><span>Heart rate</span><span>SpO₂</span><span>Recent pulse</span><span>Last received</span></div>
@@ -83,7 +87,7 @@
           {/each}
           <div class="manifest-foot"><span><span class="status-dot"></span>Sources: simulated ZENIT rings</span><span>Demo references, not diagnoses.</span></div>
         </section>
-        <aside class="mission-event-rail"><div class="rail-heading"><span class="crew-eyebrow">MISSION ACTIVITY</span><h2>Moments that matter.</h2></div>{#if !mission.events.length}<div class="crew-empty"><Icon name="save" size={28}/><h3>Ready for the first gesture.</h3><p>Double tap a linked phone's ring surface. Its captured values will arrive here immediately.</p><button class="crew-inline-button" onclick={()=>navigate('pair')}>Link a ring <Icon name="arrow" size={16}/></button></div>{/if}{#each mission.events.slice(0,5) as event (event.id)}<button class="activity-preview" class:preview-emergency={event.kind==='emergency'} onclick={()=>focus(event.astronautId)}><span>{mission.crew.find(c=>c.id===event.astronautId)?.callsign} / {clockLabel(event.occurredAt)}</span><strong>{event.kind==='emergency'?`Emergency · ${event.status}`:'Moment captured'}</strong><small>{event.annotations.length?`${event.annotations.length} annotation${event.annotations.length===1?'':'s'}`:'Awaiting explicit context'} <Icon name="arrow" size={15}/></small></button>{/each}{#if mission.events.length}<button class="crew-inline-button" onclick={()=>navigate('events')}>Open event log <Icon name="arrow" size={16}/></button>{/if}<div class="rail-explainer"><Icon name="link" size={19}/><p>Measured on the phone.<br/>Confirmed by the shared server.<br/><strong>Original capture time preserved.</strong></p></div></aside>
+        <aside class="mission-event-rail"><div class="rail-heading"><span class="crew-eyebrow">MISSION ACTIVITY</span><h2>Recent activity</h2></div>{#if !mission.events.length}<div class="crew-empty"><Icon name="save" size={28}/><h3>Ready for the first gesture.</h3><p>Double tap a linked phone's ring surface. Its captured values will arrive here immediately.</p><button class="crew-inline-button" onclick={()=>navigate('pair')}>Link a ring <Icon name="arrow" size={16}/></button></div>{/if}{#each mission.events.slice(0,5) as event (event.id)}<button class="activity-preview" class:preview-emergency={event.kind==='emergency'} onclick={()=>focus(event.astronautId)}><span>{mission.crew.find(c=>c.id===event.astronautId)?.callsign} / {clockLabel(event.occurredAt)}</span><strong>{event.kind==='emergency'?`Emergency · ${event.status}`:'Moment captured'}</strong><small>{event.annotations.length?`${event.annotations.length} annotation${event.annotations.length===1?'':'s'}`:'Awaiting explicit context'} <Icon name="arrow" size={15}/></small></button>{/each}{#if mission.events.length}<button class="crew-inline-button" onclick={()=>navigate('events')}>Open event log <Icon name="arrow" size={16}/></button>{/if}<div class="rail-explainer"><Icon name="link" size={19}/><p>Measured on the phone.<br/>Confirmed by the shared server.<br/><strong>Original capture time preserved.</strong></p></div></aside>
       </div>
     {:else if view==='overview' && member}
       {@const status=link==='online'?freshness(member.connected,member.latest?.receivedAt??null,member.config.intervalMs,now):'offline'}
@@ -101,7 +105,7 @@
         <section class="detail-event-log"><div class="section-title"><div><span class="crew-eyebrow">{member.callsign} / CAPTURED EVIDENCE</span><h2>Events & observations</h2></div><span>{visibleEvents.length}</span></div>{#if !visibleEvents.length}<p class="crew-empty">No events for this astronaut. Double tap the phone's ring surface to capture a moment.</p>{/if}{#each visibleEvents as event (event.id)}<EventCard {event} {member} {send} connected={link==='online'}/>{/each}</section>
       </div>
     {:else if view==='events'}
-      <section class="crew-page-intro"><div><span class="crew-eyebrow">MISSION / EVENT HISTORY</span><h1>Every moment, intact.</h1><p>Original readings, later annotations and a permanent emergency audit.</p></div><label class="event-filter">Show<select bind:value={historyFilter}><option value="all">All events</option><option value="moment">Captured moments</option><option value="emergency">Emergencies</option></select></label></section>
+      <section class="crew-page-intro"><div><span class="crew-eyebrow">MISSION / EVENT HISTORY</span><h1>{member?`${member.callsign} · Event log`:'Crew event log'}</h1><p>Original readings, later annotations and a permanent emergency audit.</p></div><label class="event-filter">Show<select bind:value={historyFilter}><option value="all">All events</option><option value="moment">Captured moments</option><option value="emergency">Emergencies</option></select></label></section>
       <div class="full-event-log">{#if !visibleEvents.length}<div class="crew-empty"><h2>No events yet.</h2><p>Use a linked ring to capture a moment or activate an emergency.</p></div>{/if}{#each visibleEvents as event (event.id)}<EventCard {event} member={mission.crew.find(c=>c.id===event.astronautId)!} {send} connected={link==='online'}/>{/each}<p class="snapshot-caption">Showing up to 200 recent events. The server retains older events; download the complete archive below.</p></div>
     {:else if view==='pair'}
       <section class="crew-page-intro"><div><span class="crew-eyebrow">DEVICE / CREW ASSOCIATION</span><h1>One ring. One astronaut.</h1><p>Open a ring link on each phone. Keep the simulator visible while transmitting.</p></div><span class="pair-count">{mission.crew.filter(c=>c.connected).length} rings connected</span></section>
