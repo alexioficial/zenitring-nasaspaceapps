@@ -1,437 +1,503 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-14T16:47:10.341040+00:00",
-  "title": "Design System: ZENIT",
+  "generatedAt": "2026-11-14T23:16:54.702535+00:00",
+  "title": "Design System: ZENIT · Orbital medbay",
   "extensions": {
     "colorMeta": {
-      "bg": {
-        "role": "neutral",
-        "displayName": "Bg",
-        "tonalRamp": [
-          "oklch(15% 0.0241 254.44)",
-          "oklch(26% 0.0241 254.44)",
-          "oklch(38% 0.0241 254.44)",
-          "oklch(49% 0.0241 254.44)",
-          "oklch(61% 0.0241 254.44)",
-          "oklch(72% 0.0241 254.44)",
-          "oklch(84% 0.0241 254.44)",
-          "oklch(95% 0.0241 254.44)"
-        ]
-      },
-      "panel": {
-        "role": "neutral",
-        "displayName": "Panel",
-        "tonalRamp": [
-          "oklch(15% 0.0330 251.18)",
-          "oklch(26% 0.0330 251.18)",
-          "oklch(38% 0.0330 251.18)",
-          "oklch(49% 0.0330 251.18)",
-          "oklch(61% 0.0330 251.18)",
-          "oklch(72% 0.0330 251.18)",
-          "oklch(84% 0.0330 251.18)",
-          "oklch(95% 0.0330 251.18)"
-        ]
-      },
-      "line": {
-        "role": "neutral",
-        "displayName": "Line",
-        "tonalRamp": [
-          "oklch(15% 0.0373 248.97)",
-          "oklch(26% 0.0373 248.97)",
-          "oklch(38% 0.0373 248.97)",
-          "oklch(49% 0.0373 248.97)",
-          "oklch(61% 0.0373 248.97)",
-          "oklch(72% 0.0373 248.97)",
-          "oklch(84% 0.0373 248.97)",
-          "oklch(95% 0.0373 248.97)"
-        ]
-      },
-      "muted": {
-        "role": "neutral",
-        "displayName": "Muted",
-        "tonalRamp": [
-          "oklch(15% 0.0320 249.77)",
-          "oklch(26% 0.0320 249.77)",
-          "oklch(38% 0.0320 249.77)",
-          "oklch(49% 0.0320 249.77)",
-          "oklch(61% 0.0320 249.77)",
-          "oklch(72% 0.0320 249.77)",
-          "oklch(84% 0.0320 249.77)",
-          "oklch(95% 0.0320 249.77)"
-        ]
-      },
-      "foreground": {
-        "role": "neutral",
-        "displayName": "Foreground",
-        "tonalRamp": [
-          "oklch(15% 0.0114 252.09)",
-          "oklch(26% 0.0114 252.09)",
-          "oklch(38% 0.0114 252.09)",
-          "oklch(49% 0.0114 252.09)",
-          "oklch(61% 0.0114 252.09)",
-          "oklch(72% 0.0114 252.09)",
-          "oklch(84% 0.0114 252.09)",
-          "oklch(95% 0.0114 252.09)"
-        ]
-      },
-      "mint": {
+      "clinical-teal": {
         "role": "primary",
-        "displayName": "Mint",
+        "displayName": "Clinical Teal",
         "tonalRamp": [
-          "oklch(15% 0.0992 169.35)",
-          "oklch(26% 0.0992 169.35)",
-          "oklch(38% 0.0992 169.35)",
-          "oklch(49% 0.0992 169.35)",
-          "oklch(61% 0.0992 169.35)",
-          "oklch(72% 0.0992 169.35)",
-          "oklch(84% 0.0992 169.35)",
-          "oklch(95% 0.0992 169.35)"
+          "oklch(15% 0.0832 213.96)",
+          "oklch(26% 0.0832 213.96)",
+          "oklch(38% 0.0832 213.96)",
+          "oklch(49% 0.0832 213.96)",
+          "oklch(61% 0.0832 213.96)",
+          "oklch(72% 0.0832 213.96)",
+          "oklch(84% 0.0832 213.96)",
+          "oklch(95% 0.0832 213.96)"
         ]
       },
-      "violet": {
+      "teal-hover": {
+        "role": "primary",
+        "displayName": "Teal Hover",
+        "tonalRamp": [
+          "oklch(15% 0.0730 216.22)",
+          "oklch(26% 0.0730 216.22)",
+          "oklch(38% 0.0730 216.22)",
+          "oklch(49% 0.0730 216.22)",
+          "oklch(61% 0.0730 216.22)",
+          "oklch(72% 0.0730 216.22)",
+          "oklch(84% 0.0730 216.22)",
+          "oklch(95% 0.0730 216.22)"
+        ]
+      },
+      "mission-navy": {
+        "role": "neutral",
+        "displayName": "Mission Navy",
+        "tonalRamp": [
+          "oklch(15% 0.0389 237.17)",
+          "oklch(26% 0.0389 237.17)",
+          "oklch(38% 0.0389 237.17)",
+          "oklch(49% 0.0389 237.17)",
+          "oklch(61% 0.0389 237.17)",
+          "oklch(72% 0.0389 237.17)",
+          "oklch(84% 0.0389 237.17)",
+          "oklch(95% 0.0389 237.17)"
+        ]
+      },
+      "ceramic-white": {
+        "role": "neutral",
+        "displayName": "Ceramic White",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0.00)",
+          "oklch(26% 0.0000 0.00)",
+          "oklch(38% 0.0000 0.00)",
+          "oklch(49% 0.0000 0.00)",
+          "oklch(61% 0.0000 0.00)",
+          "oklch(72% 0.0000 0.00)",
+          "oklch(84% 0.0000 0.00)",
+          "oklch(95% 0.0000 0.00)"
+        ]
+      },
+      "blue-gray-field": {
+        "role": "neutral",
+        "displayName": "Blue Gray Field",
+        "tonalRamp": [
+          "oklch(15% 0.0059 239.82)",
+          "oklch(26% 0.0059 239.82)",
+          "oklch(38% 0.0059 239.82)",
+          "oklch(49% 0.0059 239.82)",
+          "oklch(61% 0.0059 239.82)",
+          "oklch(72% 0.0059 239.82)",
+          "oklch(84% 0.0059 239.82)",
+          "oklch(95% 0.0059 239.82)"
+        ]
+      },
+      "muted-blue": {
+        "role": "neutral",
+        "displayName": "Muted Blue",
+        "tonalRamp": [
+          "oklch(15% 0.0385 237.77)",
+          "oklch(26% 0.0385 237.77)",
+          "oklch(38% 0.0385 237.77)",
+          "oklch(49% 0.0385 237.77)",
+          "oklch(61% 0.0385 237.77)",
+          "oklch(72% 0.0385 237.77)",
+          "oklch(84% 0.0385 237.77)",
+          "oklch(95% 0.0385 237.77)"
+        ]
+      },
+      "structural-line": {
+        "role": "neutral",
+        "displayName": "Structural Line",
+        "tonalRamp": [
+          "oklch(15% 0.0197 240.76)",
+          "oklch(26% 0.0197 240.76)",
+          "oklch(38% 0.0197 240.76)",
+          "oklch(49% 0.0197 240.76)",
+          "oklch(61% 0.0197 240.76)",
+          "oklch(72% 0.0197 240.76)",
+          "oklch(84% 0.0197 240.76)",
+          "oklch(95% 0.0197 240.76)"
+        ]
+      },
+      "panel-line": {
+        "displayName": "Overview Panel Line",
+        "role": "neutral"
+      },
+      "focus-teal": {
+        "role": "primary",
+        "displayName": "Focus Teal",
+        "tonalRamp": [
+          "oklch(15% 0.0964 211.60)",
+          "oklch(26% 0.0964 211.60)",
+          "oklch(38% 0.0964 211.60)",
+          "oklch(49% 0.0964 211.60)",
+          "oklch(61% 0.0964 211.60)",
+          "oklch(72% 0.0964 211.60)",
+          "oklch(84% 0.0964 211.60)",
+          "oklch(95% 0.0964 211.60)"
+        ]
+      },
+      "active-tint": {
+        "role": "neutral",
+        "displayName": "Active Tint",
+        "tonalRamp": [
+          "oklch(15% 0.0144 213.10)",
+          "oklch(26% 0.0144 213.10)",
+          "oklch(38% 0.0144 213.10)",
+          "oklch(49% 0.0144 213.10)",
+          "oklch(61% 0.0144 213.10)",
+          "oklch(72% 0.0144 213.10)",
+          "oklch(84% 0.0144 213.10)",
+          "oklch(95% 0.0144 213.10)"
+        ]
+      },
+      "next-step-tint": {
+        "role": "neutral",
+        "displayName": "Next Step Tint",
+        "tonalRamp": [
+          "oklch(15% 0.0134 214.36)",
+          "oklch(26% 0.0134 214.36)",
+          "oklch(38% 0.0134 214.36)",
+          "oklch(49% 0.0134 214.36)",
+          "oklch(61% 0.0134 214.36)",
+          "oklch(72% 0.0134 214.36)",
+          "oklch(84% 0.0134 214.36)",
+          "oklch(95% 0.0134 214.36)"
+        ]
+      },
+      "phase-track": {
+        "displayName": "Inactive Chevron",
+        "role": "neutral"
+      },
+      "attention-amber": {
         "role": "secondary",
-        "displayName": "Violet",
+        "displayName": "Attention Amber",
         "tonalRamp": [
-          "oklch(15% 0.1046 291.22)",
-          "oklch(26% 0.1046 291.22)",
-          "oklch(38% 0.1046 291.22)",
-          "oklch(49% 0.1046 291.22)",
-          "oklch(61% 0.1046 291.22)",
-          "oklch(72% 0.1046 291.22)",
-          "oklch(84% 0.1046 291.22)",
-          "oklch(95% 0.1046 291.22)"
+          "oklch(15% 0.0974 69.00)",
+          "oklch(26% 0.0974 69.00)",
+          "oklch(38% 0.0974 69.00)",
+          "oklch(49% 0.0974 69.00)",
+          "oklch(61% 0.0974 69.00)",
+          "oklch(72% 0.0974 69.00)",
+          "oklch(84% 0.0974 69.00)",
+          "oklch(95% 0.0974 69.00)"
         ]
       },
-      "amber": {
-        "role": "tertiary",
-        "displayName": "Amber",
+      "simulation-tint": {
+        "role": "secondary",
+        "displayName": "Simulation Tint",
         "tonalRamp": [
-          "oklch(15% 0.1013 76.85)",
-          "oklch(26% 0.1013 76.85)",
-          "oklch(38% 0.1013 76.85)",
-          "oklch(49% 0.1013 76.85)",
-          "oklch(61% 0.1013 76.85)",
-          "oklch(72% 0.1013 76.85)",
-          "oklch(84% 0.1013 76.85)",
-          "oklch(95% 0.1013 76.85)"
+          "oklch(15% 0.0313 84.59)",
+          "oklch(26% 0.0313 84.59)",
+          "oklch(38% 0.0313 84.59)",
+          "oklch(49% 0.0313 84.59)",
+          "oklch(61% 0.0313 84.59)",
+          "oklch(72% 0.0313 84.59)",
+          "oklch(84% 0.0313 84.59)",
+          "oklch(95% 0.0313 84.59)"
         ]
       },
-      "selected": {
-        "role": "neutral",
-        "displayName": "Selected",
+      "simulation-ink": {
+        "role": "secondary",
+        "displayName": "Simulation Ink",
         "tonalRamp": [
-          "oklch(15% 0.0327 208.47)",
-          "oklch(26% 0.0327 208.47)",
-          "oklch(38% 0.0327 208.47)",
-          "oklch(49% 0.0327 208.47)",
-          "oklch(61% 0.0327 208.47)",
-          "oklch(72% 0.0327 208.47)",
-          "oklch(84% 0.0327 208.47)",
-          "oklch(95% 0.0327 208.47)"
+          "oklch(15% 0.0859 72.27)",
+          "oklch(26% 0.0859 72.27)",
+          "oklch(38% 0.0859 72.27)",
+          "oklch(49% 0.0859 72.27)",
+          "oklch(61% 0.0859 72.27)",
+          "oklch(72% 0.0859 72.27)",
+          "oklch(84% 0.0859 72.27)",
+          "oklch(95% 0.0859 72.27)"
         ]
       },
-      "rail": {
-        "role": "neutral",
-        "displayName": "Rail",
+      "emergency-red": {
+        "role": "secondary",
+        "displayName": "Emergency Red",
         "tonalRamp": [
-          "oklch(15% 0.0284 253.57)",
-          "oklch(26% 0.0284 253.57)",
-          "oklch(38% 0.0284 253.57)",
-          "oklch(49% 0.0284 253.57)",
-          "oklch(61% 0.0284 253.57)",
-          "oklch(72% 0.0284 253.57)",
-          "oklch(84% 0.0284 253.57)",
-          "oklch(95% 0.0284 253.57)"
+          "oklch(15% 0.1561 23.42)",
+          "oklch(26% 0.1561 23.42)",
+          "oklch(38% 0.1561 23.42)",
+          "oklch(49% 0.1561 23.42)",
+          "oklch(61% 0.1561 23.42)",
+          "oklch(72% 0.1561 23.42)",
+          "oklch(84% 0.1561 23.42)",
+          "oklch(95% 0.1561 23.42)"
         ]
       },
-      "navigation-active": {
-        "role": "neutral",
-        "displayName": "Navigation Active",
+      "help-tint": {
+        "role": "secondary",
+        "displayName": "Help Tint",
         "tonalRamp": [
-          "oklch(15% 0.0322 211.89)",
-          "oklch(26% 0.0322 211.89)",
-          "oklch(38% 0.0322 211.89)",
-          "oklch(49% 0.0322 211.89)",
-          "oklch(61% 0.0322 211.89)",
-          "oklch(72% 0.0322 211.89)",
-          "oklch(84% 0.0322 211.89)",
-          "oklch(95% 0.0322 211.89)"
+          "oklch(15% 0.0188 5.29)",
+          "oklch(26% 0.0188 5.29)",
+          "oklch(38% 0.0188 5.29)",
+          "oklch(49% 0.0188 5.29)",
+          "oklch(61% 0.0188 5.29)",
+          "oklch(72% 0.0188 5.29)",
+          "oklch(84% 0.0188 5.29)",
+          "oklch(95% 0.0188 5.29)"
         ]
       },
-      "navigation-hover": {
-        "role": "neutral",
-        "displayName": "Navigation Hover",
+      "help-ink": {
+        "role": "secondary",
+        "displayName": "Help Ink",
         "tonalRamp": [
-          "oklch(15% 0.0356 247.78)",
-          "oklch(26% 0.0356 247.78)",
-          "oklch(38% 0.0356 247.78)",
-          "oklch(49% 0.0356 247.78)",
-          "oklch(61% 0.0356 247.78)",
-          "oklch(72% 0.0356 247.78)",
-          "oklch(84% 0.0356 247.78)",
-          "oklch(95% 0.0356 247.78)"
+          "oklch(15% 0.1246 21.41)",
+          "oklch(26% 0.1246 21.41)",
+          "oklch(38% 0.1246 21.41)",
+          "oklch(49% 0.1246 21.41)",
+          "oklch(61% 0.1246 21.41)",
+          "oklch(72% 0.1246 21.41)",
+          "oklch(84% 0.1246 21.41)",
+          "oklch(95% 0.1246 21.41)"
         ]
       },
-      "primary-ink": {
+      "ring-trace": {
         "role": "primary",
-        "displayName": "Primary Ink",
+        "displayName": "Ring Trace",
         "tonalRamp": [
-          "oklch(15% 0.0368 177.92)",
-          "oklch(26% 0.0368 177.92)",
-          "oklch(38% 0.0368 177.92)",
-          "oklch(49% 0.0368 177.92)",
-          "oklch(61% 0.0368 177.92)",
-          "oklch(72% 0.0368 177.92)",
-          "oklch(84% 0.0368 177.92)",
-          "oklch(95% 0.0368 177.92)"
+          "oklch(15% 0.0761 208.27)",
+          "oklch(26% 0.0761 208.27)",
+          "oklch(38% 0.0761 208.27)",
+          "oklch(49% 0.0761 208.27)",
+          "oklch(61% 0.0761 208.27)",
+          "oklch(72% 0.0761 208.27)",
+          "oklch(84% 0.0761 208.27)",
+          "oklch(95% 0.0761 208.27)"
         ]
       },
-      "primary-hover": {
-        "role": "primary",
-        "displayName": "Primary Hover",
+      "suit-trace": {
+        "role": "secondary",
+        "displayName": "Suit Trace",
         "tonalRamp": [
-          "oklch(15% 0.0690 171.80)",
-          "oklch(26% 0.0690 171.80)",
-          "oklch(38% 0.0690 171.80)",
-          "oklch(49% 0.0690 171.80)",
-          "oklch(61% 0.0690 171.80)",
-          "oklch(72% 0.0690 171.80)",
-          "oklch(84% 0.0690 171.80)",
-          "oklch(95% 0.0690 171.80)"
+          "oklch(15% 0.0911 56.05)",
+          "oklch(26% 0.0911 56.05)",
+          "oklch(38% 0.0911 56.05)",
+          "oklch(49% 0.0911 56.05)",
+          "oklch(61% 0.0911 56.05)",
+          "oklch(72% 0.0911 56.05)",
+          "oklch(84% 0.0911 56.05)",
+          "oklch(95% 0.0911 56.05)"
         ]
       },
-      "secondary-surface": {
-        "role": "neutral",
-        "displayName": "Secondary Surface",
-        "tonalRamp": [
-          "oklch(15% 0.0330 249.26)",
-          "oklch(26% 0.0330 249.26)",
-          "oklch(38% 0.0330 249.26)",
-          "oklch(49% 0.0330 249.26)",
-          "oklch(61% 0.0330 249.26)",
-          "oklch(72% 0.0330 249.26)",
-          "oklch(84% 0.0330 249.26)",
-          "oklch(95% 0.0330 249.26)"
-        ]
+      "overview-field": {
+        "displayName": "Near-white Overview",
+        "role": "neutral"
       },
-      "secondary-foreground": {
-        "role": "neutral",
-        "displayName": "Secondary Foreground",
-        "tonalRamp": [
-          "oklch(15% 0.0138 247.98)",
-          "oklch(26% 0.0138 247.98)",
-          "oklch(38% 0.0138 247.98)",
-          "oklch(49% 0.0138 247.98)",
-          "oklch(61% 0.0138 247.98)",
-          "oklch(72% 0.0138 247.98)",
-          "oklch(84% 0.0138 247.98)",
-          "oklch(95% 0.0138 247.98)"
-        ]
+      "overview-panel": {
+        "displayName": "Translucent White Panel",
+        "role": "neutral"
       },
-      "secondary-hover": {
-        "role": "neutral",
-        "displayName": "Secondary Hover",
-        "tonalRamp": [
-          "oklch(15% 0.0379 240.48)",
-          "oklch(26% 0.0379 240.48)",
-          "oklch(38% 0.0379 240.48)",
-          "oklch(49% 0.0379 240.48)",
-          "oklch(61% 0.0379 240.48)",
-          "oklch(72% 0.0379 240.48)",
-          "oklch(84% 0.0379 240.48)",
-          "oklch(95% 0.0379 240.48)"
-        ]
+      "phase-active": {
+        "displayName": "Selected Chevron Teal",
+        "role": "primary"
       },
-      "field-surface": {
-        "role": "neutral",
-        "displayName": "Field Surface",
-        "tonalRamp": [
-          "oklch(15% 0.0298 249.52)",
-          "oklch(26% 0.0298 249.52)",
-          "oklch(38% 0.0298 249.52)",
-          "oklch(49% 0.0298 249.52)",
-          "oklch(61% 0.0298 249.52)",
-          "oklch(72% 0.0298 249.52)",
-          "oklch(84% 0.0298 249.52)",
-          "oklch(95% 0.0298 249.52)"
-        ]
+      "phase-hover": {
+        "displayName": "Selected Chevron Hover",
+        "role": "primary"
       },
-      "field-border": {
-        "role": "neutral",
-        "displayName": "Field Border",
-        "tonalRamp": [
-          "oklch(15% 0.0425 248.73)",
-          "oklch(26% 0.0425 248.73)",
-          "oklch(38% 0.0425 248.73)",
-          "oklch(49% 0.0425 248.73)",
-          "oklch(61% 0.0425 248.73)",
-          "oklch(72% 0.0425 248.73)",
-          "oklch(84% 0.0425 248.73)",
-          "oklch(95% 0.0425 248.73)"
-        ]
+      "context-tint": {
+        "displayName": "Activity Context Tint",
+        "role": "neutral"
+      },
+      "context-hover": {
+        "displayName": "Activity Context Hover",
+        "role": "neutral"
+      },
+      "review-tint": {
+        "displayName": "Review Surface",
+        "role": "secondary"
+      },
+      "review-marker": {
+        "displayName": "Review Edge",
+        "role": "secondary"
       }
     },
     "typographyMeta": {
       "display": {
-        "displayName": "Page Heading",
-        "purpose": "Page-level operational heading; responsive overrides documented in Layout."
+        "displayName": "Role chooser display",
+        "purpose": "Entry statement; responsive overrides documented in Layout."
+      },
+      "headline": {
+        "displayName": "Personal page heading",
+        "purpose": "My health heading: 40–58px desktop scale and 36px on phones."
       },
       "measurement": {
-        "displayName": "Live Pulse",
-        "purpose": "Tabular live reading with monospace numerals."
+        "displayName": "Telemetry value",
+        "purpose": "Large Manrope tabular numerals, with smaller units and a vertical divider; compact HRV remains secondary."
       }
     },
-    "shadows": [],
+    "shadows": [
+      {
+        "name": "emergency-strip-edge",
+        "value": "0 2px 0 #711a19",
+        "purpose": "Hard edge under the sticky emergency strip."
+      },
+      {
+        "name": "emergency-row-marker",
+        "value": "inset 4px 0 #a62e32",
+        "purpose": "Explicit emergency state within the crew manifest."
+      },
+      {
+        "name": "copy-confirm-ring",
+        "value": "0 0 0 5px #28654f24",
+        "purpose": "Transient copy-confirmation keyframe; not surface elevation."
+      }
+    ],
     "motion": [
       {
         "name": "button-background",
-        "value": "background-color 150ms ease-out",
-        "purpose": "Primary and secondary button hover; disabled under prefers-reduced-motion."
+        "value": "background 150ms",
+        "purpose": "Primary and secondary hover feedback; removed with reduced motion."
       },
       {
-        "name": "ring-hold",
-        "value": "stroke 700ms linear",
-        "purpose": "Inner ring feedback during a simulated hold; removed under prefers-reduced-motion. Recognition still uses the 700ms hold threshold."
+        "name": "phase-background",
+        "value": "background-color 180ms ease-out",
+        "purpose": "Phase selection feedback; removed with reduced motion."
+      },
+      {
+        "name": "copy-confirmation",
+        "value": "380ms ease-out",
+        "purpose": "One event-driven confirmation cycle; removed with reduced motion."
       }
     ],
     "breakpoints": [
       {
-        "name": "wide-min",
-        "value": "1550px"
+        "name": "overview-wide-min",
+        "value": "1101px"
       },
       {
-        "name": "compact-desktop-max",
-        "value": "1200px"
+        "name": "overview-two-column-max",
+        "value": "1100px"
       },
       {
-        "name": "icon-rail-max",
-        "value": "1000px"
+        "name": "overview-header-compact-max",
+        "value": "1350px"
       },
       {
-        "name": "stacked-max",
-        "value": "760px"
+        "name": "overview-phone-max",
+        "value": "650px"
       },
       {
-        "name": "narrow-max",
-        "value": "420px"
+        "name": "chooser-compact-max",
+        "value": "900px"
+      },
+      {
+        "name": "chooser-phone-max",
+        "value": "650px"
       }
     ]
   },
   "components": [
     {
-      "name": "Primary Button",
+      "name": "Primary button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Capture a moment or commit an optional manual entry.",
-      "html": "<button class=\"ds-button-primary\">Capture moment</button>",
-      "css": ".ds-button-primary { font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-height: 44px; padding: 10px 13px; border-radius: 6px; border: 1px solid transparent; font-size: 11px; font-weight: 600; cursor: pointer; transition: background-color 150ms ease-out; color: #102d27; background: var(--mint, #87e2c2); } .ds-button-primary:hover { background: #b1efda; } .ds-button-primary:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: 4px; } .ds-button-primary:disabled { opacity: .55; cursor: wait; } @media (prefers-reduced-motion: reduce) { .ds-button-primary { transition: none; } }"
+      "description": "Existing medbay action variant; this preview has no application behavior.",
+      "html": "<button class=\"ds-primary\" type=\"button\">Open astronaut view</button>",
+      "css": ".ds-primary {font-family: 'Manrope', 'Segoe UI', sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:46px;padding:11px 17px;border-radius:8px;border:1px solid #126f80;font-size:13px;font-weight:650;cursor:pointer;transition:background 150ms;background:#126f80;color:#fff;border-color:#126f80;}.ds-primary:hover {background:#0a5969;}.ds-primary:focus-visible {outline: 3px solid #16899b; outline-offset: 4px;}.ds-primary:disabled {opacity:.5;cursor:not-allowed;}@media(prefers-reduced-motion:reduce){.ds-primary{transition:none;}}"
     },
     {
-      "name": "Secondary Button",
+      "name": "Secondary button",
       "kind": "button",
       "refersTo": "button-secondary",
-      "description": "Supporting operational action.",
-      "html": "<button class=\"ds-button-secondary\">Medical monitor</button>",
-      "css": ".ds-button-secondary { font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-height: 44px; padding: 10px 13px; border-radius: 6px; border: 1px solid transparent; font-size: 11px; font-weight: 600; cursor: pointer; transition: background-color 150ms ease-out; border-color: #3b4d60; background: #152331; color: #e2eaf2; } .ds-button-secondary:hover { background: #223746; } .ds-button-secondary:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: 4px; } .ds-button-secondary:disabled { opacity: .55; cursor: wait; } @media (prefers-reduced-motion: reduce) { .ds-button-secondary { transition: none; } }"
+      "description": "Existing medbay action variant; this preview has no application behavior.",
+      "html": "<button class=\"ds-secondary\" type=\"button\">Open crew monitor</button>",
+      "css": ".ds-secondary {font-family: 'Manrope', 'Segoe UI', sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:46px;padding:11px 17px;border-radius:8px;border:1px solid #126f80;font-size:13px;font-weight:650;cursor:pointer;transition:background 150ms;background:#fff;color:#183b4a;border-color:#b0c3d0;}.ds-secondary:hover {background:#e7f1f5;}.ds-secondary:focus-visible {outline: 3px solid #16899b; outline-offset: 4px;}.ds-secondary:disabled {opacity:.5;cursor:not-allowed;}@media(prefers-reduced-motion:reduce){.ds-secondary{transition:none;}}"
     },
     {
-      "name": "Text Button",
+      "name": "Emergency button",
       "kind": "button",
-      "refersTo": "button-text",
-      "description": "A quieter export or tablet capture action.",
-      "html": "<button class=\"ds-text-button\">Export mission log</button>",
-      "css": ".ds-text-button { font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 5px 0; border: 0; background: transparent; color: var(--mint, #87e2c2); font-size: 11px; cursor: pointer; } .ds-text-button:hover { text-decoration: underline; text-underline-offset: 4px; } .ds-text-button:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: 4px; } .ds-text-button:disabled { opacity: .55; cursor: wait; }"
+      "refersTo": "button-danger",
+      "description": "Existing medbay action variant; this preview has no application behavior.",
+      "html": "<button class=\"ds-danger\" type=\"button\">Resolve emergency</button>",
+      "css": ".ds-danger {font-family: 'Manrope', 'Segoe UI', sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:46px;padding:11px 17px;border-radius:8px;border:1px solid #126f80;font-size:13px;font-weight:650;cursor:pointer;transition:background 150ms;background:#a62e32;color:#fff;border-color:#a62e32;}.ds-danger:hover {background:#a62e32;}.ds-danger:focus-visible {outline: 3px solid #16899b; outline-offset: 4px;}.ds-danger:disabled {opacity:.5;cursor:not-allowed;}@media(prefers-reduced-motion:reduce){.ds-danger{transition:none;}}"
     },
     {
-      "name": "Context Field",
+      "name": "Inline evidence action",
+      "kind": "button",
+      "refersTo": "button-inline",
+      "description": "Compact overview action below the integrated readings and trend; preview does not open details.",
+      "html": "<button class=\"ds-inline\" type=\"button\">All measurements &amp; source details <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M5 12h14M12 5l7 7-7 7\"/></svg></button>",
+      "css": ".ds-inline{font-family: 'Manrope', 'Segoe UI', sans-serif;display:inline-flex;align-items:center;gap:9px;min-height:32px;background:none;border:0;color:#126f80;font-size:11px;font-weight:600;padding:5px 0;cursor:pointer;}.ds-inline:focus-visible{outline: 3px solid #16899b; outline-offset: 4px;}.ds-inline:disabled{opacity:.5;cursor:not-allowed;}"
+    },
+    {
+      "name": "Context field",
       "kind": "input",
       "refersTo": "field",
-      "description": "Labeled manual context input.",
-      "html": "<label class=\"ds-field-label\" for=\"ds-context\">Add context (optional)</label><input class=\"ds-field\" id=\"ds-context\" placeholder=\"How you feel after the activity\">",
-      "css": ".ds-field-label { display: block; font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; font-size: 11px; color: #edf3fa; margin-bottom: 9px; } .ds-field { font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; width: 100%; min-height: 44px; border: 1px solid #4b6075; border-radius: 5px; padding: 9px 10px; background: #0b1723; color: #edf3fa; font-size: 12px; caret-color: var(--mint, #87e2c2); } .ds-field::placeholder { color: var(--muted, #a5b6c8); } .ds-field:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: 4px; }"
+      "description": "Labelled optional input using the shared medbay field treatment.",
+      "html": "<label class=\"ds-label\" for=\"ds-context\">Add context (optional)</label><input class=\"ds-field\" id=\"ds-context\" placeholder=\"How you feel after the activity\">",
+      "css": ".ds-label{font-family: 'Manrope', 'Segoe UI', sans-serif;display:block;font-size:13px;font-weight:550;color:#142b39;margin-bottom:8px;}.ds-field{font-family: 'Manrope', 'Segoe UI', sans-serif;max-width:100%;min-height:46px;padding:11px 12px;border:1px solid #a6bac8;border-radius:8px;background:#fff;color:#142b39;font-size:15px;caret-color:#126f80;}.ds-field::placeholder{color:#647780;}.ds-field:focus-visible{outline: 3px solid #16899b; outline-offset: 4px;}"
     },
     {
-      "name": "Module Navigation",
+      "name": "Personal navigation",
       "kind": "nav",
       "refersTo": "navigation-active",
-      "description": "Current-page state paired with labeled module links.",
-      "html": "<nav class=\"ds-nav\" aria-label=\"Health modules\"><a href=\"#mission\" aria-current=\"page\">Mission health</a><a href=\"#apollo\">Apollo 11 archive</a></nav>",
-      "css": ".ds-nav { display: flex; flex-direction: column; gap: 6px; font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; } .ds-nav a { display: flex; align-items: center; min-height: 47px; padding: 10px 12px; border-radius: 7px; text-decoration: none; font-size: 12px; font-weight: 550; color: var(--muted, #a5b6c8); } .ds-nav a:hover { background: #162635; color: #edf3fa; } .ds-nav a[aria-current] { background: #1a3338; color: var(--mint, #87e2c2); } .ds-nav a:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: 4px; }"
+      "description": "Desktop personal tabs with prominent labels; selected-state preview is static.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Personal workspace\"><button type=\"button\" aria-current=\"page\">My health</button><button type=\"button\">My records</button><button type=\"button\">My devices</button></nav>",
+      "css": ".ds-nav{font-family: 'Manrope', 'Segoe UI', sans-serif;display:flex;gap:9px;overflow-x:auto;background:#fff;border-bottom:1px solid #cbd8e2;padding:0 16px;min-height:65px;align-items:center;}.ds-nav button{font-family: 'Manrope', 'Segoe UI', sans-serif;min-height:60px;padding:0 25px;border:0;border-bottom:3px solid transparent;background:transparent;color:#4c6474;font-size:19px;font-weight:650;white-space:nowrap;cursor:pointer;}.ds-nav button:hover{background:#f2f6f4;}.ds-nav button[aria-current]{background:#e3f0f3;color:#126f80;border-bottom-color:#126f80;}.ds-nav button:focus-visible{outline: 3px solid #16899b; outline-offset: 4px;}@media(max-width:650px){.ds-nav button{font-size:12px;min-height:52px;padding:0 8px;}}"
     },
     {
-      "name": "Source Tag",
+      "name": "Simulation label",
       "kind": "chip",
-      "refersTo": "source-tag",
-      "description": "Noninteractive provenance label.",
-      "html": "<span class=\"ds-tag\">Simulated data</span>",
-      "css": ".ds-tag { display: inline-block; font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; border: 1px solid #3c4c5e; border-radius: 4px; padding: 4px 7px; font-size: 9px; color: #c8d4e0; white-space: nowrap; }"
+      "refersTo": "simulation-label",
+      "description": "Noninteractive provenance remains visible in personal navigation.",
+      "html": "<span class=\"ds-simulation\">Simulated data</span>",
+      "css": ".ds-simulation{font-family: 'Manrope', 'Segoe UI', sans-serif;display:inline-block;color:#77511a;background:#faefd9;border:1px solid #dfc997;border-radius:6px;font-size:12px;padding:7px 11px;}"
     },
     {
-      "name": "Operational Panel",
+      "name": "Telemetry panel",
       "kind": "card",
-      "refersTo": "panel",
-      "description": "Flat bounded surface for a reading or working area.",
-      "html": "<section class=\"ds-panel\"><div class=\"ds-panel-heading\"><h2>Your health, in context</h2><p>Heart rate across your mission</p></div><p class=\"ds-panel-reading\">82 <span>bpm \u00b7 ZENIT Ring</span></p></section>",
-      "css": ".ds-panel { background: var(--panel, #101d2b); border: 1px solid var(--line, #293a4b); border-radius: 14px; color: #edf3fa; font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; } .ds-panel-heading { padding: 23px 24px 0; } .ds-panel-heading h2 { margin: 0; font-size: 20px; letter-spacing: -.025em; font-weight: 550; } .ds-panel-heading p { margin: 6px 0 0; color: var(--muted, #a5b6c8); font-size: 11px; line-height: 1.6; } .ds-panel-reading { margin: 0; padding: 22px 24px 19px; font: 450 34px/1.1 ui-monospace, \"SFMono-Regular\", Consolas, monospace; font-variant-numeric: tabular-nums; color: var(--mint, #87e2c2); } .ds-panel-reading span { font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; font-size: 12px; }"
+      "refersTo": "telemetry-panel",
+      "description": "Integrated ring readings, secondary HRV and heart-rate trend in the honest empty state. Suit mode retains six primary rows.",
+      "html": "<section class=\"ds-telemetry\"><div class=\"ds-telemetry-heading\"><h2>Telemetry</h2><span>Ring · Last known / unavailable</span></div><dl class=\"ds-vitals\"><div><dt><svg width=\"30\" height=\"30\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M20.5 5.5a5 5 0 0 0-7 0L12 7l-1.5-1.5a5 5 0 0 0-7 7L12 21l8.5-8.5a5 5 0 0 0 0-7Z\"/></svg><span>Heart rate<small>Ring</small></span></dt><dd>—<small>bpm</small></dd></div><div><dt><svg width=\"30\" height=\"30\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M12 3C9 7 5 11 5 15a7 7 0 0 0 14 0c0-4-4-8-7-12ZM8 15a4 4 0 0 0 4 4\"/></svg><span>SpO₂<small>Ring</small></span></dt><dd>—<small>%</small></dd></div><div><dt><svg width=\"30\" height=\"30\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M12 3v8m0-3-3 3M12 8l3 3M8 7C5 9 3 13 3 18c0 3 6 3 6 0V9M16 7c3 2 5 6 5 11 0 3-6 3-6 0V9\"/></svg><span>Respiration<small>Ring</small></span></dt><dd>—<small>/min</small></dd></div><div><dt><svg width=\"30\" height=\"30\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M9 14V5a3 3 0 0 1 6 0v9a5 5 0 1 1-6 0Zm3-7v10m5-11h3m-3 4h2\"/></svg><span>Skin deviation<small>From fictional baseline</small></span></dt><dd>—<small>°C</small></dd></div></dl><p class=\"ds-secondary-metric\">HRV <strong>— ms</strong></p><p>No readings received. Link a simulator to begin.</p><div class=\"ds-trend\"><strong>Heart rate trend <small>bpm</small></strong><p>Ring · Suit ECG</p><p>No measured history yet. Link the primary simulator to begin.</p></div></section>",
+      "css": ".ds-telemetry{font-family:'Manrope','Segoe UI',sans-serif;padding:18px 20px;border:1px solid #b9cbd6;border-radius:12px;background:rgb(255 255 255 / 94%);color:#142b39;font-variant-numeric:tabular-nums;}.ds-telemetry-heading{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;}.ds-telemetry h2{margin:0;font-size:clamp(25px,2vw,32px);font-weight:800;line-height:1.1;letter-spacing:-.035em;}.ds-telemetry-heading>span{color:#4c6474;font-size:12px;}.ds-vitals{margin:0;}.ds-vitals>div{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;min-height:55px;border-top:1px solid #d7e2ea;}.ds-vitals dt{display:flex;align-items:center;gap:18px;font-size:clamp(16px,1.3vw,21px);font-weight:700;line-height:1.15;}.ds-vitals svg{color:#126f80;flex-shrink:0;}.ds-vitals dt small{display:block;font-size:11px;line-height:1.3;color:#4c6474;font-weight:450;margin-top:3px;}.ds-vitals dd{font-family:'Manrope','Segoe UI',sans-serif;margin:0;font-size:clamp(29px,2.6vw,42px);line-height:1;font-weight:800;letter-spacing:-.025em;white-space:nowrap;min-width:43%;border-left:1px solid #b2c0cb;padding-left:24px;}.ds-vitals dd small{font-size:clamp(14px,1.2vw,19px);margin-left:5px;font-weight:450;letter-spacing:0;}.ds-telemetry p{font-size:10px;line-height:1.6;color:#4c6474;margin:5px 0;}.ds-telemetry .ds-secondary-metric{font-size:12px;border-top:1px solid #d7e2ea;padding-top:8px;}.ds-trend{border-top:1px solid #d7e2ea;padding-top:10px;margin-top:10px;}.ds-trend strong{font-size:23px;font-weight:800;}.ds-trend small{font-size:12px;font-weight:500;}@media(max-width:650px){.ds-vitals dt{font-size:16px;gap:10px;}.ds-vitals dd{font-size:32px;padding-left:12px;min-width:42%;}.ds-telemetry{padding:18px;}}"
     },
     {
-      "name": "Selected Mission Phase",
+      "name": "Mission phase selector",
       "kind": "custom",
       "refersTo": "phase-selected",
-      "description": "Square phase button aligns source and time with the plot.",
-      "html": "<button class=\"ds-phase\" aria-pressed=\"true\"><span class=\"ds-phase-time\">09:23 <span>Now</span></span><strong>Return to cabin</strong><small>\u2014 ZENIT Ring</small></button>",
-      "css": ".ds-phase { min-width: 150px; position: relative; font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; color: #edf3fa; border: 0; border-top: 1px solid var(--mint, #87e2c2); border-radius: 0; padding: 10px 7px 8px; text-align: left; background: var(--selected, #142e32); cursor: pointer; } .ds-phase::before { content: \"\"; position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--mint, #87e2c2); top: -3px; left: 7px; } .ds-phase:hover { background: #1c3340; } .ds-phase:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: -2px; } .ds-phase-time { display: flex; justify-content: space-between; font: 9px ui-monospace, \"SFMono-Regular\", Consolas, monospace; color: var(--muted, #a5b6c8); } .ds-phase-time span { font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; color: var(--mint, #87e2c2); } .ds-phase strong { display: block; font-size: 11px; font-weight: 550; margin-top: 8px; } .ds-phase small { display: block; font-size: 9px; margin-top: 8px; color: var(--mint, #87e2c2); }"
+      "description": "Continuous icon-led chevrons across the overview base; static preview does not generate data or change phase.",
+      "html": "<nav class=\"ds-phase\" aria-label=\"Mission phase\"><button type=\"button\" aria-pressed=\"true\"><svg width=\"30\" height=\"30\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M3 7h18v14H3ZM8 7V3h8v4M7 10v8m10-8v8M12 10v8\"/></svg><span class=\"ds-phase-state\">Current phase</span><strong>Cabin</strong><small>Ring</small></button><button type=\"button\" aria-pressed=\"false\"><svg width=\"30\" height=\"30\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M15 4a2 2 0 1 1 4 0 2 2 0 0 1-4 0ZM5 9l5-3 5 4 5 1M13 8l-3 6 5 3-1 5M10 14l-4 6H2\"/></svg><span class=\"ds-phase-state\">Change phase</span><strong>Spacewalk</strong><small>Suit ECG</small></button><button type=\"button\" aria-pressed=\"false\"><svg width=\"30\" height=\"30\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M3 3v19m0-6h18v6M3 7h6v6H3m6-3h10a2 2 0 0 1 2 2v4H9Z\"/></svg><span class=\"ds-phase-state\">Change phase</span><strong>Recovery</strong><small>Ring</small></button></nav>",
+      "css": ".ds-phase{font-family:'Manrope','Segoe UI',sans-serif;display:flex;gap:0;}.ds-phase button{font-family:'Manrope','Segoe UI',sans-serif;position:relative;flex:1;display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;justify-content:center;align-content:center;align-items:center;column-gap:12px;min-height:59px;padding:7px 24px;margin-left:-7px;border:0;background:#dce8ee;color:#173847;cursor:pointer;transition:background-color 180ms ease-out;clip-path:polygon(0 0,calc(100% - 22px) 0,100% 50%,calc(100% - 22px) 100%,0 100%,22px 50%);}.ds-phase button:first-child{margin-left:0;border-radius:12px 0 0 12px;clip-path:polygon(0 0,calc(100% - 22px) 0,100% 50%,calc(100% - 22px) 100%,0 100%);}.ds-phase button:last-child{border-radius:0 12px 12px 0;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,22px 50%);}.ds-phase button[aria-pressed=\"true\"]{background:#167d8c;color:#fff;}.ds-phase button:hover:not(:disabled){background:#c4dce5;}.ds-phase button[aria-pressed=\"true\"]:hover:not(:disabled){background:#106b79;}.ds-phase svg{grid-row:1/3;}.ds-phase strong{font-size:21px;font-weight:700;}.ds-phase small{font-family:ui-monospace,monospace;font-size:10px;margin-top:2px;}.ds-phase-state{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);}.ds-phase button:focus-visible{outline:3px solid #142b39;outline-offset:-6px;}.ds-phase button:disabled{opacity:.5;cursor:default;}@media(max-width:650px){.ds-phase button{grid-template-columns:1fr;justify-items:center;gap:3px;padding:10px 12px;min-height:84px;}.ds-phase svg{grid-row:auto;width:23px;height:23px;}.ds-phase strong{font-size:12px;}.ds-phase small{font-size:9px;}}@media(prefers-reduced-motion:reduce){.ds-phase button{transition:none;}}"
     },
     {
-      "name": "Ring Gesture Pad",
+      "name": "Assessment next step",
       "kind": "custom",
-      "refersTo": "ring-pad",
-      "description": "Conceptual cabin gesture surface. Static preview shows hover and focus; actual gestures run in the Svelte component.",
-      "html": "<button class=\"ds-ring-pad\" aria-label=\"Ring gesture pad\"><svg viewBox=\"0 0 160 160\" aria-hidden=\"true\"><circle class=\"ds-ring-outer\" cx=\"80\" cy=\"80\" r=\"62\"/><circle class=\"ds-ring-inner\" cx=\"80\" cy=\"80\" r=\"46\"/><path d=\"M42 80h22l8-14 12 29 9-15h25\"/><circle class=\"ds-ring-sensor\" cx=\"80\" cy=\"26\" r=\"4\"/></svg><span>Double tap to capture</span></button>",
-      "css": ".ds-ring-pad { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 0; border: 0; background: transparent; color: var(--mint, #87e2c2); font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-ring-pad svg { width: 160px; height: 160px; fill: none; } .ds-ring-outer { stroke: #629d95; stroke-width: 2; } .ds-ring-inner { stroke: #355e60; stroke-width: 9; } .ds-ring-pad path { stroke: var(--mint, #87e2c2); stroke-width: 2; stroke-linejoin: round; } .ds-ring-sensor { fill: var(--mint, #87e2c2); } .ds-ring-pad span { font-size: 12px; } .ds-ring-pad:hover .ds-ring-outer { stroke: var(--mint, #87e2c2); } .ds-ring-pad:active .ds-ring-inner { stroke: var(--mint, #87e2c2); transition: stroke 700ms linear; } .ds-ring-pad:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: 4px; } .ds-ring-pad:disabled { color: var(--muted, #a5b6c8); opacity: .6; cursor: default; } @media (prefers-reduced-motion: reduce) { .ds-ring-pad:active .ds-ring-inner { transition: none; } }"
-    },
-    {
-      "name": "Sourced Observation",
-      "kind": "custom",
-      "refersTo": "observation",
-      "description": "A value retains its source and measurement period; nightly observations are not presented as live samples.",
-      "html": "<dl class=\"ds-observations\"><div class=\"ds-observation\"><dt>Respiration</dt><dd>14 <small>breaths/min</small></dd><span>ZENIT Ring \u00b7 simulated</span><span>Current sample \u00b7 09:30:00 UTC</span></div><div class=\"ds-observation\"><dt>Blood pressure</dt><dd>\u2014</dd><span>External cuff \u00b7 simulated</span><span>No current reading</span></div></dl>",
-      "css": ".ds-observations { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0; margin: 18px 0 0; font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; color: #edf3fa; } .ds-observation { padding: 15px 18px 15px 0; border-top: 1px solid var(--line, #293a4b); min-width: 0; } .ds-observation dt { font-size: 11px; color: var(--muted, #a5b6c8); min-height: 28px; } .ds-observation dd { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; font: 21px ui-monospace, \"SFMono-Regular\", Consolas, monospace; font-variant-numeric: tabular-nums; } .ds-observation dd small { font-family: inherit; font-size: 10px; color: var(--muted, #a5b6c8); } .ds-observation > span { display: block; font-size: 10px; line-height: 1.5; color: var(--muted, #a5b6c8); }"
+      "refersTo": "assessment-next",
+      "description": "Reference assessment pattern with full-width icon answers, selected response, next step and activity-context action; the preview has no application behavior.",
+      "html": "<section class=\"ds-assessment\"><h2>Assessment</h2><p class=\"ds-mode\">Local analysis</p><h3 class=\"ds-review\">Your heart rate has stayed higher</h3><p class=\"ds-provenance\">A simulated pattern to review, not a diagnosis.</p><fieldset class=\"ds-answers\"><legend>Have you been exercising?</legend><button type=\"button\" aria-pressed=\"true\"><svg width=\"26\" height=\"26\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M15 4a2 2 0 1 1 4 0 2 2 0 0 1-4 0ZM5 9l5-3 5 4 5 1M13 8l-3 6 5 3-1 5M10 14l-4 6H2\"/></svg>Yes, finished</button><button type=\"button\" aria-pressed=\"false\"><svg width=\"26\" height=\"26\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M15 4a2 2 0 1 1 4 0 2 2 0 0 1-4 0ZM5 9l5-3 5 4 5 1M13 8l-3 6 5 3-1 5M10 14l-4 6H2\"/></svg>Still active</button></fieldset><div class=\"ds-next\"><strong>Next step</strong><p>Keep the activity time with this record and observe the recovery trend during the planned rest period. Raise persistent or unexplained changes with the crew.</p></div><button type=\"button\" class=\"ds-add-context\"><svg width=\"26\" height=\"26\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"m3 16 13-13 5 5L8 21H3v-5Zm10-10 5 5M3 16l5 5\"/></svg>Add activity context <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M5 12h14M12 5l7 7-7 7\"/></svg></button><details class=\"ds-evidence\"><summary>Evidence &amp; assessment guide</summary><p>Missing or old data stop interpretation. These are presentation rules, not NASA limits.</p></details></section>",
+      "css": ".ds-assessment{font-family: 'Manrope', 'Segoe UI', sans-serif;border:1px solid #b9cbd6;border-radius:12px;background:rgb(255 255 255 / 94%);color:#142b39;padding:18px 20px;}.ds-assessment h2{font-size:clamp(25px,2vw,32px);font-weight:800;line-height:1.1;letter-spacing:-.035em;margin:0;}.ds-mode{display:inline-block;color:#355e6a;background:#edf4f6;border-radius:5px;font-size:10px;padding:5px;}.ds-provenance{font-size:10px;color:#4c6474;padding:8px 0;line-height:1.6;}.ds-next{background:#e5f1f4;border-radius:8px;padding:12px 14px;margin:14px 0 8px;}.ds-next>strong{font-size:15px;}.ds-assessment p{line-height:1.65;}.ds-next p,.ds-evidence p{font-size:13px;}.ds-evidence summary{cursor:pointer;font-weight:650;min-height:44px;align-content:center;font-size:12px;color:#245568;}.ds-evidence summary:focus-visible{outline: 3px solid #16899b; outline-offset: 4px;}.ds-add-context{font-family:'Manrope','Segoe UI',sans-serif;display:flex;align-items:center;gap:12px;width:100%;min-height:48px;padding:12px 14px;background:#d8e9ee;color:#173b4b;border:0;border-radius:8px;font-size:18px;font-weight:750;text-align:left;cursor:pointer;}.ds-add-context svg:last-child{margin-left:auto;}.ds-add-context:hover{background:#c5dfe6;}.ds-add-context:focus-visible{outline:3px solid #16899b;outline-offset:4px;}.ds-review{color:#172635;background:#fcebd3;border-left:5px solid #e39623;border-radius:8px;padding:12px;font-size:27px;font-weight:800;line-height:1.2;margin:16px 0 8px;}.ds-answers{padding:0;border:0;margin:14px 0 8px;}.ds-answers legend{font-size:24px;font-weight:800;line-height:1.2;margin-bottom:10px;}.ds-answers button{font-family:Manrope,Segoe UI,sans-serif;display:flex;align-items:center;gap:16px;width:100%;min-height:44px;padding:7px 16px;margin-bottom:7px;background:#fff;color:#142b39;border:1px solid #327386;border-radius:8px;font-size:clamp(16px,1.25vw,20px);font-weight:650;line-height:1.2;cursor:pointer;}.ds-answers button:hover{background:#edf6f8;}.ds-answers button[aria-pressed=\"true\"]{background:#126f80;border-color:#126f80;color:#fff;}.ds-answers button:focus-visible{outline:3px solid #16899b;outline-offset:4px;}"
     }
   ],
   "narrative": {
-    "northStar": "Ink-blue flight plan",
-    "overview": "ZENIT uses the confirmed ink-blue flight-plan aesthetic: a calm, compact operational workspace organized around mission time. The timeline, source labels, and ring capture control explain each reading in context. Capture saves a moment first; a symptom can be added later without rewriting the snapshot. All interface language is English.\n\nDark blue surfaces, thin rules, and restrained mint and violet signals create depth without shadows. System sans-serif text carries instructions; tabular monospace carries measurements and mission times. The NASA historical archive remains visibly separate from the personal simulation, even where it shares the same component vocabulary.",
+    "northStar": "Orbital medbay",
+    "overview": "A bright orbital medical station makes the astronaut, measurements and next action readable together. Ceramic white working surfaces sit on a cool blue-gray field within a navy mission frame. Teal provides clinical control and source emphasis; amber calls for review; red identifies explicit emergency or help states. The large photoreal fictional astronaut with a gold visor fills a bright cabin scene and anchors identity, with visible AI-generated concept provenance.\n\nThe workspace is calm, precise and human-centered. Structured measurement rows and a contextual assessment share space without becoming an interchangeable card grid. English labels keep the current role, astronaut identity, simulation, source and reception state explicit. NASA historical evidence remains visibly separate from current fictional crew telemetry.",
     "keyCharacteristics": [
-      "Mission timeline as the operational anchor.",
-      "Mint ZENIT Ring cabin readings and violet suit readings, each paired with source text.",
-      "Capture-first moments, one-tap context, and automatically populated measurement summaries.",
-      "Flat, bordered panels and compact, legible operational typography.",
-      "Responsive navigation, visible keyboard focus, and reduced-motion support.",
-      "Explicit historical provenance and simulation labels."
+      "Ceramic white surfaces, navy framing, quiet borders and gently rounded controls.",
+      "Self-hosted Manrope for headings, large tabular measurements and overview chart labels; restrained utility monospace elsewhere.",
+      "Integrated readings and trend at left, the cabin astronaut at center and actionable assessment at right.",
+      "An icon-led chevron phase track that names the primary device without inventing readings.",
+      "Visible provenance, keyboard focus, touch-comfortable controls and reduced motion."
     ],
     "rules": [
       {
         "name": "The Source Label Rule",
-        "body": "Source colors always have accompanying text; NASA historical observations and personal simulation remain explicitly identified.",
+        "body": "Color accompanies readable source and status text; connection health never stands in for astronaut health.",
         "section": "colors"
+      },
+      {
+        "name": "The Evidence Time Rule",
+        "body": "Measurement time, reception age and historical observation time remain distinct; missing samples and source changes break the trace.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Surface Rule",
+        "body": "Use tonal separation and thin borders for working surfaces; reserve existing shadow feedback for explicit state changes.",
+        "section": "elevation"
       }
     ],
     "dos": [
-      "Do pair source and connection colors with readable text.",
-      "Do preserve gaps for missing samples and distinguish capture, annotation, and reception timestamps.",
-      "Do keep source and measurement period visible for current, nightly, and external observations.",
-      "Do retain clear English labels for simulation, historical observations, source, and delivery state.",
-      "Do use the shared control shapes and visible mint keyboard focus.",
-      "Do keep NASA provenance visible in the archive and separate historical observations from simulated personal readings."
+      "Do preserve the pinned composition: integrated left-panel readings and trend, cabin astronaut, right-panel assessment and base chevrons.",
+      "Do keep the astronaut role and identity visible, with Switch view returning to the chooser.",
+      "Do preserve source names, units, measurement time and reception age beside evidence.",
+      "Do keep ring, suit and crew-link connection states independent.",
+      "Do show missing values as unavailable and retain gaps at missing samples and phase changes.",
+      "Do pair status colors with text, visible focus and reduced-motion support.",
+      "Do label fictional health data, AI-generated imagery and historical NASA observations explicitly.",
+      "Do preserve drafts and expanded details during telemetry updates; keep original captures separate from later annotations."
     ],
     "donts": [
-      "Don't imply diagnosis or personal health thresholds through color, scores, or archive readings.",
-      "Don't join missing samples with a fabricated continuous trace.",
-      "Don't infer a symptom from readings or overwrite an immutable snapshot when context arrives.",
-      "Don't present mock instrument sync or simulated ring gestures as connected hardware.",
-      "Don't use source color as the only way to identify cabin, suit, or historical data.",
-      "Don't replace the documented flat surfaces with decorative shadows or unrelated display typography."
+      "Don't treat a connected device, an ordinary reading or a demo reference range as medical clearance.",
+      "Don't call Cabin a sensor, substitute another device during an outage or invent a reading when phase changes.",
+      "Don't equate suit oxygen pressure with blood SpO₂, skin deviation with core temperature or HRV with mood/readiness.",
+      "Don't present NASA history as personal exposure or source links as validation of an AI interpretation.",
+      "Don't use decorative gradients, glass, neon, starfields or continuous animation in the medbay workspace.",
+      "Don't hide simulation or delivery state, or make simulator actions resemble operational emergency responses."
     ]
   }
 }

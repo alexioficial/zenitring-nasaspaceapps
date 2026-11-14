@@ -112,3 +112,24 @@ test('the suit detail uses its own reception state when the primary ring is offl
   expect(offline).toContain('30.00');
   expect(offline).not.toContain('Receiving current suit signals');
 });
+
+const { default: VitalReadings } = await import('../src/lib/components/crew/VitalReadings.svelte');
+
+test('personal medbay keeps unavailable ring readings empty instead of implying a measurement', () => {
+  const member = initialCrew()[0];
+  const html = render(VitalReadings, { props: { member, online: true, now } }).body;
+  expect(html).toContain('No readings received');
+  expect(html).toContain('Last known / unavailable');
+  expect(html).toContain('SpO₂');
+  expect(html).toContain('—');
+});
+
+test('personal medbay changes to suit measurements during EVA without inventing blood SpO2', () => {
+  const member = memberWithSuit();
+  member.phase = 'spacewalk';
+  const html = render(VitalReadings, { props: { member, online: true, now } }).body;
+  expect(html).toContain('Suit ECG heart rate');
+  expect(html).toContain('O₂ partial pressure');
+  expect(html).toContain('Suit oxygen is atmospheric pressure, not blood SpO₂.');
+  expect(html).not.toContain('From fictional baseline');
+});

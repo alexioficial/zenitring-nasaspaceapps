@@ -12,7 +12,7 @@ The primary user is the astronaut assessing their own health: understand a chang
 
 Tablet-first central monitor for fictional astronaut biometrics, connected through real WebSockets to simulated ZENIT rings and spacesuits. Mission phases select a primary source without substituting another device during an outage. Crew can capture evidence by gesture, annotate it explicitly and track emergency response. NASA Space Apps demonstration. English interface.
 
-The central monitor distributes personal links; each personal workspace has its own navigation and fixed astronaut identity from its URL.
+The entry page offers Astronaut view and Crew monitor as explicit choices. Every workspace header identifies the current view; astronaut views name the fixed identity from the URL. Switch view returns to the chooser. Personal navigation keeps My health, My records, and My devices prominent, with secondary tools under More. The separate crew monitor at /crew also distributes personal links. Ring, suit, and research simulators are labelled demo tools.
 
 ## Confirmed scope
 
@@ -28,4 +28,4 @@ Fictional biometric values and presentation ranges are not diagnoses or validate
 
 ## Brand commitments
 
-ZENIT, precise mission-instrument identity, quiet paper signal field within an ink-blue mission frame, tabular measurements and a crew manifest instead of repeated dashboard cards. Red reserved for explicit emergencies; text and shapes accompany status colors. Touch-comfortable controls, visible focus and reduced motion. NASA history remains separate from current crew simulation.
+ZENIT uses the Orbital medbay identity: ceramic-white working surfaces on a cool blue-gray field, a navy mission frame, teal controls and traces, self-hosted Manrope and large sans-serif tabular measurements. A large fictional gold-visor astronaut in a bright cabin scene, with visible AI-generated concept provenance, anchors the personal experience; crew monitoring remains a distinct role. Quiet borders, gently rounded controls, explicit source and freshness labels, touch-comfortable targets, visible focus and reduced motion support precise use. Amber marks attention; red is reserved for explicit emergency/help states, with text accompanying color. NASA history remains separate from current crew simulation.

@@ -15,7 +15,8 @@ Open `http://localhost:3000` on the server computer. For separate phones/tablets
 
 | Interface                         | Address                                        |
 | --------------------------------- | ---------------------------------------------- |
-| Central tablet monitor            | `http://192.168.1.20:3000/`                    |
+| Choose a view                     | `http://192.168.1.20:3000/`                    |
+| Crew monitor                      | `http://192.168.1.20:3000/crew`                |
 | VEGA personal monitor             | `http://192.168.1.20:3000/astronaut/vega`      |
 | NOVA personal monitor             | `http://192.168.1.20:3000/astronaut/nova`      |
 | VEGA phone ring                   | `http://192.168.1.20:3000/ring?astronaut=vega` |
@@ -24,7 +25,9 @@ Open `http://localhost:3000` on the server computer. For separate phones/tablets
 | Historical Apollo explorer        | `/archive`                                     |
 | Preserved single-person prototype | `/legacy`                                      |
 
-Other crew IDs are `atlas` and `lyra`. The central monitor opens directly to the crew overview without the personal navigation bar. Its **Astronaut links** view offers one **Copy astronaut link** action per person. This opens their health workspace; **My devices → Open my ring** opens the simulator from there. Ring replacement is a secondary action inside **Replace a linked device**. Personal monitors have their own navigation and a fixed astronaut identity from the URL; their WebSocket session receives only that astronaut's records. These links select a demo context, not authenticated accounts.
+Start at `/` and choose **Astronaut view** or **Crew monitor**. Choose an astronaut before opening the personal view. The header always names the current workspace and identity; **Switch view** returns to the chooser. Personal navigation has three primary sections: **My health**, **My records**, and **My devices**. **More** contains signal details, NASA resources, simulation settings, and research scenarios. Ring and suit simulators are separate demo tools; they open health views in another tab so their readings continue.
+
+Other crew IDs are `atlas` and `lyra`. The central monitor at `/crew` opens directly to the crew overview without the personal navigation bar. Its **Astronaut links** view offers one **Copy astronaut link** action per person. This opens their health workspace; **My devices → Open my ring** opens the simulator from there. Ring replacement is a secondary action inside **Replace a linked device**. Personal monitors have their own navigation and a fixed astronaut identity from the URL; their WebSocket session receives only that astronaut's records. These links select a demo context, not authenticated accounts.
 
 All devices need network access to the server. Allow inbound TCP 3000 on the server's private network; avoid Wi-Fi client isolation. **localhost on a phone points to the phone**, not your computer. The linking view exposes an editable LAN address. No QR service or external connection service is required.
 
@@ -39,7 +42,7 @@ Open the personal link (for example `/astronaut/vega`). **My health now leads wi
 The challenge-to-feature mapping, research links, treatment-guidance boundary and demonstration are documented in [Challenge alignment](docs/CHALLENGE-ALIGNMENT.md). Educational guidance is not a diagnosis, medical clearance or a NASA-approved clinical protocol. Asking for help in the UI does not call the crew; the screen directs the astronaut to contact them directly.
 
 1. Open a ring URL on each phone, choose the astronaut and link. Each astronaut has one exclusive ring reservation. Another device cannot take over while it is offline; the monitor can explicitly release a disconnected binding.
-2. Telemetry arrives every **3 seconds** by default. In the personal monitor's **Simulation lab** (or a crew detail's simulation settings), change that astronaut's interval from 1–15 seconds. The server sends configuration to that actual emitter; the monitor separately shows whether the ring applied its revision.
+2. Telemetry arrives every **3 seconds** by default. In the astronaut view’s **More → Simulation settings** (or a crew detail's simulation settings), change that astronaut's interval from 1–15 seconds. The server sends configuration to that actual emitter; the monitor separately shows whether the ring applied its revision.
 3. **Double tap** the phone's touch surface: an immediate immutable biometric snapshot appears in the tablet's event log. Add the astronaut's words as a separate annotation. The gesture never names a symptom.
 4. **Deliberately swipe horizontally** at least 110 pixels over 250–1600 ms to activate an emergency. The monitor displays it across views. Acknowledge it first, then resolve with a note; both actions and the original evidence stay in history.
 5. Disconnect the ring using secondary controls. Offline events remain pending on the phone and retry on reconnection with their original timestamp and event ID. They are not marked delivered before a server acknowledgement. An undelivered emergency displays an explicit warning.

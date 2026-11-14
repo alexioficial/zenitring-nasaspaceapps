@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ViewHeader from '$lib/components/crew/ViewHeader.svelte';
   import { onMount } from 'svelte';
   import { SuitClient } from '$lib/crew/suit-client';
   import { socketUrl } from '$lib/crew/connection';
@@ -82,15 +83,20 @@
   /></svelte:head
 >
 <div class="crew-app ring-app">
-  <header class="ring-masthead">
-    <a class="crew-brand" href="/">ZENIT <small>SUIT SIMULATOR</small></a><span class="ring-sim-tag"
-      >SIMULATED</span
-    >
-  </header>
+  <ViewHeader
+    title="Suit simulator"
+    context={`${selected.toUpperCase()} · Demo tool generating simulated readings`}
+    keepSourceOpen
+  />
   <main class="ring-content">
+    <p class="simulator-orientation">
+      Keep this tab open to send readings.
+      <a href={`/astronaut/${selected}`} target="_blank" rel="noreferrer"
+        >Open {selected.toUpperCase()}’s astronaut view ↗</a
+      >
+    </p>
     {#if !active}
       <section class="ring-pairing">
-        <span class="crew-eyebrow">EVA / INDEPENDENT SOURCE</span>
         <h1>Outside.<br />Still connected.</h1>
         <p>
           Send a separate suit signal to the same astronaut’s mission history. The ring keeps its
@@ -201,9 +207,23 @@
       </div>
     </details>
     <footer class="ring-footer">
-      <a href="/" target="_blank" rel="noreferrer">Open crew monitor ↗</a><strong
+      <a href="/crew" target="_blank" rel="noreferrer">Open crew monitor ↗</a><strong
         >Simulated suit · no flight hardware connected.</strong
       >
     </footer>
   </main>
 </div>
+
+<style>
+  .simulator-orientation {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--instrument-line);
+    color: var(--instrument-muted);
+  }
+  .simulator-orientation a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+</style>

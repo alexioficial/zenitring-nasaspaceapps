@@ -1,0 +1,784 @@
+/* User-pinned Orbital medbay reference: overview composition and working scale. */
+.medbay-shell .astronaut-workspace {
+  background: #f8fbfc;
+}
+.medbay-shell .view-identity strong {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.medbay-shell .view-switch {
+  gap: 10px;
+}
+.medbay-nav-labels {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+}
+.medbay-nav-labels > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 650;
+  padding: 7px 11px;
+  border-radius: 8px;
+}
+.medbay-concept-label {
+  color: #173c4f;
+  background: #dceaf0;
+}
+.medbay-shell .astronaut-workspace .crew-content {
+  padding: 12px 18px !important;
+}
+.medbay-overview {
+  position: relative;
+  isolation: isolate;
+}
+.medbay-overview::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: -20px;
+  bottom: 90px;
+  left: 27%;
+  right: 27%;
+  background: url('/images/medbay-cabin.webp') center 45% / cover no-repeat;
+  mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
+  opacity: 0.62;
+  pointer-events: none;
+}
+.medbay-shell .medbay-overview .medbay-heading {
+  margin: 0 0 12px 16px;
+  min-height: 58px;
+}
+.medbay-shell .medbay-overview .medbay-heading h1 {
+  margin: 0;
+  font-size: clamp(40px, 3.65vw, 58px);
+  font-weight: 800;
+  line-height: 1.1;
+}
+.medbay-overview .medbay-console {
+  grid-template-columns: minmax(0, 1.16fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+.medbay-overview .medbay-telemetry,
+.medbay-overview .medbay-assessment {
+  position: relative;
+  z-index: 1;
+  background: rgb(255 255 255 / 94%);
+  padding: 18px 20px;
+  border-color: #b9cbd6;
+}
+.medbay-shell .medbay-overview .medbay-vitals-heading h2,
+.medbay-shell .medbay-overview .automatic-top h2 {
+  font-size: clamp(25px, 2vw, 32px);
+  line-height: 1.1;
+  margin: 0;
+  font-weight: 800;
+}
+.medbay-overview .medbay-vitals-heading > span {
+  font-size: 12px;
+}
+.medbay-shell .medbay-overview .medbay-vitals > div {
+  padding: 8px 0;
+  min-height: 55px;
+  gap: 12px;
+}
+.medbay-shell .medbay-overview .medbay-vitals dt {
+  gap: 18px;
+  font-size: clamp(16px, 1.3vw, 21px);
+  line-height: 1.15;
+}
+.medbay-overview .medbay-vitals dt > svg {
+  width: 30px;
+  height: 30px;
+}
+.medbay-shell .medbay-overview .medbay-vitals dt small {
+  font-size: 11px;
+  line-height: 1.3;
+  margin-top: 3px;
+}
+.medbay-shell .medbay-overview .medbay-vitals dd {
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  font-size: clamp(29px, 2.6vw, 42px);
+  font-weight: 800;
+  min-width: 43%;
+  border-left: 1px solid #b2c0cb;
+  padding-left: 24px;
+  line-height: 1;
+}
+.medbay-overview .medbay-vitals dd small {
+  font-size: clamp(14px, 1.2vw, 19px);
+}
+.medbay-shell .medbay-overview .medbay-measured {
+  margin: 5px 0;
+  font-size: 10px;
+}
+.medbay-shell .medbay-overview .source-chart-heading {
+  margin-top: 10px;
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.medbay-overview .source-chart-heading strong {
+  font-size: 23px;
+  font-weight: 800;
+}
+.medbay-overview .source-chart-heading small {
+  font-size: 12px;
+  font-weight: 500;
+}
+.medbay-shell .medbay-overview .source-timeline-chart {
+  aspect-ratio: 600 / 195;
+  min-height: 150px;
+  margin: 0;
+}
+.medbay-shell .medbay-overview .source-timeline-chart text {
+  font-family: 'Manrope', sans-serif;
+  font-size: 17px;
+  fill: #243b49;
+}
+.source-timeline-chart .trend-area {
+  stroke: none;
+  opacity: 0.12;
+}
+.source-timeline-chart .ring-area {
+  fill: #147b89;
+}
+.source-timeline-chart .suit-area {
+  fill: #976037;
+}
+.medbay-overview .source-timeline-chart .ring-line,
+.medbay-overview .source-timeline-chart .suit-line {
+  stroke-width: 3;
+}
+.medbay-overview .source-meta {
+  font-size: 10px;
+}
+.medbay-overview .phase-chart-legend {
+  margin: 4px 0;
+}
+.medbay-overview .medbay-telemetry > .crew-inline-button {
+  min-height: 32px;
+  padding: 5px 0;
+  font-size: 11px;
+}
+.medbay-overview .medbay-console .medbay-figure {
+  height: auto;
+  min-height: 610px;
+  margin: -50px -18px -18px;
+  padding: 0;
+  align-self: stretch;
+  overflow: hidden;
+}
+.medbay-overview .medbay-console .medbay-figure > img {
+  position: absolute;
+  width: 640px;
+  max-width: none;
+  height: 960px;
+  left: 50%;
+  top: -12px;
+  transform: translateX(-50%);
+  object-fit: contain;
+  object-position: top center;
+}
+.medbay-overview .medbay-figure figcaption {
+  display: none;
+}
+.medbay-overview .medbay-source-tags {
+  position: absolute;
+  top: 46px;
+  right: 6px;
+  bottom: auto;
+  max-width: 164px;
+  margin: 0;
+  gap: 7px;
+}
+.medbay-overview .medbay-source-tags > div {
+  padding: 9px 12px;
+  background: #f5fbfd;
+  border-radius: 10px;
+  border-color: #bdcdd7;
+  gap: 10px;
+}
+.medbay-overview .medbay-source-tags svg {
+  width: 29px;
+  height: 29px;
+}
+.medbay-overview .medbay-source-tags strong {
+  font-size: 17px;
+  color: #142b39;
+}
+.medbay-overview .medbay-source-tags small {
+  font-size: 11px;
+  line-height: 1.25;
+  margin-top: 2px;
+  color: #344e5b;
+}
+.medbay-overview .source-receiving small::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 5px;
+  border-radius: 50%;
+  background: #378b33;
+}
+.medbay-overview .automatic-top {
+  align-items: center;
+  gap: 8px;
+}
+.medbay-overview .automatic-mode {
+  padding: 4px 6px;
+  max-width: 145px;
+  line-height: 1.3;
+  font-size: 9px;
+}
+.medbay-shell .medbay-overview .assessment-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: clamp(23px, 1.8vw, 29px);
+  line-height: 1.2;
+  font-weight: 800;
+  margin: 22px 0 8px;
+}
+.medbay-overview .assessment-title svg {
+  flex-shrink: 0;
+  color: #bd7108;
+}
+.medbay-shell .medbay-overview .automatic-review .assessment-title {
+  color: #172635;
+  background: #fcebd3;
+  border-left: 5px solid #e39623;
+  padding: 16px 14px;
+}
+.medbay-shell .medbay-overview .automatic-lead {
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 8px 0;
+}
+.medbay-shell .medbay-overview .automatic-question {
+  display: block;
+  margin: 20px 0 12px;
+}
+.medbay-shell .medbay-overview .automatic-question legend {
+  font-size: clamp(20px, 1.65vw, 26px);
+  font-weight: 800;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+.medbay-shell .medbay-overview .automatic-question button {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 46px;
+  padding: 9px 16px;
+  margin: 0 0 9px;
+  font-size: clamp(16px, 1.25vw, 20px);
+  line-height: 1.2;
+  border-color: #327386;
+}
+.medbay-overview .automatic-question button svg {
+  flex-shrink: 0;
+}
+.medbay-shell .medbay-overview .automatic-next {
+  padding: 12px 14px;
+  margin: 14px 0 8px;
+}
+.medbay-overview .automatic-next p {
+  font-size: 12px;
+  margin: 6px 0;
+}
+.medbay-add-context {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  background: #d8e9ee;
+  color: #173b4b;
+  border: 0;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 750;
+  text-align: left;
+  cursor: pointer;
+}
+.medbay-add-context svg:last-child {
+  margin-left: auto;
+}
+.medbay-add-context:hover {
+  background: #c5dfe6;
+}
+.medbay-overview .assessment-evidence > summary {
+  font-size: 11px;
+  min-height: 32px;
+}
+.medbay-shell .medbay-overview .medbay-nasa {
+  margin-top: 14px;
+  padding-top: 18px;
+  min-height: 50px;
+  font-size: 19px;
+  text-decoration: underline;
+  color: #183f58;
+}
+.medbay-overview .medbay-nasa svg:first-child {
+  width: 26px;
+  height: 26px;
+}
+.medbay-overview .medbay-phase {
+  margin: 18px 0 0;
+  padding: 12px 20px;
+  gap: 25px;
+  background: rgb(255 255 255 / 94%);
+}
+.medbay-overview .medbay-phase h2 {
+  font-size: 25px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.medbay-overview .medbay-phase p {
+  font-size: 10px;
+  margin-top: 5px;
+}
+.medbay-overview .medbay-phase .phase-track {
+  display: flex;
+  gap: 0;
+  background: transparent;
+  overflow: visible;
+  border: 0;
+}
+.medbay-overview .medbay-phase .phase-track button {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  column-gap: 12px;
+  min-height: 59px;
+  padding: 7px 24px;
+  margin-left: -7px;
+  border: 0;
+  border-radius: 0;
+  background: #dce8ee;
+  color: #173847;
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 50%, calc(100% - 22px) 100%, 0 100%, 22px 50%);
+}
+.medbay-overview .medbay-phase .phase-track button:first-child {
+  margin-left: 0;
+  border-radius: 12px 0 0 12px;
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 50%, calc(100% - 22px) 100%, 0 100%);
+}
+.medbay-overview .medbay-phase .phase-track button:last-child {
+  border-radius: 0 12px 12px 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 22px 50%);
+}
+.medbay-overview .medbay-phase .phase-track button.phase-active {
+  background: #167d8c;
+  color: #fff;
+}
+.medbay-overview .medbay-phase .phase-track button:hover:not(:disabled) {
+  background: #c4dce5;
+}
+.medbay-overview .medbay-phase .phase-track button.phase-active:hover:not(:disabled) {
+  background: #106b79;
+}
+.medbay-overview .medbay-phase .phase-track button:focus-visible {
+  outline: 3px solid #142b39;
+  outline-offset: -6px;
+}
+.medbay-overview .medbay-phase .phase-track svg {
+  grid-row: 1 / 3;
+}
+.medbay-overview .medbay-phase .phase-track strong {
+  font-size: 21px;
+  font-weight: 700;
+  margin: 0;
+}
+.medbay-overview .medbay-phase .phase-track small {
+  font-size: 10px;
+  margin: 2px 0 0;
+}
+.medbay-overview .phase-state {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.medbay-scene-credit {
+  text-align: right;
+  color: #415968;
+  font-size: 11px;
+  font-style: italic;
+  margin: 10px 4px 18px;
+}
+@media (min-width: 1101px) {
+  .medbay-shell .astronaut-workspace .view-header {
+    padding: 10px 32px;
+    min-height: 64px;
+    gap: 24px;
+  }
+  .medbay-shell .astronaut-workspace .crew-brand > svg {
+    display: none;
+  }
+  .medbay-shell .astronaut-workspace .crew-brand > span {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    font-size: clamp(30px, 2.6vw, 42px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .medbay-shell .astronaut-workspace .crew-brand small {
+    margin: 0;
+    font-size: clamp(18px, 1.65vw, 26px);
+    font-weight: 450;
+  }
+  .medbay-shell .astronaut-workspace .crew-brand small::before {
+    content: '/';
+    color: #78dce5;
+    margin-right: 22px;
+  }
+  .medbay-shell .astronaut-workspace .view-identity {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .medbay-shell .astronaut-workspace .view-identity strong,
+  .medbay-shell .astronaut-workspace .view-identity span {
+    font-size: clamp(17px, 1.4vw, 22px);
+    white-space: nowrap;
+  }
+  .medbay-shell .astronaut-workspace .view-identity span {
+    color: #f1f6fa;
+    border-left: 1px solid #849ba8;
+    padding-left: 24px;
+  }
+  .astronaut-workspace .view-connection {
+    display: none;
+  }
+  .medbay-shell .astronaut-workspace .view-switch {
+    font-size: 17px;
+    min-height: 40px;
+    padding: 7px 12px;
+  }
+  .medbay-shell .astronaut-workspace .medbay-navigation {
+    padding: 0 24px 0 36px;
+    gap: 12px;
+  }
+  .medbay-shell .astronaut-workspace .crew-navigation {
+    padding: 0;
+  }
+  .medbay-shell .astronaut-workspace .crew-navigation button {
+    min-height: 60px;
+    font-size: 19px;
+    gap: 16px;
+    padding: 0 25px;
+  }
+  .medbay-shell .astronaut-workspace .workspace-more summary {
+    min-width: 0;
+    font-size: 12px;
+    padding: 12px 4px;
+  }
+  .medbay-overview .medbay-console {
+    min-height: 620px;
+  }
+}
+@media (min-width: 1101px) and (max-width: 1350px) {
+  .medbay-shell .astronaut-workspace .view-header {
+    gap: 15px;
+    padding-inline: 20px;
+  }
+  .medbay-shell .astronaut-workspace .crew-brand > span {
+    gap: 14px;
+  }
+  .medbay-shell .astronaut-workspace .crew-brand small::before {
+    margin-right: 12px;
+  }
+  .medbay-shell .astronaut-workspace .view-identity {
+    gap: 15px;
+    padding-left: 15px;
+  }
+  .medbay-shell .astronaut-workspace .view-identity span {
+    padding-left: 15px;
+    font-size: 16px;
+  }
+  .medbay-nav-labels > span {
+    font-size: 12px;
+  }
+  .medbay-concept-label {
+    display: none !important;
+  }
+  .medbay-overview .medbay-vitals dd {
+    padding-left: 14px;
+  }
+  .medbay-overview .medbay-source-tags {
+    max-width: 138px;
+  }
+  .medbay-overview .medbay-source-tags > div {
+    padding: 8px;
+  }
+}
+@media (max-width: 1100px) {
+  .medbay-nav-labels {
+    margin-right: 10px;
+    gap: 6px;
+  }
+  .medbay-nav-labels > span {
+    font-size: 11px;
+    padding: 5px 7px;
+  }
+  .medbay-nav-labels .medbay-concept-label {
+    display: none;
+  }
+  .medbay-overview .medbay-console {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  }
+  .medbay-overview .medbay-console .medbay-figure {
+    grid-column: 1;
+    grid-row: 1;
+    height: 330px;
+    min-height: 0;
+    margin: 0;
+    background: url('/images/medbay-cabin.webp') center / cover;
+  }
+  .medbay-overview .medbay-console .medbay-figure > img {
+    height: 510px;
+    width: 340px;
+    top: 0;
+    left: 34%;
+  }
+  .medbay-overview .medbay-source-tags {
+    top: 10px;
+    right: 5px;
+    max-width: 140px;
+  }
+  .medbay-overview .medbay-source-tags strong {
+    font-size: 14px;
+  }
+  .medbay-overview .medbay-source-tags svg {
+    width: 22px;
+    height: 22px;
+  }
+  .medbay-overview .medbay-telemetry {
+    grid-row: 2;
+    grid-column: 1;
+  }
+  .medbay-overview .medbay-assessment {
+    grid-row: 1 / 3;
+    grid-column: 2;
+  }
+  .medbay-overview::before {
+    display: none;
+  }
+  .medbay-overview .medbay-vitals dt {
+    gap: 8px;
+  }
+  .medbay-shell .medbay-overview .medbay-vitals dd {
+    padding-left: 12px;
+    font-size: 29px;
+  }
+  .medbay-overview .medbay-phase {
+    gap: 12px;
+    padding: 12px;
+  }
+  .medbay-overview .medbay-phase h2 {
+    font-size: 20px;
+  }
+  .medbay-overview .medbay-phase .phase-track strong {
+    font-size: 17px;
+  }
+}
+@media (max-width: 650px) {
+  .medbay-shell .astronaut-workspace .medbay-navigation {
+    flex-wrap: wrap;
+  }
+  .medbay-shell .astronaut-workspace .medbay-navigation .crew-navigation {
+    width: 100%;
+    flex-basis: 100%;
+    justify-content: space-around;
+  }
+  .medbay-shell .astronaut-workspace .crew-navigation button {
+    font-size: 12px;
+    gap: 7px;
+    padding: 0 8px;
+    min-height: 52px;
+  }
+  .medbay-shell .astronaut-workspace .crew-navigation button svg {
+    width: 22px;
+    height: 22px;
+  }
+  .medbay-nav-labels {
+    margin: 4px auto 4px 14px;
+  }
+  .medbay-shell .astronaut-workspace .medbay-navigation .workspace-more {
+    margin: 0;
+  }
+  .medbay-shell .astronaut-workspace .crew-content {
+    padding: 18px 14px !important;
+  }
+  .medbay-shell .medbay-overview .medbay-heading {
+    margin: 0 0 16px;
+    min-height: 0;
+  }
+  .medbay-shell .medbay-overview .medbay-heading h1 {
+    font-size: 36px;
+  }
+  .medbay-overview .medbay-console {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .medbay-overview .medbay-console .medbay-figure {
+    order: -2;
+    width: 100%;
+    height: 300px;
+  }
+  .medbay-overview .medbay-console .medbay-figure > img {
+    left: 32%;
+    height: 450px;
+    width: 300px;
+  }
+  .medbay-overview .medbay-source-tags {
+    max-width: 145px;
+    top: 24px;
+  }
+  .medbay-overview .medbay-assessment {
+    order: -1;
+  }
+  .medbay-overview .medbay-telemetry,
+  .medbay-overview .medbay-assessment {
+    padding: 18px;
+  }
+  .medbay-shell .medbay-overview .medbay-vitals dd {
+    font-size: 32px;
+    min-width: 42%;
+  }
+  .medbay-shell .medbay-overview .medbay-vitals dt {
+    font-size: 16px;
+    gap: 10px;
+  }
+  .medbay-overview .medbay-vitals dt > svg {
+    width: 24px;
+    height: 24px;
+  }
+  .medbay-overview .medbay-phase {
+    display: block;
+  }
+  .medbay-overview .medbay-phase > div {
+    margin-bottom: 12px;
+  }
+  .medbay-overview .medbay-phase .phase-track button {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 3px;
+    padding: 10px 12px;
+    min-height: 84px;
+  }
+  .medbay-overview .medbay-phase .phase-track svg {
+    grid-row: auto;
+    width: 23px;
+    height: 23px;
+  }
+  .medbay-overview .medbay-phase .phase-track strong {
+    font-size: 12px;
+  }
+  .medbay-overview .medbay-phase .phase-track small {
+    font-size: 9px;
+  }
+}
+
+/* Keep the reference overview compact while retaining additional source detail. */
+.medbay-secondary-metric {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding-top: 8px;
+  border-top: 1px solid #d7e2ea;
+  margin: 3px 0 5px;
+  font-size: 12px;
+  color: #344f62;
+}
+.medbay-secondary-metric strong {
+  color: #142b39;
+}
+.medbay-secondary-metric span {
+  margin-left: auto;
+  font-size: 10px;
+}
+.medbay-shell .medbay-overview .medbay-add-context {
+  font-size: 18px;
+  font-weight: 750;
+}
+@media (min-width: 1101px) {
+  .medbay-shell .medbay-overview .medbay-suit-vitals > div {
+    min-height: 46px;
+    padding: 5px 0;
+  }
+  .medbay-shell .medbay-overview .medbay-suit-vitals dd {
+    font-size: 32px;
+  }
+  .medbay-shell .medbay-overview .medbay-suit-vitals dt {
+    font-size: 17px;
+  }
+  .medbay-shell .medbay-overview .medbay-suit-vitals dt small {
+    font-size: 10px;
+  }
+  .medbay-shell .medbay-overview .automatic-review .assessment-title {
+    margin-top: 16px;
+    padding: 12px;
+    font-size: 27px;
+  }
+  .medbay-shell .medbay-overview .automatic-question {
+    margin: 14px 0 8px;
+  }
+  .medbay-shell .medbay-overview .automatic-question legend {
+    margin-bottom: 10px;
+    font-size: 24px;
+  }
+  .medbay-shell .medbay-overview .automatic-question button {
+    min-height: 44px;
+    margin-bottom: 7px;
+    padding-block: 7px;
+  }
+  .medbay-shell .medbay-overview .medbay-nasa {
+    padding-top: 12px;
+    margin-top: 8px;
+    min-height: 46px;
+  }
+}
+/* Tablet keeps the scene and assessment together, then gives history the full width. */
+@media (min-width: 651px) and (max-width: 1100px) {
+  .medbay-overview .medbay-assessment {
+    grid-row: 1;
+    grid-column: 2;
+    align-self: start;
+  }
+  .medbay-overview .medbay-telemetry {
+    grid-row: 2;
+    grid-column: 1 / -1;
+  }
+  .medbay-overview .medbay-console .medbay-figure {
+    height: 100%;
+    min-height: 330px;
+  }
+}
+@media (max-width: 650px) {
+  .medbay-shell .medbay-overview .source-timeline-chart text {
+    font-size: 30px;
+  }
+}

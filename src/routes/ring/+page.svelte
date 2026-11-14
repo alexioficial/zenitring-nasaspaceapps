@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ViewHeader from '$lib/components/crew/ViewHeader.svelte';
   import { onMount } from 'svelte';
   import Icon from '$lib/components/Icon.svelte';
   import RingScene from '$lib/components/RingScene.svelte';
@@ -217,15 +218,20 @@
 >
 
 <div class="crew-app ring-app">
-  <header class="ring-masthead">
-    <a class="crew-brand" href="/"
-      ><Icon name="orbit" size={27} /><span>ZENIT<small>RING SIMULATOR</small></span></a
-    ><span class="ring-sim-tag">SIMULATED</span>
-  </header>
+  <ViewHeader
+    title="Ring simulator"
+    context={`${selected.toUpperCase()} · Demo tool generating simulated readings`}
+    keepSourceOpen
+  />
   <main class="ring-content">
+    <p class="simulator-orientation">
+      Keep this tab open to send readings.
+      <a href={`/astronaut/${selected}`} target="_blank" rel="noreferrer"
+        >Open {selected.toUpperCase()}’s astronaut view ↗</a
+      >
+    </p>
     {#if !active}
       <section class="ring-pairing">
-        <span class="crew-eyebrow">YOUR PHONE / A CREW SIGNAL</span>
         <h1>A ring.<br />A connection.</h1>
         <p>
           Represent one astronaut. Send simulated signals and real gesture events to the shared crew
@@ -458,9 +464,23 @@
     <footer class="ring-footer">
       Keep this page visible and the screen awake for regular transmission.<br /><strong
         >Simulated ZENIT hardware · no commercial wearable connected.</strong
-      ><a href="/" target="_blank" rel="noreferrer"
+      ><a href="/crew" target="_blank" rel="noreferrer"
         >Open crew monitor <Icon name="arrow" size={15} /></a
       >
     </footer>
   </main>
 </div>
+
+<style>
+  .simulator-orientation {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--instrument-line);
+    color: var(--instrument-muted);
+  }
+  .simulator-orientation a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+</style>

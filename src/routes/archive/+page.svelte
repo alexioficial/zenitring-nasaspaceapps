@@ -5,7 +5,7 @@
 
 <svelte:head><title>ZENIT · Apollo 11 archive</title></svelte:head>
 <main class="standalone-archive">
-  <a href="/">← Crew monitor</a>
+  <a href="/crew">← Crew monitor</a>
   <h1>The human side of Apollo.</h1>
   <ApolloExplorer onSimulate={() => goto('/')} />
 </main>

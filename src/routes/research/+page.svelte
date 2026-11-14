@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ViewHeader from '$lib/components/crew/ViewHeader.svelte';
   import { onMount } from 'svelte';
   import AutomaticHealth from '$lib/components/crew/AutomaticHealth.svelte';
   import {
@@ -35,60 +36,62 @@
     content="Evaluate automatic health interpretations against known synthetic ring and spacesuit scenarios."
   /></svelte:head
 >
-<main class="crew-app research-shell">
-  <a class="crew-inline-button" href="/astronaut/vega">← Back to My health</a>
-  <header class="research-intro">
-    <span class="crew-eyebrow">ZENIT / RESEARCH SCENARIO LAB</span>
-    <h1>Known changes.<br />Explainable responses.</h1>
-    <p>
-      A synthetic experiment inspired by NASA’s proposal for AI medical support: introduce a known
-      change, observe the response and compare it with a predefined expectation. These readings
-      never enter the crew’s mission records.
+<div class="crew-app">
+  <ViewHeader title="Research scenarios" context="Demo tool · Separate from crew health records" />
+  <main class="research-shell">
+    <header class="research-intro">
+      <h1>Known changes.<br />Explainable responses.</h1>
+      <p>
+        A synthetic experiment inspired by NASA’s proposal for AI medical support: introduce a known
+        change, observe the response and compare it with a predefined expectation. These readings
+        never enter the crew’s mission records.
+      </p>
+      <a href={researchSource} target="_blank" rel="noreferrer">Read the NASA research proposal ↗</a
+      >
+    </header>
+    <nav class="research-scenarios" aria-label="Research scenario">
+      {#each researchScenarios as item}<button
+          aria-pressed={selected === item.id}
+          onclick={() => {
+            selected = item.id;
+            count = 9;
+            playing = false;
+            now = Date.now();
+          }}>{item.title}</button
+        >{/each}
+    </nav>
+    <p class="research-verdict">
+      <strong>Expected:</strong>
+      {scenario.description}<br /><strong>Detector result:</strong>
+      {count < 9
+        ? 'Collecting the scenario'
+        : actual.kind === scenario.expected
+          ? 'Matches the predefined expectation'
+          : 'Does not match the expectation'} · {actual.kind}
     </p>
-    <a href={researchSource} target="_blank" rel="noreferrer">Read the NASA research proposal ↗</a>
-  </header>
-  <nav class="research-scenarios" aria-label="Research scenario">
-    {#each researchScenarios as item}<button
-        aria-pressed={selected === item.id}
+    <div class="research-controls">
+      <button
+        class="crew-button"
         onclick={() => {
-          selected = item.id;
-          count = 9;
-          playing = false;
+          count = 1;
+          playing = true;
           now = Date.now();
-        }}>{item.title}</button
-      >{/each}
-  </nav>
-  <p class="research-verdict">
-    <strong>Expected:</strong>
-    {scenario.description}<br /><strong>Detector result:</strong>
-    {count < 9
-      ? 'Collecting the scenario'
-      : actual.kind === scenario.expected
-        ? 'Matches the predefined expectation'
-        : 'Does not match the expectation'} · {actual.kind}
-  </p>
-  <div class="research-controls">
-    <button
-      class="crew-button"
-      onclick={() => {
-        count = 1;
-        playing = true;
-        now = Date.now();
-      }}
-      disabled={playing}>{playing ? `Replaying ${count}/9…` : 'Replay incoming readings'}</button
-    ><button
-      class="crew-button secondary"
-      aria-pressed={ai}
-      onclick={() => {
-        ai = !ai;
-        now = Date.now();
-      }}>{ai ? 'Disable Gemini explanations' : 'Enable Gemini explanations'}</button
-    >
-  </div>
-  {#key selected}<AutomaticHealth {member} {now} aiEnabled={ai} />{/key}
-  <p class="research-disclaimer">
-    Simulation replay · accelerated display · local detection rules. A matching detector result does
-    not validate a medical diagnosis or the language model’s explanation. Review AI output
-    separately against the scenario’s stated expectation.
-  </p>
-</main>
+        }}
+        disabled={playing}>{playing ? `Replaying ${count}/9…` : 'Replay incoming readings'}</button
+      ><button
+        class="crew-button secondary"
+        aria-pressed={ai}
+        onclick={() => {
+          ai = !ai;
+          now = Date.now();
+        }}>{ai ? 'Disable Gemini explanations' : 'Enable Gemini explanations'}</button
+      >
+    </div>
+    {#key selected}<AutomaticHealth {member} {now} aiEnabled={ai} />{/key}
+    <p class="research-disclaimer">
+      Simulation replay · accelerated display · local detection rules. A matching detector result
+      does not validate a medical diagnosis or the language model’s explanation. Review AI output
+      separately against the scenario’s stated expectation.
+    </p>
+  </main>
+</div>

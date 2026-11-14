@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
   import Icon from '$lib/components/Icon.svelte';
+  import ViewHeader from './ViewHeader.svelte';
   import MissionSources from '$lib/components/crew/MissionSources.svelte';
   import SuitSignal from '$lib/components/crew/SuitSignal.svelte';
   import RadiationContext from '$lib/components/crew/RadiationContext.svelte';
@@ -44,12 +45,10 @@
   const personalTabs: [View, string, 'heart' | 'pulse' | 'book' | 'link' | 'monitor' | 'orbit'][] =
     [
       ['personal', 'My health', 'heart'],
-      ['overview', 'Signal details', 'monitor'],
-      ['events', 'Event log', 'book'],
+      ['events', 'My records', 'book'],
       ['pair', 'My devices', 'link'],
-      ['lab', 'Simulation lab', 'pulse'],
-      ['nasa', 'NASA context', 'orbit'],
     ];
+  let moreOpen = $state(false);
   let link = $state('connecting');
   let message = $state('');
   let now = $state(Date.now());
@@ -175,6 +174,7 @@
     message = '';
   }
   function navigate(next: View) {
+    moreOpen = false;
     view = next;
     if (next === 'overview' || next === 'events') selected = astronautId ?? null;
     message = '';
@@ -261,42 +261,72 @@
   /></svelte:head
 >
 
-<div class="crew-app monitor-app" class:central-monitor={!astronautId}>
-  <a class="crew-skip" href="#crew-content">Skip to crew monitor</a>
-  <header class="crew-masthead">
-    <a class="crew-brand" href={astronautId ? `/astronaut/${astronautId}` : '/'}
-      ><Icon name="orbit" size={29} /><span
-        >ZENIT<small>{astronautId ? 'PERSONAL MONITOR' : 'CREW SYSTEMS'}</small></span
-      ></a
-    >
-    <div class="mission-designation">
-      <span class="crew-eyebrow">MISSION / DEMONSTRATION</span><strong
-        >{astronautId
-          ? `${mission.crew[0]?.callsign ?? astronautId} · Personal health workspace`
-          : 'Human signals. Shared awareness.'}</strong
-      >
-    </div>
-    <div class="masthead-right">
-      <span class="crew-link-status" class:unavailable={link !== 'online'}
-        ><span class="status-dot"></span>{link === 'online'
-          ? 'Central link online'
-          : link === 'connecting'
-            ? 'Connecting to mission server'
-            : 'Monitor offline'}</span
-      ><time>{clockLabel(now)}</time>
-    </div>
-  </header>
+<div
+  class="crew-app monitor-app"
+  class:central-monitor={!astronautId}
+  class:astronaut-workspace={!!astronautId}
+>
+  <a class="crew-skip" href="#crew-content">Skip to health workspace</a>
+  <ViewHeader
+    title={astronautId ? 'Astronaut view' : 'Crew monitor'}
+    context={astronautId
+      ? `${mission.crew[0]?.callsign ?? astronautId} · ${mission.crew[0]?.name ?? 'My health'}`
+      : 'Medical overview · All astronauts'}
+  >
+    <span class="crew-link-status" class:unavailable={link !== 'online'}>
+      <span class="status-dot"></span>{link === 'online'
+        ? 'Central link online'
+        : link === 'connecting'
+          ? 'Connecting to mission server'
+          : 'Monitor offline'}
+    </span>
+  </ViewHeader>
   {#if astronautId}
-    <nav class="crew-navigation" aria-label="Astronaut views">
-      {#each personalTabs as [id, label, icon]}<button
-          aria-current={view === id ? 'page' : undefined}
-          onclick={() => navigate(id)}
-          ><Icon name={icon} size={18} />{label}{#if id === 'events'}<span class="nav-event-count"
-              >{mission.events.length}</span
-            >{/if}</button
-        >{/each}
-      <span class="sim-stamp">SIMULATED MISSION · NASA CONTEXT</span>
-    </nav>
+    <div class="medbay-navigation">
+      <nav class="crew-navigation" aria-label="Astronaut views">
+        {#each personalTabs as [id, label, icon]}<button
+            aria-current={view === id ? 'page' : undefined}
+            onclick={() => navigate(id)}
+            ><Icon name={icon} size={28} />{label}{#if id === 'events'}<span class="nav-event-count"
+                >{mission.events.length}</span
+              >{/if}</button
+          >{/each}
+      </nav>
+      <div class="medbay-nav-labels">
+        <span class="medbay-data-label"><Icon name="database" size={20} />Simulated data</span><span
+          class="medbay-concept-label"><Icon name="eye" size={20} />Concept preview</span
+        >
+      </div>
+      <details class="workspace-more" bind:open={moreOpen}>
+        <summary
+          >More{view === 'overview'
+            ? ' · Signal details'
+            : view === 'lab'
+              ? ' · Simulation settings'
+              : view === 'nasa'
+                ? ' · NASA resources'
+                : ''}</summary
+        >
+        <nav aria-label="More astronaut tools">
+          <button
+            class="crew-button secondary"
+            aria-current={view === 'overview' ? 'page' : undefined}
+            onclick={() => navigate('overview')}>Signal details</button
+          >
+          <button
+            class="crew-button secondary"
+            aria-current={view === 'nasa' ? 'page' : undefined}
+            onclick={() => navigate('nasa')}>NASA resources</button
+          >
+          <button
+            class="crew-button secondary"
+            aria-current={view === 'lab' ? 'page' : undefined}
+            onclick={() => navigate('lab')}>Simulation settings</button
+          >
+          <a class="crew-inline-button" href="/research">Research scenarios ↗</a>
+        </nav>
+      </details>
+    </div>
   {/if}
   {#if emergencies.length}
     <aside class="crew-emergency-strip" aria-label="Open emergencies">
@@ -326,7 +356,11 @@
     </p>{/if}
   <main id="crew-content" class="crew-content">
     {#if !astronautId}<div class="central-monitor-tools">
-        <span class="crew-eyebrow">CENTRAL MONITOR · ALL CREW</span>
+        <span class="crew-muted"
+          >{member
+            ? `Reviewing ${member.callsign} from the crew monitor`
+            : 'Shared readings, records and requests for help'}</span
+        >
         <div>
           {#if view !== 'overview' || selected}<button
               class="crew-button secondary"
@@ -360,11 +394,10 @@
     {:else if view === 'overview' && !member}
       <section class="crew-page-intro">
         <div>
-          <span class="crew-eyebrow">ONBOARD HEALTH / CREW MANIFEST</span>
           <h1>Crew health monitor</h1>
           <p>
-            Main readings follow the mission phase. Connected suit signals also appear below each
-            astronaut. Select a person for all measurements.
+            You are monitoring the whole crew. Select an astronaut to review their readings and
+            shared records.
           </p>
         </div>
         <div class="crew-summary">
@@ -409,7 +442,13 @@
             >
               <span class="crew-person"
                 ><span class="crew-insignia" style={`--crew-color:${person.color}`}
-                  >{person.callsign.slice(0, 1)}<small>{person.callsign}</small></span
+                  ><img
+                    class="crew-helmet"
+                    src="/images/medbay-astronaut.webp"
+                    alt=""
+                    width="42"
+                    height="42"
+                  /><small>{person.callsign}</small></span
                 ><span
                   ><strong>{person.name}</strong><small>{person.role}</small><span
                     class="crew-device-name">{primary.label} · {person.phase}</span
@@ -480,7 +519,6 @@
         </section>
         <aside class="mission-event-rail">
           <div class="rail-heading">
-            <span class="crew-eyebrow">MISSION ACTIVITY</span>
             <h2>Recent activity</h2>
           </div>
           {#if !mission.events.length}<div class="crew-empty">
@@ -554,6 +592,9 @@
         <div>
           <span class="crew-eyebrow">{member.callsign} / {member.role}</span>
           <h1>{member.name}</h1>
+          {#if !astronautId}<a class="crew-inline-button" href={`/astronaut/${member.id}`}
+              >Switch to {member.callsign}’s astronaut view <Icon name="arrow" size={17} /></a
+            >{/if}
           <p>
             {detailSource.label} · {member.phase} · {detailStatus === 'live'
               ? 'Receiving simulated telemetry'
@@ -691,7 +732,13 @@
       <section class="crew-page-intro">
         <div>
           <span class="crew-eyebrow">MISSION / EVENT HISTORY</span>
-          <h1>{member ? `${member.callsign} · Event log` : 'Crew event log'}</h1>
+          <h1>
+            {astronautId
+              ? 'My records'
+              : member
+                ? `${member.callsign} · Event log`
+                : 'Crew event log'}
+          </h1>
           <p>Original readings, later annotations and a permanent emergency audit.</p>
         </div>
         <label class="event-filter"
@@ -787,7 +834,13 @@
             <article class="access-person" aria-label={person.name}>
               <header class="access-identity">
                 <span class="crew-insignia" style={`--crew-color:${person.color}`}
-                  >{person.callsign.slice(0, 1)}<small>{person.callsign}</small></span
+                  ><img
+                    class="crew-helmet"
+                    src="/images/medbay-astronaut.webp"
+                    alt=""
+                    width="42"
+                    height="42"
+                  /><small>{person.callsign}</small></span
                 >
                 <div>
                   <h2>{person.name}</h2>
@@ -1020,3 +1073,50 @@
     </footer>
   </main>
 </div>
+
+<style>
+  .workspace-more {
+    background: white;
+    border-bottom: 1px solid var(--instrument-line);
+    padding: 0 32px;
+  }
+  .workspace-more summary {
+    min-height: 44px;
+    align-content: center;
+    cursor: pointer;
+    color: var(--instrument-muted);
+    font-size: 13px;
+  }
+  .workspace-more nav {
+    display: flex;
+    gap: 10px 20px;
+    flex-wrap: wrap;
+    padding: 4px 0 16px;
+  }
+  .workspace-more button[aria-current='page'] {
+    border-color: var(--instrument-accent);
+    color: var(--instrument-accent);
+  }
+  @media (max-width: 720px) {
+    .workspace-more {
+      padding: 0 20px;
+    }
+  }
+  @media (max-width: 480px) {
+    .crew-navigation {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      padding: 0 8px;
+    }
+    .crew-navigation > button {
+      justify-content: center;
+      padding: 0 5px;
+      gap: 5px;
+    }
+  }
+  @media (max-width: 360px) {
+    .crew-navigation :global(svg) {
+      display: none;
+    }
+  }
+</style>
