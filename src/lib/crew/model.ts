@@ -1,4 +1,5 @@
 import type { Config, CrewMember, Metrics, MetricKey } from './types';
+import { emptySuit } from './suit';
 
 export const metricInfo: Record<MetricKey, { label: string; unit: string; description: string; digits: number }> = {
   pulse: { label: 'Heart rate', unit: 'bpm', description: 'Heartbeats per minute. Simulated ring signal.', digits: 0 },
@@ -17,7 +18,7 @@ export const crewDefaults = [
   { id:'lyra', name:'Robin Chen', role:'Medical officer', callsign:'LYRA', color:'#46775c' }
 ];
 export function initialCrew(): CrewMember[] {
-  return crewDefaults.map(c=>({...c,deviceId:null,deviceName:null,connected:false,lastSeen:null,latest:null,samples:[],config:structuredClone(defaultConfig),appliedRevision:null}));
+  return crewDefaults.map(c=>({...c,healthChecks:[],suit:emptySuit(),phase:'cabin',phaseHistory:[],deviceId:null,deviceName:null,connected:false,lastSeen:null,latest:null,samples:[],config:structuredClone(defaultConfig),appliedRevision:null}));
 }
 export function freshness(connected:boolean, receivedAt:number|null, intervalMs:number, now=Date.now()) {
   if(!connected) return 'offline';

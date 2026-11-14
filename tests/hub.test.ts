@@ -34,6 +34,24 @@ const values={pulse:82,hrv:45,spo2:98,skin:0.2,respiration:16};
 const event=(id:string)=>({id,deviceId:'ring-a',astronautId:'vega',occurredAt:Date.now()-120000,kind:'emergency',gesture:'swipe',snapshot:values,snapshotAt:Date.now()-120000});
 
 describe('shared WebSocket mission',()=>{
+  test('personal workspace scopes new health and phase commands to its astronaut',async()=>{
+    const {url,hub}=await fixture();const personal=await client(url,'astronaut','personal-health','vega');await personal.wait(m=>m.type==='registered');
+    const input={topic:'recovery',feeling:'changed',note:'Personal check-in',eventId:null};
+    personal.send({type:'health-checkin',id:'own-check',astronautId:'vega',input});await personal.wait(m=>m.type==='ack' && m.id==='own-check');
+    personal.send({type:'health-step',id:'own-step',astronautId:'vega',checkId:'own-check',step:0,completed:true});await personal.wait(m=>m.type==='ack' && m.id==='own-step');
+    personal.send({type:'health-followup',id:'own-followup',astronautId:'vega',checkId:'own-check',outcome:'same'});await personal.wait(m=>m.type==='ack' && m.id==='own-followup');
+    personal.send({type:'phase',id:'own-phase',astronautId:'vega',phase:'spacewalk'});await personal.wait(m=>m.type==='ack' && m.id==='own-phase');
+    for(const command of [
+      {type:'health-checkin',id:'foreign-check',astronautId:'nova',input},
+      {type:'health-step',id:'foreign-step',astronautId:'nova',checkId:'own-check',step:0,completed:true},
+      {type:'health-followup',id:'foreign-followup',astronautId:'nova',checkId:'own-check',outcome:'better'},
+      {type:'phase',id:'foreign-phase',astronautId:'nova',phase:'spacewalk'},
+      {type:'release',id:'foreign-release',astronautId:'vega',sourceType:'spacesuit'}
+    ]){personal.send(command);const response=await personal.wait(m=>m.type==='error' && m.id===command.id);expect(response.type==='error' && response.code).toBe('not-authorized');}
+    const own=hub.snapshot().crew[0];expect(own.healthChecks).toHaveLength(1);expect(own.healthChecks[0].completedSteps).toEqual([0]);expect(own.healthChecks[0].followups).toHaveLength(1);expect(own.phase).toBe('spacewalk');expect(hub.snapshot().crew[1].healthChecks).toHaveLength(0);
+    expect(personal.messages.filter(m=>m.type==='state').every(m=>m.type==='state' && m.state.crew.length===1 && m.state.crew[0].id==='vega')).toBe(true);
+  });
+
   test('personal monitors receive only the astronaut selected by their link',async()=>{
     const {url}=await fixture();
     const personal=await client(url,'astronaut','personal-vega','vega');

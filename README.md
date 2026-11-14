@@ -1,6 +1,6 @@
 # ZENIT
 
-A crew health instrument for NASA Space Apps: a **tablet monitor** connected to **mobile ring simulators**. Biometrics are fictional; WebSocket communication, server reception and acknowledgements are real. Built on the existing Svelte 5 / SvelteKit 2 / TypeScript / Tailwind 4 / Bun application. Product copy is English.
+A crew health instrument for NASA Space Apps: a **tablet monitor** connected to **ring and spacesuit simulators**, with a separate **NASA RadLab historical radiation explorer**. Personal and suit telemetry are fictional; WebSocket communication, server reception and acknowledgements are real. Built on the existing Svelte 5 / SvelteKit 2 / TypeScript / Tailwind 4 / Bun application. Product copy is English.
 
 ## Run
 
@@ -20,16 +20,23 @@ Open `http://localhost:3000` on the server computer. For separate phones/tablets
 | NOVA personal monitor | `http://192.168.1.20:3000/astronaut/nova` |
 | VEGA phone ring | `http://192.168.1.20:3000/ring?astronaut=vega` |
 | NOVA phone ring | `http://192.168.1.20:3000/ring?astronaut=nova` |
+| VEGA spacesuit | `http://192.168.1.20:3000/suit?astronaut=vega` |
 | Historical Apollo explorer | `/archive` |
 | Preserved single-person prototype | `/legacy` |
 
-Other crew IDs are `atlas` and `lyra`. The central monitor opens directly to the crew overview without the personal navigation bar. Its **Astronaut links** view offers one **Copy astronaut link** action per person. This opens their health workspace; **My ring → Open my ring** opens the simulator from there. Ring replacement is a secondary action inside **Device options**. Personal monitors have their own navigation and a fixed astronaut identity from the URL; their WebSocket session receives only that astronaut's records. These links select a demo context, not authenticated accounts.
+Other crew IDs are `atlas` and `lyra`. The central monitor opens directly to the crew overview without the personal navigation bar. Its **Astronaut links** view offers one **Copy astronaut link** action per person. This opens their health workspace; **My devices → Open my ring** opens the simulator from there. Ring replacement is a secondary action inside **Device options**. Personal monitors have their own navigation and a fixed astronaut identity from the URL; their WebSocket session receives only that astronaut's records. These links select a demo context, not authenticated accounts.
 
 All devices need network access to the server. Allow inbound TCP 3000 on the server's private network; avoid Wi-Fi client isolation. **localhost on a phone points to the phone**, not your computer. The linking view exposes an editable LAN address. No QR service or external connection service is required.
+
+The personal My devices view also opens the independent suit simulator. Each source has its own connection and reservation.
 
 **[Full demonstration guide](docs/DEMO.md)** includes gesture thresholds, reconnection behavior, network/TLS configuration, persistence, presentation steps and limitations.
 
 ## Demonstrate
+
+Open the personal link (for example `/astronaut/vega`) and start with **My health → Understand this moment.** Choose a health topic, tap any symptoms and select the activity context, optionally attach a captured ring/suit moment, and select **Understand my signals**. The preview shows possible contributors, actual source readings and a recent same-device pulse comparison when available, explains what the evidence can and cannot establish, links its NASA health context and offers actions to discuss or complete. Save the check-in, mark steps, and record whether you feel better, the same or worse. Saved reports and follow-ups appear in the crew detail. Draft guidance remains usable in an already-loaded page while offline; drafts are not shared until explicitly saved after reconnecting.
+
+The challenge-to-feature mapping, research links, treatment-guidance boundary and demonstration are documented in [Challenge alignment](docs/CHALLENGE-ALIGNMENT.md). Educational guidance is not a diagnosis, medical clearance or a NASA-approved clinical protocol. Asking for help in the UI does not call the crew; the screen directs the astronaut to contact them directly.
 
 1. Open a ring URL on each phone, choose the astronaut and link. Each astronaut has one exclusive ring reservation. Another device cannot take over while it is offline; the monitor can explicitly release a disconnected binding.
 2. Telemetry arrives every **3 seconds** by default. In the personal monitor's **Simulation lab** (or a crew detail's simulation settings), change that astronaut's interval from 1–15 seconds. The server sends configuration to that actual emitter; the monitor separately shows whether the ring applied its revision.
@@ -37,6 +44,17 @@ All devices need network access to the server. Allow inbound TCP 3000 on the ser
 4. **Deliberately swipe horizontally** at least 110 pixels over 250–1600 ms to activate an emergency. The monitor displays it across views. Acknowledge it first, then resolve with a note; both actions and the original evidence stay in history.
 5. Disconnect the ring using secondary controls. Offline events remain pending on the phone and retry on reconnection with their original timestamp and event ID. They are not marked delivered before a server acknowledgement. An undelivered emergency displays an explicit warning.
 6. Pause telemetry without disconnecting to demonstrate stale readings. The tablet keeps the last known values and timestamps, labels stale/disconnected signals, and never generates replacement readings.
+
+### Mission continuity and NASA data
+
+1. Link a ring and a suit to **the same astronaut**, in separate tabs/devices. Each has its own reservation and signal status.
+2. In **My health**, select **Cabin → Spacewalk → Recovery**. The primary heart-rate source becomes Ring → Suit ECG → Ring. Phase changes are persisted, and the chart breaks across changes and missing readings. Selecting a phase creates no telemetry.
+3. During Spacewalk, disconnect the suit while the ring remains online. The monitor reports the missing primary signal instead of silently substituting the ring. Capture a suit moment offline, then reconnect: the shared event log receives the original suit snapshot. Add an annotation to that event.
+4. Open **NASA context** or the environmental panel below My health. Explore **84 real historical DosTel1 observations** from ISS Columbus (2022-04-01 23:00 through 2022-04-02 01:05, exclusive). **Refresh NASA record** retrieves the same bounded query through `/api/radlab`; NASA failures return the labelled bundled response. A network failure between browser and server retains the series already on screen.
+
+RadLab supplies environmental instrument data, not suit telemetry, a personal dosimeter, a symptom diagnosis or a live feed for this fictional mission. Absorbed dose rate remains **μGy/h**. Missing dose-equivalent readings remain missing; there is no conversion to μSv/h or personal exposure score. The source timestamps are displayed as supplied (without an added timezone claim); a consistent UTC coordinate is used only to space the historical chart. The original query and retrieval timestamp are included in `src/lib/nasa/radlab-dostel1.json`. All returned rows are retained and sorted by source time, with gaps over five minutes left open.
+
+NASA-STD-3001 §11.3 informs the suit atmosphere fields; simulated values are not NASA flight measurements or certified limits. The suit page has no life-support controls. See [the multisource design and provenance](docs/MULTISOURCE-NASA.md).
 
 ## Verification and production
 
@@ -53,17 +71,23 @@ Stop development before building: both generate `.svelte-kit`. `start` runs `ser
 
 ## Storage and architecture
 
+The ring gesture surface renders a procedural **Three.js** concept: a rounded titanium band, dark inner liner, sensor windows and a light that responds to capture and connection state. The model loads only in the browser; no external model, texture service or physical wearable is required. Existing double-tap, swipe and keyboard actions remain available. A static ring replaces the canvas if WebGL is unavailable or its context is lost. Animation respects reduced motion and pauses when the surface is offscreen or the document is hidden; rendering is capped at 30 fps and 1.5 device pixel ratio. The shape is a visual concept, not an engineered or spacesuit-qualified device.
+
 - `src/lib/crew/`: shared protocol/domain, continuous crew-specific simulation, gesture recognizer, reconnecting transport and actual ring emitter.
+- `src/lib/crew/suit.ts` and `suit-client.ts`: separate suit metrics, source selection, local sampling and durable event outbox.
+- `src/lib/three/ring-scene.ts` and `src/lib/components/RingScene.svelte`: shared 3D renderer, lifecycle cleanup and accessible gesture-surface integration for `/ring` and `/legacy`.
 - `server/hub.ts`: validated WebSocket protocol, exclusive associations, heartbeat, server timestamps, acknowledgements and retry deduplication.
 - `server/repository.ts`: Bun SQLite persistence. Default `data/zenit.sqlite`, configurable via `MISSION_DB_PATH`.
 - `src/routes/+page.svelte`: central crew monitor without personal navigation.
 - `src/routes/astronaut/[id]/`: validated personal links with fixed astronaut identity.
 - `src/lib/components/crew/MissionWorkspace.svelte`: shared monitor views, scoped personal navigation, detail/trends and links distributed from the central monitor.
 - `src/routes/ring/+page.svelte`: phone identity, touch surface, pending delivery and simulation controls.
+- `src/routes/suit/+page.svelte`: independent suit transmitter, retained local measurements and pending capture delivery.
+- `src/lib/nasa/` and `src/routes/api/radlab/`: provenance-preserving RadLab snapshot, parser and fixed-query refresh with fallback. Upstream calls time out after eight seconds; successful responses are shared for five minutes.
 - `src/lib/components/crew/`: shared metric trends, event annotations, emergency audit and configuration forms.
 - `tests/`: legacy regressions, gesture/simulation behavior and real multi-client WebSocket integration tests.
 
-Server storage owns configurations, ring reservations, events, annotations and emergency actions. It retains 120 recent telemetry samples per astronaut and all events. The UI shows up to 200 recent events plus all unresolved emergencies. **Complete server archive** exports every retained event; visible-session export captures the current monitor snapshot.
+Server storage owns configurations, independent ring/suit reservations, mission phases, events, annotations and emergency actions. It retains 120 recent telemetry samples per source and all events and phase changes. Earlier ring-only records are read with an empty suit and Cabin phase. The UI shows up to 200 recent events plus all unresolved emergencies. **Complete server archive** exports every retained event; visible-session export captures the current monitor snapshot.
 
 Phone session storage identifies its tab and local storage holds only its retry outbox. Neither substitutes for WebSocket communication. Keep the same phone tab open until pending events are confirmed; reload resumes its original association. Storage errors warn that new events are in memory only. No authentication, clinical validation, commercial wearable API or offline installation is implemented. Use a trusted demo network and fictional data. Sleeping/background mobile browsers can suspend emission; stale status makes that visible.
 

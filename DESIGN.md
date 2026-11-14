@@ -2,6 +2,8 @@
 
 ## Direction
 
+My health is the primary entry point. Lead with “Understand this moment.” and answer “What might be happening?” and “What should I do next?” using explicit symptoms, source-labelled readings, recent same-device comparisons and NASA context. The astronaut's explicit report takes precedence over apparently ordinary numbers. Measurement details and mission-source controls follow the check-in; historical radiation is secondary and expandable. NASA-linked explanations are embedded at the point of guidance. Avoid making connection status look like health clearance. The following crew-manifest direction applies to the separate Crew monitor view.
+
 An operational crew manifest, rather than a grid of interchangeable cards. The signature is an asymmetric landscape composition: a full-width instrument row for each astronaut, with a quieter mission-activity rail. Detail opens deliberately and preserves input during signal updates. The phone reduces the same identity to one astronaut, one signal summary and a generous gesture surface.
 
 The source of truth for the current implementation is `src/lib/crew/crew.css`. Previous dark personal-demo styling remains in `src/app.css` for `/legacy` and `/archive`; its documentation is archived in `docs/LEGACY-DESIGN.md`.
@@ -45,3 +47,9 @@ Detection, pending transmission and confirmed server receipt are different state
 ## Sources and limits
 
 All biometric values, differences between crew and scenarios are fictional. Source and measurement/reception times are displayed separately. Skin deviation is not core/body temperature. HRV does not infer mood or readiness. An emergency is an explicit astronaut gesture, not an algorithmic diagnosis. Apollo observations have their own historical archive and provenance.
+
+## Mission continuity and environmental evidence
+
+The personal view leads with an explicit Cabin / Spacewalk / Recovery phase track, one named primary heart-rate source and its reception age. The measured-time chart uses cyan for ring data and warm brown for suit ECG, accompanied by text labels. Phase changes and missing readings break the trace. A small two-source status row keeps the ring and suit connections independent. During Spacewalk, suit atmosphere/equipment readings appear below, distinct from personal biometrics. The crew overview uses the same phase-selected source.
+
+NASA RadLab occupies a separate warm-paper section, marked Historical Data, with original observation time, instrument/module and μGy/h units. A slider inspects actual records; refresh status never replaces observation time. The source link and missing dose-equivalent values remain visible. Reference explanations are expandable. Styles for these additions live in `src/lib/crew/sources.css`; navigation scrolls horizontally when needed.

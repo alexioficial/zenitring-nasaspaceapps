@@ -1,8 +1,10 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import Icon from './Icon.svelte';
+  import RingScene from './RingScene.svelte';
   let { connected, onCapture }: { connected: boolean; onCapture: (gesture: 'ring-double-tap' | 'ring-hold') => void } = $props();
   let holding = $state(false);
+  let visualPulse = $state(0);
   let feedback = $state('Double tap to capture');
   let pressed = false;
   let held = false;
@@ -13,6 +15,7 @@
     if (!connected) return;
     firstTap = null;
     onCapture(gesture);
+    visualPulse++;
     feedback = gesture === 'ring-hold' ? 'Captured · choose a symptom' : 'Moment captured';
     clearTimeout(feedbackTimer);
     feedbackTimer = setTimeout(() => feedback = 'Double tap to capture', 2400);
@@ -42,7 +45,7 @@
     aria-label="Ring gesture pad. Double tap to capture, hold to capture and log a symptom. Enter captures a moment."
     onpointerdown={down} onpointerup={up} onpointercancel={cancel}
     oncontextmenu={event => event.preventDefault()} onclick={event => { if (event.detail === 0) capture('ring-double-tap'); }}>
-    <svg viewBox="0 0 160 160" aria-hidden="true"><circle class="ring-outer" cx="80" cy="80" r="62"/><circle class="ring-inner" cx="80" cy="80" r="46"/><path d="M42 80h22l8-14 12 29 9-15h25"/><circle class="ring-sensor" cx="80" cy="26" r="4"/></svg>
+    <RingScene {connected} pressed={holding} pulse={visualPulse} compact/>
     <span>{connected ? feedback : 'Ring disconnected'}</span>
   </button>
   <div class="gesture-actions"><button class="button primary" disabled={!connected} onclick={() => capture('ring-double-tap')}><Icon name="save" size={16}/>Capture moment</button><button class="button secondary" disabled={!connected} onclick={() => capture('ring-hold')}><Icon name="heart" size={16}/>Capture & log symptom</button></div>

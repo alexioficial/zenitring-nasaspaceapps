@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '$lib/components/Icon.svelte';
+  import RingScene from '$lib/components/RingScene.svelte';
   import { RingClient } from '$lib/crew/ring-client';
   import { GestureRecognizer, type Gesture } from '$lib/crew/gestures';
   import { socketUrl } from '$lib/crew/connection';
@@ -11,6 +12,7 @@
   let selected=$state('vega');let deviceName=$state('Cabin ring');let deviceId=$state('');let ready=$state(false);
   let ring:RingClient|null=null;let revision=$state(0);let active=$state(false);let feedback=$state('Ready for a gesture.');
   let confirmEmergency=$state(false);
+  let visualPulse=$state(0);
   let lastEvent=$state<EventInput|null>(null);let history=$state<EventInput[]>([]);let storageWarning=$state('');let pressed=$state(false);
   let surface=$state<HTMLButtonElement>();let pointer:number|null=null;const recognizer=new GestureRecognizer();
   let ui=$derived.by(()=>{void revision;return ring?{status:ring.status,error:ring.error,config:ring.config,values:ring.values,sampledAt:ring.sampledAt,transmittedAt:ring.transmittedAt,transmissions:ring.transmissions,pending:ring.pending,deliveries:ring.deliveries,paused:ring.paused,storageError:ring.storageError}:null;});
@@ -45,7 +47,7 @@
     return()=>ring?.dispose();
   });
   function capture(gesture:Gesture|'button',emergency=false){
-    if(!ring)return;const event=ring.capture(gesture,emergency);lastEvent=event;history=[event,...history].slice(0,20);confirmEmergency=false;feedback=event.kind==='emergency'?'Emergency recorded. Check delivery below.':gesture==='button'?'Moment captured.':'Double tap detected. Moment captured.';
+    if(!ring)return;const event=ring.capture(gesture,emergency);visualPulse++;lastEvent=event;history=[event,...history].slice(0,20);confirmEmergency=false;feedback=event.kind==='emergency'?'Emergency recorded. Check delivery below.':gesture==='button'?'Moment captured.':'Double tap detected. Moment captured.';
     try{navigator.vibrate?.(event.kind==='emergency'?[60,40,60]:35);}catch{/* Haptics are optional. */}revision++;
   }
   function down(event:PointerEvent){
@@ -84,7 +86,7 @@
       <section class="ring-gesture-section" aria-label="Ring gesture controls">
         <div class="ring-touch-heading"><h2>Record a moment</h2><span>GESTURE SURFACE</span></div>
         <button bind:this={surface} class="ring-gesture-surface" class:surface-pressed={pressed} onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={cancel} onlostpointercapture={lostCapture} oncontextmenu={e=>e.preventDefault()} onclick={e=>{if(e.detail===0)capture('button');}} aria-label="Ring touch surface. Double tap to capture a moment. Swipe horizontally at least 110 pixels over a quarter second to activate an emergency. Enter captures a moment.">
-          <svg viewBox="0 0 300 210" aria-hidden="true"><ellipse class="ring-track" cx="150" cy="105" rx="94" ry="76"/><ellipse class="ring-band" cx="150" cy="105" rx="71" ry="59"/><path class="ring-pulse" d="M94 106h30l11-23 17 43 12-20h44"/><circle cx="150" cy="29" r="4"/></svg>
+          <RingScene connected={ui.status==='online'} {pressed} pulse={visualPulse} emergency={lastEvent?.kind==='emergency'}/>
           <span class="surface-direction"><span>←</span> swipe deliberately <span>→</span></span><span class="surface-footer">Double tap anywhere on this surface</span>
         </button>
         <div class="gesture-legend"><div><strong>•• Double tap</strong><span>Capture this moment</span></div><div><strong>↔ Deliberate swipe</strong><span>Activate an emergency</span></div></div>

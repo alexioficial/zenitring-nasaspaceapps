@@ -3,6 +3,7 @@
   import type { CrewEvent, CrewMember, ClientMessage } from '$lib/crew/types';
   import { clockLabel, newId, metricInfo, metricKeys } from '$lib/crew/model';
   import Icon from '../Icon.svelte';
+  import { suitInfo, suitKeys } from '$lib/crew/suit';
   let {event,member,send,connected}: {event:CrewEvent;member:CrewMember;send:(m:ClientMessage & {id:string})=>Promise<boolean>;connected:boolean}=$props();
   let expanded=$state(untrack(()=>event.kind==='emergency' && event.status!=='resolved'));
   let text=$state(''); let resolution=$state('');let saving=$state(false);let error=$state('');
@@ -18,10 +19,12 @@
   </button>
   {#if expanded}
     <div class="event-detail">
-      <p class="crew-muted">{member.name} · {event.gesture==='double-tap'?'Double tap':event.gesture==='swipe'?'Deliberate swipe':'Test button'} · Ring {event.deviceId.slice(0,8)}</p>
+      <p class="crew-muted">{member.name} · {event.gesture==='double-tap'?'Double tap':event.gesture==='swipe'?'Deliberate swipe':'Test button'} · {event.sourceType==='spacesuit'?'Suit':'Ring'} {event.deviceId.slice(0,8)}</p>
       <p class="event-reception">Captured {new Date(event.occurredAt).toISOString().slice(0,10)} · Received {clockLabel(event.receivedAt)}{late()?' · Late delivery — original capture time preserved':''}</p>
       <div class="event-snapshot">
+        {#if event.sourceType==='spacesuit'}{#each suitKeys as key}<div><span>{suitInfo[key].label}</span><strong>{event.suitSnapshot?.[key].toFixed(suitInfo[key].digits)??'—'} <small>{suitInfo[key].unit}</small></strong></div>{/each}{:else}
         {#each metricKeys as key}<div><span>{metricInfo[key].label}</span><strong>{event.snapshot?.[key].toFixed(metricInfo[key].digits)??'—'} <small>{metricInfo[key].unit}</small></strong></div>{/each}
+        {/if}
       </div>
       <p class="snapshot-caption">Immutable simulated snapshot{event.snapshotAt?` · measured ${clockLabel(event.snapshotAt)}`:' · no available measurement'}. A gesture does not identify a symptom.</p>
       {#if event.kind==='emergency'}
