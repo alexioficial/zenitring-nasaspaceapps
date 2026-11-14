@@ -5,13 +5,13 @@
 web
 
 ## Users and purpose
-Tablet interface for an astronaut to understand health readings in mission context and record follow-up. A companion medical view shows what has actually arrived. NASA Space Apps hackathon demonstration, in English.
+Tablet-first central monitor for fictional astronaut biometrics, connected through real WebSockets to phone-based simulated ZENIT rings. Crew can capture evidence by gesture, annotate it explicitly and track emergency response. NASA Space Apps demonstration. English interface.
 
 ## Confirmed scope
-Mission timeline: preparation, EVA, return to cabin. Simulated ZENIT Ring in cabin; simulated suit ECG during EVA. Independent sensor and medical link failures. Double-tap gestures capture immutable readings; a hold opens one-tap symptom annotation. Local persistence preserves capture, annotation and reception timestamps. Sleep summaries are preloaded; wellbeing and nutrition use quick actions with optional manual details. Apollo 11 historical exploration with explicit NASA provenance. Vital signs, sleep and attention, wellness, nutrition.
+Four crew members with exclusive ring bindings, 3-second default source emission, configurable per-ring interval and continuous simulated HR/HRV/SpO₂/respiration/skin deviation. Mobile double-tap snapshots and deliberate swipe emergencies. Immediate event transport, durable server receipt, offline retry outboxes and idempotent acknowledgements. Tablet manifest, astronaut detail/trends, event annotations, active/acknowledged/resolved emergency audit, stale/disconnected status, linking URLs and separate simulation lab. Server-owned SQLite persistence. Apollo explorer and previous personal prototype retained at explicit archive routes.
 
 ## Constraints
-Historical digitized NASA observations are separate from fictional personal measurements. No diagnosis, validated alert thresholds, hardware certification or actual medical transport is claimed. PostgreSQL infrastructure exists but the demo uses browser storage. Ring gesture recognition on real hardware, wearable integration, clinical protocols and authentication remain future work. Blood pressure, glucose, body temperature and SpO₂ retain separate instrument sources. Simulated live respiration/activity and nightly HRV/skin-temperature deviation carry distinct measurement periods. The ring is conceptual; no Oura gesture API or EVA glove compatibility is claimed.
+Fictional biometric values and presentation ranges are not diagnoses or validated clinical criteria. There is no commercial wearable integration, authentication, actual astronaut data or flight certification. Trusted demonstration networks only. One Bun server replica with persistent storage. Mobile browser suspension prevents guaranteed background telemetry. Local phone storage is only identity/retry persistence; inter-device communication always uses WebSocket. PostgreSQL is optional infrastructure. QR linking and offline installation are not implemented.
 
 ## Brand commitments
-ZENIT, English interface, ink-blue flight-plan aesthetic, tablet-first mission timeline, legible charts with source labels.
+ZENIT, precise mission-instrument identity, quiet paper signal field within an ink-blue mission frame, tabular measurements and a crew manifest instead of repeated dashboard cards. Red reserved for explicit emergencies; text and shapes accompany status colors. Touch-comfortable controls, visible focus and reduced motion. NASA history remains separate from current crew simulation.

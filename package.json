@@ -8,7 +8,7 @@
     "dev": "bun --bun vite dev --host 0.0.0.0 --port 3000 --strictPort",
     "build": "bun --bun vite build",
     "preview": "bun --bun vite preview --host 0.0.0.0 --port 3000",
-    "start": "bun build/index.js",
+    "start": "bun server/start.ts",
     "prepare": "svelte-kit sync",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "test": "bun test tests"
@@ -20,10 +20,14 @@
     "@tailwindcss/vite": "4.3.4",
     "@types/bun": "^1.4.4",
     "@types/node": "24.19.2",
+    "@types/ws": "^8.18.2",
     "svelte": "5.57.3",
     "svelte-check": "4.7.8",
     "tailwindcss": "4.3.4",
     "typescript": "5.9.3",
     "vite": "7.3.6"
+  },
+  "dependencies": {
+    "ws": "^8.23.0"
   }
 }
