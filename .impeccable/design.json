@@ -1,0 +1,437 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-14T16:47:10.341040+00:00",
+  "title": "Design System: ZENIT",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Bg",
+        "tonalRamp": [
+          "oklch(15% 0.0241 254.44)",
+          "oklch(26% 0.0241 254.44)",
+          "oklch(38% 0.0241 254.44)",
+          "oklch(49% 0.0241 254.44)",
+          "oklch(61% 0.0241 254.44)",
+          "oklch(72% 0.0241 254.44)",
+          "oklch(84% 0.0241 254.44)",
+          "oklch(95% 0.0241 254.44)"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel",
+        "tonalRamp": [
+          "oklch(15% 0.0330 251.18)",
+          "oklch(26% 0.0330 251.18)",
+          "oklch(38% 0.0330 251.18)",
+          "oklch(49% 0.0330 251.18)",
+          "oklch(61% 0.0330 251.18)",
+          "oklch(72% 0.0330 251.18)",
+          "oklch(84% 0.0330 251.18)",
+          "oklch(95% 0.0330 251.18)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "tonalRamp": [
+          "oklch(15% 0.0373 248.97)",
+          "oklch(26% 0.0373 248.97)",
+          "oklch(38% 0.0373 248.97)",
+          "oklch(49% 0.0373 248.97)",
+          "oklch(61% 0.0373 248.97)",
+          "oklch(72% 0.0373 248.97)",
+          "oklch(84% 0.0373 248.97)",
+          "oklch(95% 0.0373 248.97)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "tonalRamp": [
+          "oklch(15% 0.0320 249.77)",
+          "oklch(26% 0.0320 249.77)",
+          "oklch(38% 0.0320 249.77)",
+          "oklch(49% 0.0320 249.77)",
+          "oklch(61% 0.0320 249.77)",
+          "oklch(72% 0.0320 249.77)",
+          "oklch(84% 0.0320 249.77)",
+          "oklch(95% 0.0320 249.77)"
+        ]
+      },
+      "foreground": {
+        "role": "neutral",
+        "displayName": "Foreground",
+        "tonalRamp": [
+          "oklch(15% 0.0114 252.09)",
+          "oklch(26% 0.0114 252.09)",
+          "oklch(38% 0.0114 252.09)",
+          "oklch(49% 0.0114 252.09)",
+          "oklch(61% 0.0114 252.09)",
+          "oklch(72% 0.0114 252.09)",
+          "oklch(84% 0.0114 252.09)",
+          "oklch(95% 0.0114 252.09)"
+        ]
+      },
+      "mint": {
+        "role": "primary",
+        "displayName": "Mint",
+        "tonalRamp": [
+          "oklch(15% 0.0992 169.35)",
+          "oklch(26% 0.0992 169.35)",
+          "oklch(38% 0.0992 169.35)",
+          "oklch(49% 0.0992 169.35)",
+          "oklch(61% 0.0992 169.35)",
+          "oklch(72% 0.0992 169.35)",
+          "oklch(84% 0.0992 169.35)",
+          "oklch(95% 0.0992 169.35)"
+        ]
+      },
+      "violet": {
+        "role": "secondary",
+        "displayName": "Violet",
+        "tonalRamp": [
+          "oklch(15% 0.1046 291.22)",
+          "oklch(26% 0.1046 291.22)",
+          "oklch(38% 0.1046 291.22)",
+          "oklch(49% 0.1046 291.22)",
+          "oklch(61% 0.1046 291.22)",
+          "oklch(72% 0.1046 291.22)",
+          "oklch(84% 0.1046 291.22)",
+          "oklch(95% 0.1046 291.22)"
+        ]
+      },
+      "amber": {
+        "role": "tertiary",
+        "displayName": "Amber",
+        "tonalRamp": [
+          "oklch(15% 0.1013 76.85)",
+          "oklch(26% 0.1013 76.85)",
+          "oklch(38% 0.1013 76.85)",
+          "oklch(49% 0.1013 76.85)",
+          "oklch(61% 0.1013 76.85)",
+          "oklch(72% 0.1013 76.85)",
+          "oklch(84% 0.1013 76.85)",
+          "oklch(95% 0.1013 76.85)"
+        ]
+      },
+      "selected": {
+        "role": "neutral",
+        "displayName": "Selected",
+        "tonalRamp": [
+          "oklch(15% 0.0327 208.47)",
+          "oklch(26% 0.0327 208.47)",
+          "oklch(38% 0.0327 208.47)",
+          "oklch(49% 0.0327 208.47)",
+          "oklch(61% 0.0327 208.47)",
+          "oklch(72% 0.0327 208.47)",
+          "oklch(84% 0.0327 208.47)",
+          "oklch(95% 0.0327 208.47)"
+        ]
+      },
+      "rail": {
+        "role": "neutral",
+        "displayName": "Rail",
+        "tonalRamp": [
+          "oklch(15% 0.0284 253.57)",
+          "oklch(26% 0.0284 253.57)",
+          "oklch(38% 0.0284 253.57)",
+          "oklch(49% 0.0284 253.57)",
+          "oklch(61% 0.0284 253.57)",
+          "oklch(72% 0.0284 253.57)",
+          "oklch(84% 0.0284 253.57)",
+          "oklch(95% 0.0284 253.57)"
+        ]
+      },
+      "navigation-active": {
+        "role": "neutral",
+        "displayName": "Navigation Active",
+        "tonalRamp": [
+          "oklch(15% 0.0322 211.89)",
+          "oklch(26% 0.0322 211.89)",
+          "oklch(38% 0.0322 211.89)",
+          "oklch(49% 0.0322 211.89)",
+          "oklch(61% 0.0322 211.89)",
+          "oklch(72% 0.0322 211.89)",
+          "oklch(84% 0.0322 211.89)",
+          "oklch(95% 0.0322 211.89)"
+        ]
+      },
+      "navigation-hover": {
+        "role": "neutral",
+        "displayName": "Navigation Hover",
+        "tonalRamp": [
+          "oklch(15% 0.0356 247.78)",
+          "oklch(26% 0.0356 247.78)",
+          "oklch(38% 0.0356 247.78)",
+          "oklch(49% 0.0356 247.78)",
+          "oklch(61% 0.0356 247.78)",
+          "oklch(72% 0.0356 247.78)",
+          "oklch(84% 0.0356 247.78)",
+          "oklch(95% 0.0356 247.78)"
+        ]
+      },
+      "primary-ink": {
+        "role": "primary",
+        "displayName": "Primary Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0368 177.92)",
+          "oklch(26% 0.0368 177.92)",
+          "oklch(38% 0.0368 177.92)",
+          "oklch(49% 0.0368 177.92)",
+          "oklch(61% 0.0368 177.92)",
+          "oklch(72% 0.0368 177.92)",
+          "oklch(84% 0.0368 177.92)",
+          "oklch(95% 0.0368 177.92)"
+        ]
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "Primary Hover",
+        "tonalRamp": [
+          "oklch(15% 0.0690 171.80)",
+          "oklch(26% 0.0690 171.80)",
+          "oklch(38% 0.0690 171.80)",
+          "oklch(49% 0.0690 171.80)",
+          "oklch(61% 0.0690 171.80)",
+          "oklch(72% 0.0690 171.80)",
+          "oklch(84% 0.0690 171.80)",
+          "oklch(95% 0.0690 171.80)"
+        ]
+      },
+      "secondary-surface": {
+        "role": "neutral",
+        "displayName": "Secondary Surface",
+        "tonalRamp": [
+          "oklch(15% 0.0330 249.26)",
+          "oklch(26% 0.0330 249.26)",
+          "oklch(38% 0.0330 249.26)",
+          "oklch(49% 0.0330 249.26)",
+          "oklch(61% 0.0330 249.26)",
+          "oklch(72% 0.0330 249.26)",
+          "oklch(84% 0.0330 249.26)",
+          "oklch(95% 0.0330 249.26)"
+        ]
+      },
+      "secondary-foreground": {
+        "role": "neutral",
+        "displayName": "Secondary Foreground",
+        "tonalRamp": [
+          "oklch(15% 0.0138 247.98)",
+          "oklch(26% 0.0138 247.98)",
+          "oklch(38% 0.0138 247.98)",
+          "oklch(49% 0.0138 247.98)",
+          "oklch(61% 0.0138 247.98)",
+          "oklch(72% 0.0138 247.98)",
+          "oklch(84% 0.0138 247.98)",
+          "oklch(95% 0.0138 247.98)"
+        ]
+      },
+      "secondary-hover": {
+        "role": "neutral",
+        "displayName": "Secondary Hover",
+        "tonalRamp": [
+          "oklch(15% 0.0379 240.48)",
+          "oklch(26% 0.0379 240.48)",
+          "oklch(38% 0.0379 240.48)",
+          "oklch(49% 0.0379 240.48)",
+          "oklch(61% 0.0379 240.48)",
+          "oklch(72% 0.0379 240.48)",
+          "oklch(84% 0.0379 240.48)",
+          "oklch(95% 0.0379 240.48)"
+        ]
+      },
+      "field-surface": {
+        "role": "neutral",
+        "displayName": "Field Surface",
+        "tonalRamp": [
+          "oklch(15% 0.0298 249.52)",
+          "oklch(26% 0.0298 249.52)",
+          "oklch(38% 0.0298 249.52)",
+          "oklch(49% 0.0298 249.52)",
+          "oklch(61% 0.0298 249.52)",
+          "oklch(72% 0.0298 249.52)",
+          "oklch(84% 0.0298 249.52)",
+          "oklch(95% 0.0298 249.52)"
+        ]
+      },
+      "field-border": {
+        "role": "neutral",
+        "displayName": "Field Border",
+        "tonalRamp": [
+          "oklch(15% 0.0425 248.73)",
+          "oklch(26% 0.0425 248.73)",
+          "oklch(38% 0.0425 248.73)",
+          "oklch(49% 0.0425 248.73)",
+          "oklch(61% 0.0425 248.73)",
+          "oklch(72% 0.0425 248.73)",
+          "oklch(84% 0.0425 248.73)",
+          "oklch(95% 0.0425 248.73)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Page Heading",
+        "purpose": "Page-level operational heading; responsive overrides documented in Layout."
+      },
+      "measurement": {
+        "displayName": "Live Pulse",
+        "purpose": "Tabular live reading with monospace numerals."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "button-background",
+        "value": "background-color 150ms ease-out",
+        "purpose": "Primary and secondary button hover; disabled under prefers-reduced-motion."
+      },
+      {
+        "name": "ring-hold",
+        "value": "stroke 700ms linear",
+        "purpose": "Inner ring feedback during a simulated hold; removed under prefers-reduced-motion. Recognition still uses the 700ms hold threshold."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide-min",
+        "value": "1550px"
+      },
+      {
+        "name": "compact-desktop-max",
+        "value": "1200px"
+      },
+      {
+        "name": "icon-rail-max",
+        "value": "1000px"
+      },
+      {
+        "name": "stacked-max",
+        "value": "760px"
+      },
+      {
+        "name": "narrow-max",
+        "value": "420px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Capture a moment or commit an optional manual entry.",
+      "html": "<button class=\"ds-button-primary\">Capture moment</button>",
+      "css": ".ds-button-primary { font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-height: 44px; padding: 10px 13px; border-radius: 6px; border: 1px solid transparent; font-size: 11px; font-weight: 600; cursor: pointer; transition: background-color 150ms ease-out; color: #102d27; background: var(--mint, #87e2c2); } .ds-button-primary:hover { background: #b1efda; } .ds-button-primary:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: 4px; } .ds-button-primary:disabled { opacity: .55; cursor: wait; } @media (prefers-reduced-motion: reduce) { .ds-button-primary { transition: none; } }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Supporting operational action.",
+      "html": "<button class=\"ds-button-secondary\">Medical monitor</button>",
+      "css": ".ds-button-secondary { font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-height: 44px; padding: 10px 13px; border-radius: 6px; border: 1px solid transparent; font-size: 11px; font-weight: 600; cursor: pointer; transition: background-color 150ms ease-out; border-color: #3b4d60; background: #152331; color: #e2eaf2; } .ds-button-secondary:hover { background: #223746; } .ds-button-secondary:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: 4px; } .ds-button-secondary:disabled { opacity: .55; cursor: wait; } @media (prefers-reduced-motion: reduce) { .ds-button-secondary { transition: none; } }"
+    },
+    {
+      "name": "Text Button",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "A quieter export or tablet capture action.",
+      "html": "<button class=\"ds-text-button\">Export mission log</button>",
+      "css": ".ds-text-button { font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 5px 0; border: 0; background: transparent; color: var(--mint, #87e2c2); font-size: 11px; cursor: pointer; } .ds-text-button:hover { text-decoration: underline; text-underline-offset: 4px; } .ds-text-button:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: 4px; } .ds-text-button:disabled { opacity: .55; cursor: wait; }"
+    },
+    {
+      "name": "Context Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Labeled manual context input.",
+      "html": "<label class=\"ds-field-label\" for=\"ds-context\">Add context (optional)</label><input class=\"ds-field\" id=\"ds-context\" placeholder=\"How you feel after the activity\">",
+      "css": ".ds-field-label { display: block; font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; font-size: 11px; color: #edf3fa; margin-bottom: 9px; } .ds-field { font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; width: 100%; min-height: 44px; border: 1px solid #4b6075; border-radius: 5px; padding: 9px 10px; background: #0b1723; color: #edf3fa; font-size: 12px; caret-color: var(--mint, #87e2c2); } .ds-field::placeholder { color: var(--muted, #a5b6c8); } .ds-field:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: 4px; }"
+    },
+    {
+      "name": "Module Navigation",
+      "kind": "nav",
+      "refersTo": "navigation-active",
+      "description": "Current-page state paired with labeled module links.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Health modules\"><a href=\"#mission\" aria-current=\"page\">Mission health</a><a href=\"#apollo\">Apollo 11 archive</a></nav>",
+      "css": ".ds-nav { display: flex; flex-direction: column; gap: 6px; font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; } .ds-nav a { display: flex; align-items: center; min-height: 47px; padding: 10px 12px; border-radius: 7px; text-decoration: none; font-size: 12px; font-weight: 550; color: var(--muted, #a5b6c8); } .ds-nav a:hover { background: #162635; color: #edf3fa; } .ds-nav a[aria-current] { background: #1a3338; color: var(--mint, #87e2c2); } .ds-nav a:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: 4px; }"
+    },
+    {
+      "name": "Source Tag",
+      "kind": "chip",
+      "refersTo": "source-tag",
+      "description": "Noninteractive provenance label.",
+      "html": "<span class=\"ds-tag\">Simulated data</span>",
+      "css": ".ds-tag { display: inline-block; font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; border: 1px solid #3c4c5e; border-radius: 4px; padding: 4px 7px; font-size: 9px; color: #c8d4e0; white-space: nowrap; }"
+    },
+    {
+      "name": "Operational Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Flat bounded surface for a reading or working area.",
+      "html": "<section class=\"ds-panel\"><div class=\"ds-panel-heading\"><h2>Your health, in context</h2><p>Heart rate across your mission</p></div><p class=\"ds-panel-reading\">82 <span>bpm \u00b7 ZENIT Ring</span></p></section>",
+      "css": ".ds-panel { background: var(--panel, #101d2b); border: 1px solid var(--line, #293a4b); border-radius: 14px; color: #edf3fa; font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; } .ds-panel-heading { padding: 23px 24px 0; } .ds-panel-heading h2 { margin: 0; font-size: 20px; letter-spacing: -.025em; font-weight: 550; } .ds-panel-heading p { margin: 6px 0 0; color: var(--muted, #a5b6c8); font-size: 11px; line-height: 1.6; } .ds-panel-reading { margin: 0; padding: 22px 24px 19px; font: 450 34px/1.1 ui-monospace, \"SFMono-Regular\", Consolas, monospace; font-variant-numeric: tabular-nums; color: var(--mint, #87e2c2); } .ds-panel-reading span { font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; font-size: 12px; }"
+    },
+    {
+      "name": "Selected Mission Phase",
+      "kind": "custom",
+      "refersTo": "phase-selected",
+      "description": "Square phase button aligns source and time with the plot.",
+      "html": "<button class=\"ds-phase\" aria-pressed=\"true\"><span class=\"ds-phase-time\">09:23 <span>Now</span></span><strong>Return to cabin</strong><small>\u2014 ZENIT Ring</small></button>",
+      "css": ".ds-phase { min-width: 150px; position: relative; font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; color: #edf3fa; border: 0; border-top: 1px solid var(--mint, #87e2c2); border-radius: 0; padding: 10px 7px 8px; text-align: left; background: var(--selected, #142e32); cursor: pointer; } .ds-phase::before { content: \"\"; position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--mint, #87e2c2); top: -3px; left: 7px; } .ds-phase:hover { background: #1c3340; } .ds-phase:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: -2px; } .ds-phase-time { display: flex; justify-content: space-between; font: 9px ui-monospace, \"SFMono-Regular\", Consolas, monospace; color: var(--muted, #a5b6c8); } .ds-phase-time span { font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; color: var(--mint, #87e2c2); } .ds-phase strong { display: block; font-size: 11px; font-weight: 550; margin-top: 8px; } .ds-phase small { display: block; font-size: 9px; margin-top: 8px; color: var(--mint, #87e2c2); }"
+    },
+    {
+      "name": "Ring Gesture Pad",
+      "kind": "custom",
+      "refersTo": "ring-pad",
+      "description": "Conceptual cabin gesture surface. Static preview shows hover and focus; actual gestures run in the Svelte component.",
+      "html": "<button class=\"ds-ring-pad\" aria-label=\"Ring gesture pad\"><svg viewBox=\"0 0 160 160\" aria-hidden=\"true\"><circle class=\"ds-ring-outer\" cx=\"80\" cy=\"80\" r=\"62\"/><circle class=\"ds-ring-inner\" cx=\"80\" cy=\"80\" r=\"46\"/><path d=\"M42 80h22l8-14 12 29 9-15h25\"/><circle class=\"ds-ring-sensor\" cx=\"80\" cy=\"26\" r=\"4\"/></svg><span>Double tap to capture</span></button>",
+      "css": ".ds-ring-pad { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 0; border: 0; background: transparent; color: var(--mint, #87e2c2); font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-ring-pad svg { width: 160px; height: 160px; fill: none; } .ds-ring-outer { stroke: #629d95; stroke-width: 2; } .ds-ring-inner { stroke: #355e60; stroke-width: 9; } .ds-ring-pad path { stroke: var(--mint, #87e2c2); stroke-width: 2; stroke-linejoin: round; } .ds-ring-sensor { fill: var(--mint, #87e2c2); } .ds-ring-pad span { font-size: 12px; } .ds-ring-pad:hover .ds-ring-outer { stroke: var(--mint, #87e2c2); } .ds-ring-pad:active .ds-ring-inner { stroke: var(--mint, #87e2c2); transition: stroke 700ms linear; } .ds-ring-pad:focus-visible { outline: 2px solid var(--mint, #87e2c2); outline-offset: 4px; } .ds-ring-pad:disabled { color: var(--muted, #a5b6c8); opacity: .6; cursor: default; } @media (prefers-reduced-motion: reduce) { .ds-ring-pad:active .ds-ring-inner { transition: none; } }"
+    },
+    {
+      "name": "Sourced Observation",
+      "kind": "custom",
+      "refersTo": "observation",
+      "description": "A value retains its source and measurement period; nightly observations are not presented as live samples.",
+      "html": "<dl class=\"ds-observations\"><div class=\"ds-observation\"><dt>Respiration</dt><dd>14 <small>breaths/min</small></dd><span>ZENIT Ring \u00b7 simulated</span><span>Current sample \u00b7 09:30:00 UTC</span></div><div class=\"ds-observation\"><dt>Blood pressure</dt><dd>\u2014</dd><span>External cuff \u00b7 simulated</span><span>No current reading</span></div></dl>",
+      "css": ".ds-observations { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0; margin: 18px 0 0; font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; color: #edf3fa; } .ds-observation { padding: 15px 18px 15px 0; border-top: 1px solid var(--line, #293a4b); min-width: 0; } .ds-observation dt { font-size: 11px; color: var(--muted, #a5b6c8); min-height: 28px; } .ds-observation dd { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; font: 21px ui-monospace, \"SFMono-Regular\", Consolas, monospace; font-variant-numeric: tabular-nums; } .ds-observation dd small { font-family: inherit; font-size: 10px; color: var(--muted, #a5b6c8); } .ds-observation > span { display: block; font-size: 10px; line-height: 1.5; color: var(--muted, #a5b6c8); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Ink-blue flight plan",
+    "overview": "ZENIT uses the confirmed ink-blue flight-plan aesthetic: a calm, compact operational workspace organized around mission time. The timeline, source labels, and ring capture control explain each reading in context. Capture saves a moment first; a symptom can be added later without rewriting the snapshot. All interface language is English.\n\nDark blue surfaces, thin rules, and restrained mint and violet signals create depth without shadows. System sans-serif text carries instructions; tabular monospace carries measurements and mission times. The NASA historical archive remains visibly separate from the personal simulation, even where it shares the same component vocabulary.",
+    "keyCharacteristics": [
+      "Mission timeline as the operational anchor.",
+      "Mint ZENIT Ring cabin readings and violet suit readings, each paired with source text.",
+      "Capture-first moments, one-tap context, and automatically populated measurement summaries.",
+      "Flat, bordered panels and compact, legible operational typography.",
+      "Responsive navigation, visible keyboard focus, and reduced-motion support.",
+      "Explicit historical provenance and simulation labels."
+    ],
+    "rules": [
+      {
+        "name": "The Source Label Rule",
+        "body": "Source colors always have accompanying text; NASA historical observations and personal simulation remain explicitly identified.",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "Do pair source and connection colors with readable text.",
+      "Do preserve gaps for missing samples and distinguish capture, annotation, and reception timestamps.",
+      "Do keep source and measurement period visible for current, nightly, and external observations.",
+      "Do retain clear English labels for simulation, historical observations, source, and delivery state.",
+      "Do use the shared control shapes and visible mint keyboard focus.",
+      "Do keep NASA provenance visible in the archive and separate historical observations from simulated personal readings."
+    ],
+    "donts": [
+      "Don't imply diagnosis or personal health thresholds through color, scores, or archive readings.",
+      "Don't join missing samples with a fabricated continuous trace.",
+      "Don't infer a symptom from readings or overwrite an immutable snapshot when context arrives.",
+      "Don't present mock instrument sync or simulated ring gestures as connected hardware.",
+      "Don't use source color as the only way to identify cabin, suit, or historical data.",
+      "Don't replace the documented flat surfaces with decorative shadows or unrelated display typography."
+    ]
+  }
+}
