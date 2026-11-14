@@ -1,0 +1,24 @@
+services:
+  app:
+    build:
+      target: development
+    restart: "no"
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+    ports:
+      - "127.0.0.1:${APP_PORT:-3000}:3000"
+    volumes:
+      - .:/app
+      - app_node_modules:/app/node_modules
+      - app_svelte_kit:/app/.svelte-kit
+    # Refresh dependencies in the Linux volume after package/lockfile changes.
+    command: sh -c "bun install --frozen-lockfile && bun run dev"
+
+  postgres:
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+
+volumes:
+  app_node_modules:
+  app_svelte_kit:

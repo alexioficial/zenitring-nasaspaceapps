@@ -1,0 +1,44 @@
+# Production / Coolify. Local development adds docker-compose.dev.yaml.
+services:
+  app:
+    build:
+      context: .
+      target: production
+    restart: unless-stopped
+    init: true
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      ORIGIN: ${ORIGIN:?Set ORIGIN in .env or Coolify}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-zenitring}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env or Coolify}@postgres:5432/${POSTGRES_DB:-zenitring}
+    expose:
+      - "3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "bun", "-e", "const r = await fetch('http://127.0.0.1:3000/health'); process.exit(r.ok ? 0 : 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-zenitring}
+      POSTGRES_USER: ${POSTGRES_USER:-zenitring}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env or Coolify}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  postgres_data:
