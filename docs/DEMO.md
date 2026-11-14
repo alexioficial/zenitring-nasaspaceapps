@@ -12,9 +12,9 @@ Production: stop development, run `bun run check`, `bun run test`, `bun run buil
 
 1. Find the server computer's private LAN IP, for example `192.168.1.20` (Windows: `ipconfig`). Use one Wi-Fi without client isolation. Permit incoming TCP 3000 on the server's private network. All devices must reach this computer; a phone hotspot also works if its network permits peer access.
 2. On the tablet open `http://192.168.1.20:3000/`.
-3. Open **Link rings**. If it shows localhost, change the server-address field to `http://192.168.1.20:3000`.
-4. Open `http://192.168.1.20:3000/ring?astronaut=vega` on phone A and choose **Link this ring**. Open `/ring?astronaut=nova` on phone B. The remaining astronaut IDs are `atlas` and `lyra`.
-5. A different device cannot claim an astronaut's reserved ring, even while offline. The original device reconnects with its tab identity. To replace a device: confirm its pending events, disconnect it, then choose **Release binding** on the monitor. A second active tab using the same identity is explicitly rejected.
+3. On the central monitor choose **Astronaut links**. If it shows localhost, change the server-address field to `http://192.168.1.20:3000`. Use the single **Copy astronaut link** action for each person, such as `/astronaut/vega`; the URL fixes the identity. Only personal monitors show the My health / Signal details / Event log / My ring / Simulation lab navigation. The central monitor has no personal navigation bar.
+4. The astronaut opens that link and chooses **My ring → Open my ring**, then **Link this ring** in the simulator. Use a different astronaut's shared link on the other phone. Direct `/ring?astronaut=vega` URLs still work for technical demonstrations, but are not competing sharing actions in the central interface. The remaining astronaut IDs are `atlas` and `lyra`.
+5. A different device cannot claim an astronaut's reserved ring, even while offline. The original device reconnects with its tab identity. To replace a device: confirm its pending events, disconnect it, then choose **Device options → Unlink current ring** on the monitor. A second active tab using the same identity is explicitly rejected.
 
 All WebSocket URLs derive from the page origin: `ws://host:3000/ws` for HTTP or `wss://host/ws` for HTTPS. A public reverse proxy must forward WebSocket upgrades for `/ws` to internal port 3000. Use one server replica and durable SQLite storage. Optional `PUBLIC_ORIGIN=https://example.com` strictly pins WebSocket browser origins; leave it unset for a LAN demonstration. `ORIGIN` is the SvelteKit production origin. No cross-origin WebSocket URL needs to be entered on the phone.
 
@@ -32,7 +32,7 @@ An emergency remains **active** until acknowledged on the monitor. Acknowledgeme
 
 1. Link at least two phones. The crew manifest shows their independent last-received times. Default emission is 3000 ms; first sample is sent immediately on initial registration.
 2. Open a crew detail, start an annotation, and wait for several signals: the form and expanded event stay in place.
-3. In **Simulation lab**, select VEGA, change the interval to 1 second, and apply. It first saves on the server; the displayed revision confirms when the actual ring applies it. NOVA retains its own interval. Current config is resent on reconnect.
+3. Open VEGA's personal monitor and its **Simulation lab**, change the interval to 1 second, and apply. It first saves on the server; the displayed revision confirms when the actual ring applies it. NOVA retains its own interval. Current config is resent on reconnect. The central monitor also retains per-crew simulation settings inside signal detail.
 4. Select **Progressive change**, then **Outside demo ranges**. Values approach a distinct target smoothly. Amber means outside a presentation reference, never a diagnosis. Return to **Normal** to recover gradually.
 5. Double tap phone A. See its immediate event and copied values in the monitor, independent of the periodic interval. Add the astronaut's reported feeling; the note is a separate server record and does not rewrite the snapshot.
 6. Deliberately swipe phone B. From any monitor tab, select its open-emergency strip entry. Inspect the captured evidence, acknowledge, add a note, and resolve with a recorded outcome. Check the retained event history.

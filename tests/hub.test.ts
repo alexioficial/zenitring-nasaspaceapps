@@ -17,7 +17,7 @@ async function fixture(path=':memory:') {
   cleanups.push(async()=>{await hub.close();http.closeAllConnections();http.close();});
   return {hub,url:`ws://127.0.0.1:${address.port}/ws`};
 }
-async function client(url:string, role:'ring'|'monitor',deviceId:string,astronautId?:string) {
+async function client(url:string, role:'ring'|'monitor'|'astronaut',deviceId:string,astronautId?:string) {
   const ws=new WebSocket(url); const messages:ServerMessage[]=[];
   ws.addEventListener('message',event=>messages.push(JSON.parse(String(event.data))));
   await new Promise<void>((resolve,reject)=>{ws.addEventListener('open',()=>resolve(),{once:true});ws.addEventListener('error',reject,{once:true});});
@@ -34,6 +34,41 @@ const values={pulse:82,hrv:45,spo2:98,skin:0.2,respiration:16};
 const event=(id:string)=>({id,deviceId:'ring-a',astronautId:'vega',occurredAt:Date.now()-120000,kind:'emergency',gesture:'swipe',snapshot:values,snapshotAt:Date.now()-120000});
 
 describe('shared WebSocket mission',()=>{
+  test('personal monitors receive only the astronaut selected by their link',async()=>{
+    const {url}=await fixture();
+    const personal=await client(url,'astronaut','personal-vega','vega');
+    await personal.wait(m=>m.type==='registered');
+    const first=await personal.wait(m=>m.type==='state');
+    expect(first.type==='state' && first.state.crew.map(c=>c.id)).toEqual(['vega']);
+    const ring=await client(url,'ring','ring-a','vega');await ring.wait(m=>m.type==='registered');
+    const other=await client(url,'ring','ring-b','nova');await other.wait(m=>m.type==='registered');
+    other.send({type:'event',event:{...event('nova-event'),astronautId:'nova',deviceId:'ring-b'}});await other.wait(m=>m.type==='ack');
+    ring.send({type:'event',event:event('vega-event')});await ring.wait(m=>m.type==='ack');
+    const update=await personal.wait(m=>m.type==='state' && m.state.events.some(e=>e.id==='vega-event'));
+    expect(update.type==='state' && update.state.events.map(e=>e.id)).toEqual(['vega-event']);
+    expect(update.type==='state' && update.state.crew.map(c=>c.id)).toEqual(['vega']);
+  });
+  test('a personal monitor cannot configure, annotate or release another astronaut',async()=>{
+    const {url,hub}=await fixture();
+    const ring=await client(url,'ring','ring-a','vega');await ring.wait(m=>m.type==='registered');
+    ring.send({type:'event',event:event('vega-event')});await ring.wait(m=>m.type==='ack');
+    const other=await client(url,'astronaut','personal-nova','nova');await other.wait(m=>m.type==='registered');
+    other.send({type:'annotate',id:'wrong-note',eventId:'vega-event',text:'Wrong astronaut',createdAt:Date.now()});
+    await other.wait(m=>m.type==='error');
+    other.send({type:'config',id:'wrong-config',astronautId:'vega',config:{...defaultConfig,intervalMs:1000}});
+    await other.wait(m=>m.type==='error');
+    other.send({type:'release',id:'wrong-release',astronautId:'vega'});await other.wait(m=>m.type==='error');
+    expect(hub.snapshot().events[0].annotations).toHaveLength(0);
+    expect(hub.snapshot().crew[0].config.intervalMs).toBe(3000);
+    other.send({type:'config',id:'own-config',astronautId:'nova',config:{...defaultConfig,intervalMs:5000}});
+    await other.wait(m=>m.type==='ack' && m.id==='own-config');
+    expect(hub.snapshot().crew[1].config.intervalMs).toBe(5000);
+  });
+  test('unknown astronaut links are rejected instead of defaulting to another crew member',async()=>{
+    const {url}=await fixture();const invalid=await client(url,'astronaut','personal-invalid','unknown');
+    const result=await invalid.wait(m=>m.type==='error');
+    expect(result.type==='error' && result.code).toBe('unknown-astronaut');
+  });
   test('an older unresolved emergency remains visible beyond the recent-history window',async()=>{
     const {hub}=await fixture();
     const old={...event('old-emergency'),receivedAt:1000,status:'active',actions:[],annotations:[]} as const;

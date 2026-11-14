@@ -4,7 +4,7 @@ import { Repository } from './repository';
 import { validateConfig, validMetrics } from '../src/lib/crew/model';
 import type { ClientMessage, CrewEvent, EventInput, MissionState, ServerMessage } from '../src/lib/crew/types';
 
-type Peer={ role:'ring'|'monitor'; deviceId:string; astronautId?:string; lastSeen:number };
+type Peer={ role:'ring'|'monitor'|'astronaut'; deviceId:string; astronautId?:string; lastSeen:number };
 class Rejected extends Error { constructor(public code:string,message:string){super(message);} }
 const idOK=(v:unknown):v is string=>typeof v==='string' && /^[a-zA-Z0-9_-]{1,100}$/.test(v);
 const timeOK=(v:unknown):v is number=>typeof v==='number' && Number.isFinite(v) && v>=946684800000 && v<=Date.now()+60000;
@@ -23,7 +23,11 @@ export function attachHub(server:Server, databasePath='data/zenit.sqlite', optio
       return {...c,connected:!!peer,lastSeen:peer?.lastSeen??c.lastSeen};
     })};
   }
-  const broadcast=()=>{const message:ServerMessage={type:'state',state:snapshot()};for(const [ws,p] of peers) if(p.role==='monitor')send(ws,message);};
+  function stateFor(state:MissionState, peer:Peer):MissionState {
+    if(peer.role!=='astronaut')return state;
+    return {...state,crew:state.crew.filter(c=>c.id===peer.astronautId),events:state.events.filter(e=>e.astronautId===peer.astronautId)};
+  }
+  const broadcast=()=>{const state=snapshot();for(const [ws,p] of peers) if(p.role!=='ring')send(ws,{type:'state',state:stateFor(state,p)});};
   function command(ws:WebSocket,m:ClientMessage & {id:string},mutate:()=>void) {
     ensure(idOK(m.id)); const request=JSON.stringify(m); const old=repository.command(m.id);
     if(old) {ensure(old.request===request,'id-conflict','This ID already belongs to a different command.');send(ws,JSON.parse(old.response));return false;}
@@ -39,7 +43,7 @@ export function attachHub(server:Server, databasePath='data/zenit.sqlite', optio
       if(m.type==='register') {
         const registration=m;
         ensure(!peers.has(ws),'already-registered','Reconnect to change your device binding.');
-        ensure(idOK(m.deviceId) && ['ring','monitor'].includes(m.role));
+        ensure(idOK(m.deviceId) && ['ring','monitor','astronaut'].includes(m.role));
         ensure(![...peers.values()].some(p=>p.deviceId===registration.deviceId),'device-active','This device already has an active connection.');
         if(m.role==='ring') {
           const c=repository.crew().find(c=>c.id===registration.astronautId);
@@ -50,7 +54,11 @@ export function attachHub(server:Server, databasePath='data/zenit.sqlite', optio
           c.deviceId=m.deviceId;c.deviceName=typeof m.deviceName==='string'?m.deviceName.slice(0,60):'Simulated ring';c.lastSeen=Date.now();c.appliedRevision=null;repository.saveCrew(c);
           peers.set(ws,{role:'ring',deviceId:m.deviceId,astronautId:c.id,lastSeen:Date.now()});
           send(ws,{type:'registered',role:'ring',astronautId:c.id,config:c.config});
-        } else { peers.set(ws,{role:'monitor',deviceId:m.deviceId,lastSeen:Date.now()});send(ws,{type:'registered',role:'monitor'});send(ws,{type:'state',state:snapshot()}); }
+        } else {
+          if(m.role==='astronaut')ensure(repository.crew().some(c=>c.id===registration.astronautId),'unknown-astronaut','This personal monitor link does not identify a crew member.');
+          const peer:Peer={role:m.role,deviceId:m.deviceId,astronautId:m.role==='astronaut'?m.astronautId:undefined,lastSeen:Date.now()};
+          peers.set(ws,peer);send(ws,{type:'registered',role:m.role,astronautId:peer.astronautId});send(ws,{type:'state',state:stateFor(snapshot(),peer)});
+        }
         broadcast();return;
       }
       const p=peers.get(ws);ensure(p,'not-registered','Register this device first.');p.lastSeen=Date.now();
@@ -87,22 +95,25 @@ export function attachHub(server:Server, databasePath='data/zenit.sqlite', optio
         const changed=command(ws,m,()=>{ensure(m!.type==='simulation');c.config={...c.config,scenario:m!.scenario,revision:c.config.revision+1};repository.saveCrew(c);});
         if(changed)send(ws,{type:'config',astronautId:c.id,config:c.config});return;
       }
-      // All remaining messages are central-monitor operations.
-      ensure(p.role==='monitor','not-authorized','This action is available only on the crew monitor.');
+      ensure(p.role==='monitor' || p.role==='astronaut','not-authorized','This action is available only on a monitor.');
       if(m.type==='config') {
         const astronautId=m.astronautId;
+        ensure(p.role==='monitor' || p.astronautId===astronautId,'not-authorized','This personal link is scoped to one astronaut.');
         ensure(validateConfig(m.config));const member=repository.crew().find(c=>c.id===astronautId);ensure(member);
         const changed=command(ws,m,()=>{ensure(m!.type==='config');member.config={...m!.config,revision:member.config.revision+1};repository.saveCrew(member);});
         if(changed) for(const [ring,peer] of peers) if(peer.role==='ring' && peer.astronautId===member.id)send(ring,{type:'config',astronautId:member.id,config:member.config});
       } else if(m.type==='annotate') {
         ensure(typeof m.text==='string' && m.text.trim().length>=1 && m.text.length<=500 && timeOK(m.createdAt));
         const event=repository.event(m.eventId);ensure(event,'missing-event','This event is unavailable.');
+        ensure(p.role==='monitor' || p.astronautId===event.astronautId,'not-authorized','This personal link cannot annotate another astronaut.');
         command(ws,m,()=>{ensure(m!.type==='annotate');event.annotations.push({id:m!.id,text:m!.text.trim(),createdAt:m!.createdAt,receivedAt:Date.now()});repository.saveEvent(event);});
       } else if(m.type==='emergency-action') {
         ensure(['acknowledged','resolved'].includes(m.action) && typeof m.note==='string' && m.note.length<=500);
         const event=repository.event(m.eventId);ensure(event?.kind==='emergency','missing-event','This emergency is unavailable.');
+        ensure(p.role==='monitor' || p.astronautId===event.astronautId,'not-authorized','This personal link cannot act on another astronaut.');
         command(ws,m,()=>{ensure(m!.type==='emergency-action');ensure((m!.action==='acknowledged' && event.status==='active') || (m!.action==='resolved' && event.status==='acknowledged'),'invalid-transition','Acknowledge an active emergency before resolving it.');ensure(m!.action!=='resolved' || m!.note.trim().length>0,'note-required','Describe the resolution before closing this emergency.');event.status=m!.action;event.actions.push({id:m!.id,action:m!.action,note:m!.note.trim(),receivedAt:Date.now()});repository.saveEvent(event);});
       } else if(m.type==='release') {
+        ensure(p.role==='monitor','not-authorized','Ring bindings are managed from the central monitor.');
         const astronautId=m.astronautId;
         const member=repository.crew().find(c=>c.id===astronautId);ensure(member);
         command(ws,m,()=>{ensure(![...peers.values()].some(peer=>peer.role==='ring' && peer.astronautId===member.id),'device-active','Disconnect the ring before releasing its binding.');member.deviceId=null;member.deviceName=null;member.appliedRevision=null;repository.saveCrew(member);});

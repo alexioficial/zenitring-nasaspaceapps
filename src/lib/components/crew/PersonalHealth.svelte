@@ -3,7 +3,7 @@
   import Trend from './Trend.svelte';
   import { freshness, ageLabel, clockLabel, metricKeys, metricInfo, outsideDemo } from '$lib/crew/model';
   import type { MissionState, MetricKey } from '$lib/crew/types';
-  let { mission, online, now, ondetail, onhistory, identity=$bindable('vega') }: {identity?:string;mission:MissionState;online:boolean;now:number;ondetail:(id:string)=>void;onhistory:(id:string)=>void}=$props();
+  let { mission, online, now, ondetail, onhistory, identity }: {identity:string;mission:MissionState;online:boolean;now:number;ondetail:(id:string)=>void;onhistory:(id:string)=>void}=$props();
   let metric=$state<MetricKey>('pulse');
   let person=$derived(mission.crew.find(c=>c.id===identity)!);
   let status=$derived(online?freshness(person.connected,person.latest?.receivedAt??null,person.config.intervalMs,now):'offline');
@@ -13,7 +13,7 @@
 </script>
 <section class="personal-heading">
   <div><h1>My health</h1><p>Your signals, your context, your next step.</p></div>
-  <label for="personal-astronaut">Demo astronaut<select id="personal-astronaut" bind:value={identity}>{#each mission.crew as c}<option value={c.id}>{c.callsign} · {c.name}</option>{/each}</select></label>
+  <div class="personal-monitor-context"><span class="crew-eyebrow">PERSONAL MONITOR</span><strong>{person.callsign} · {person.name}</strong></div>
 </section>
 <div class="personal-layout">
   <div class="personal-main">

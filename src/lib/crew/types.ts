@@ -19,7 +19,7 @@ export type CrewMember = {
 };
 export type MissionState = { crew: CrewMember[]; events: CrewEvent[]; serverTime: number };
 export type ClientMessage =
-  | { type: 'register'; role: 'ring' | 'monitor'; deviceId: string; astronautId?: string; deviceName?: string }
+  | { type: 'register'; role: 'ring' | 'monitor' | 'astronaut'; deviceId: string; astronautId?: string; deviceName?: string }
   | { type: 'heartbeat'; sentAt: number }
   | { type: 'telemetry'; id: string; deviceId: string; astronautId: string; measuredAt: number; values: Metrics }
   | { type: 'event'; event: EventInput }
@@ -31,7 +31,7 @@ export type ClientMessage =
   | { type: 'release'; id: string; astronautId: string };
 export type ServerMessage =
   | { type: 'state'; state: MissionState }
-  | { type: 'registered'; role: 'ring' | 'monitor'; astronautId?: string; config?: Config }
+  | { type: 'registered'; role: 'ring' | 'monitor' | 'astronaut'; astronautId?: string; config?: Config }
   | { type: 'config'; astronautId: string; config: Config }
   | { type: 'ack'; id: string; receivedAt: number; event?: CrewEvent }
   | { type: 'heartbeat'; serverTime: number }
