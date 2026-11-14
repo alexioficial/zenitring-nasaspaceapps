@@ -2,6 +2,7 @@
   import { onMount, untrack } from 'svelte';
   import Icon from '$lib/components/Icon.svelte';
   import MissionSources from '$lib/components/crew/MissionSources.svelte';
+  import SuitSignal from '$lib/components/crew/SuitSignal.svelte';
   import RadiationContext from '$lib/components/crew/RadiationContext.svelte';
   import { healthTopics } from '$lib/crew/health';
   import { activeSource } from '$lib/crew/suit';
@@ -25,6 +26,7 @@
   } from '$lib/crew/model';
   import type { MissionState, ClientMessage, MetricKey, ServerMessage } from '$lib/crew/types';
   import '$lib/crew/crew.css';
+  import '$lib/crew/device-access.css';
 
   let { astronautId }: { astronautId?: string } = $props();
   type View = 'personal' | 'overview' | 'events' | 'pair' | 'lab' | 'nasa';
@@ -68,12 +70,9 @@
     mission.crew.filter(
       (c) =>
         link === 'online' &&
-        freshness(
-          activeSource(c).connected,
-          activeSource(c).latest?.receivedAt ?? null,
-          activeSource(c).intervalMs,
-          now,
-        ) === 'live',
+        (freshness(c.connected, c.latest?.receivedAt ?? null, c.config.intervalMs, now) ===
+          'live' ||
+          freshness(c.suit.connected, c.suit.latest?.receivedAt ?? null, 3000, now) === 'live'),
     ).length,
   );
   let attention = $derived(
@@ -364,14 +363,14 @@
           <span class="crew-eyebrow">ONBOARD HEALTH / CREW MANIFEST</span>
           <h1>Crew health monitor</h1>
           <p>
-            Signals from rings and suits, selected by mission phase. Select an astronaut to look
-            closer.
+            Main readings follow the mission phase. Connected suit signals also appear below each
+            astronaut. Select a person for all measurements.
           </p>
         </div>
         <div class="crew-summary">
           <div>
             <strong>{live}<small> / {mission.crew.length}</small></strong><span
-              >current signals</span
+              >crew sending signals</span
             >
           </div>
           <div class:summary-alert={attention > 0}>
@@ -433,10 +432,10 @@
                         ? 'Signal stale'
                         : primary.deviceId
                           ? 'Disconnected'
-                          : 'Not linked'}<small
+                          : `${primary.label} not linked`}<small
                   >{primary.deviceId
                     ? `${primary.label} ${primary.deviceId.slice(0, 6)}`
-                    : 'Open Link devices to connect'}</small
+                    : 'Primary source for this phase'}</small
                 ></span
               >
               <span class="manifest-metric"
@@ -466,6 +465,11 @@
                     : 'No measurement received'}</small
                 ><Icon name="arrow" size={18} /></span
               >
+              {#if primary.type === 'ring'}<SuitSignal
+                  member={person}
+                  online={link === 'online'}
+                  {now}
+                />{/if}
             </button>
           {/each}
           <div class="manifest-foot">
@@ -724,163 +728,238 @@
       </section>
       <RadiationContext />
     {:else if view === 'pair'}
-      <section class="crew-page-intro">
-        <div>
+      <section
+        class="device-access"
+        class:personal-access={!!astronautId}
+        aria-label={astronautId ? 'My devices' : 'Astronaut links'}
+      >
+        <header class="access-heading">
           <span class="crew-eyebrow"
             >{astronautId
-              ? 'YOUR DEVICES / SOURCE ASSOCIATION'
-              : 'CENTRAL MONITOR / ASTRONAUT ACCESS'}</span
+              ? 'PERSONAL MONITOR / SIMULATED DEVICES'
+              : 'CENTRAL MONITOR / SHARE ACCESS'}</span
           >
-          <h1>{astronautId ? 'Your mission devices.' : 'One link for each astronaut.'}</h1>
+          <h1>{astronautId ? 'My devices' : 'Astronaut links'}</h1>
           <p>
             {astronautId
-              ? 'Open your simulated ring on the device transmitting your signals.'
-              : 'Share one link. It opens the astronaut’s health workspace, with their events and ring controls accessible from My devices.'}
+              ? 'Choose a simulator to send your signals to the crew monitor.'
+              : 'Copy a personal link and send it to that astronaut. They can view their health and open their devices from there.'}
           </p>
-        </div>
-        <span class="pair-count"
-          >{mission.crew.filter((c) => c.connected).length} rings · {mission.crew.filter(
-            (c) => c.suit.connected,
-          ).length} suits connected</span
-        >
-      </section>
-      <section class="pair-address">
-        <label for="mission-address">Mission server address</label><input
-          id="mission-address"
-          type="url"
-          bind:value={baseUrl}
-          placeholder="http://192.168.1.20:3000"
-        />
-        <p>
-          Use the server computer's LAN address, accessible from every device on the same Wi-Fi.
-          localhost points to each device itself. HTTPS automatically uses secure WebSocket.
-        </p>
-      </section>
-      <div class="pair-list">
-        {#each mission.crew as person (person.id)}
-          <article>
-            <div class="crew-person">
-              <span class="crew-insignia" style={`--crew-color:${person.color}`}
-                >{person.callsign.slice(0, 1)}<small>{person.callsign}</small></span
+        </header>
+        {#snippet connectionSettings()}
+          <div class="access-network">
+            {#if !astronautId && /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?=[:/]|$)/i.test(baseUrl)}<p
+                class="access-local-warning"
+              >
+                <Icon name="link" size={18} /><span
+                  ><strong>Sharing to a phone?</strong> Set this computer’s Wi-Fi address below first.
+                  A localhost link only works on this computer.</span
+                >
+              </p>{/if}
+            <details class="access-server">
+              <summary
+                ><span
+                  >{astronautId ? 'Connection settings' : 'Link address'}<small
+                    >{baseUrl || 'Loading server address…'}</small
+                  ></span
+                ><Icon name="chevron" size={16} /></summary
               >
               <div>
-                <h2>{person.name}</h2>
-                <p>
-                  {person.role} · {person.deviceId
-                    ? person.connected
-                      ? 'Ring active'
-                      : 'Ring reserved · disconnected'
-                    : 'Ready to link'}
+                <label for="mission-address">Server address used in links</label><input
+                  id="mission-address"
+                  type="url"
+                  bind:value={baseUrl}
+                  placeholder="http://192.168.1.20:3000"
+                  aria-describedby="mission-address-help"
+                />
+                <p id="mission-address-help">
+                  For another device, use this computer’s Wi-Fi address, for example
+                  http://192.168.1.20:3000. All devices must reach the same server. This changes the
+                  links below; it does not reconnect this monitor.
                 </p>
               </div>
-            </div>
-            <div class="pair-links">
-              {#if !astronautId}
+            </details>
+          </div>
+        {/snippet}
+        {#if !astronautId}{@render connectionSettings()}{/if}
+        <div class="access-list">
+          {#each mission.crew as person (person.id)}
+            <article class="access-person" aria-label={person.name}>
+              <header class="access-identity">
+                <span class="crew-insignia" style={`--crew-color:${person.color}`}
+                  >{person.callsign.slice(0, 1)}<small>{person.callsign}</small></span
+                >
                 <div>
-                  <span class="crew-eyebrow">ASTRONAUT ACCESS</span><a
-                    class="ring-url"
+                  <h2>{person.name}</h2>
+                  <p>{person.callsign} · {person.role}</p>
+                </div>
+              </header>
+              {#if !astronautId}
+                <div class="access-link">
+                  <span class="access-label">Personal health & devices</span><a
                     href={personalUrl(person.id)}
                     target="_blank"
-                    rel="noreferrer">{personalUrl(person.id)}</a
+                    rel="noreferrer"
+                    aria-label={`Open ${person.callsign} personal monitor in a new tab`}
+                    >{personalUrl(person.id)}</a
                   >
-                  <p class="pair-access-note">Health · Events · My devices</p>
-                </div>
-              {:else}
-                <div>
-                  <span class="crew-eyebrow">YOUR RING SIMULATOR</span>
-                  <p>Keep it open while sending signals and recording gestures.</p>
-                </div>
-              {/if}
-            </div>
-            <div class="pair-actions">
-              {#if !astronautId}
-                <button
-                  class="crew-button copy-link-feedback"
-                  class:is-copied={copyFeedback[person.id] === 'copied'}
-                  class:copy-failed={copyFeedback[person.id] === 'error'}
-                  disabled={copyFeedback[person.id] === 'copying'}
-                  aria-busy={copyFeedback[person.id] === 'copying'}
-                  aria-describedby={`copy-status-${person.id}`}
-                  onclick={() => copyLink(person.id)}
-                  ><Icon
-                    name={copyFeedback[person.id] === 'copied' ? 'check' : 'link'}
-                    size={17}
-                  />{copyFeedback[person.id] === 'copied'
-                    ? 'Link copied'
-                    : copyFeedback[person.id] === 'copying'
-                      ? 'Copying…'
-                      : copyFeedback[person.id] === 'error'
-                        ? 'Try copying again'
-                        : 'Copy astronaut link'}</button
-                >
-                <span
-                  id={`copy-status-${person.id}`}
-                  class="copy-link-status"
-                  class:copy-status-error={copyFeedback[person.id] === 'error'}
-                  role="status"
-                  aria-atomic="true"
-                  >{copyFeedback[person.id] === 'copied'
-                    ? `Ready to share with ${person.callsign}.`
-                    : copyFeedback[person.id] === 'error'
-                      ? 'Copy blocked. Select the URL in this row.'
-                      : copyFeedback[person.id] === 'copying'
-                        ? 'Copying to your clipboard…'
-                        : ''}</span
-                >
-                {#if person.deviceId}<details class="pair-device-options">
-                    <summary>Device options</summary>
-                    <p>
-                      Deliver pending events and disconnect the current ring before replacing it.
-                      Its event history is kept.
-                    </p>
-                    <button
-                      class="crew-button secondary"
-                      disabled={person.connected || link !== 'online'}
-                      onclick={() => release(person.id)}>Unlink current ring</button
+                  <div class="access-statuses">
+                    <span class:is-connected={link === 'online' && person.connected}
+                      >Ring · {link !== 'online'
+                        ? 'Status unavailable'
+                        : person.connected
+                          ? 'Connected'
+                          : person.deviceId
+                            ? 'Offline · reserved'
+                            : 'Not linked'}</span
+                    ><span class:is-connected={link === 'online' && person.suit.connected}
+                      >Suit · {link !== 'online'
+                        ? 'Status unavailable'
+                        : person.suit.connected
+                          ? 'Connected'
+                          : person.suit.deviceId
+                            ? 'Offline · reserved'
+                            : 'Not linked'}</span
                     >
-                  </details>{/if}
-              {:else}
-                <a class="crew-button" href={ringUrl(person.id)} target="_blank" rel="noreferrer"
-                  >Open my ring <Icon name="arrow" size={17} /></a
-                >
-              {/if}
-            </div>
-            <div class="suit-pair-row">
-              <strong>EVA suit</strong>
-              <p>
-                {person.suit.deviceName ?? 'No suit linked'} · {person.suit.connected
-                  ? 'Connected'
-                  : person.suit.deviceId
-                    ? 'Reserved · offline'
-                    : 'Ready to link'}
-              </p>
-              {#if astronautId}<a
-                  class="crew-button secondary"
-                  href={`${baseUrl.replace(/\/$/, '')}/suit?astronaut=${person.id}`}
-                  target="_blank"
-                  rel="noreferrer">Open my suit ↗</a
-                >
-              {:else if person.suit.deviceId}<details class="pair-device-options">
-                  <summary>Suit device options</summary>
-                  <p>
-                    Deliver pending events and disconnect this suit before replacing it. Its history
-                    is kept.
-                  </p>
+                  </div>
+                </div>
+                <div class="access-copy">
                   <button
-                    class="crew-button secondary"
-                    disabled={person.suit.connected || link !== 'online'}
-                    onclick={() => release(person.id, 'spacesuit')}>Unlink current suit</button
+                    class="crew-button copy-link-feedback"
+                    class:is-copied={copyFeedback[person.id] === 'copied'}
+                    class:copy-failed={copyFeedback[person.id] === 'error'}
+                    disabled={copyFeedback[person.id] === 'copying'}
+                    aria-busy={copyFeedback[person.id] === 'copying'}
+                    aria-describedby={`copy-status-${person.id}`}
+                    onclick={() => copyLink(person.id)}
+                    ><Icon
+                      name={copyFeedback[person.id] === 'copied' ? 'check' : 'link'}
+                      size={17}
+                    />{copyFeedback[person.id] === 'copied'
+                      ? 'Link copied'
+                      : copyFeedback[person.id] === 'copying'
+                        ? 'Copying…'
+                        : copyFeedback[person.id] === 'error'
+                          ? 'Try copying again'
+                          : 'Copy astronaut link'}</button
                   >
-                </details>{/if}
-            </div>
-          </article>
-        {/each}
-      </div>
-      <p class="pair-policy">
-        An astronaut's ring stays linked during a network outage. To replace it, deliver its pending
-        events and disconnect it first, then use Device options → Unlink current ring on the central
-        monitor.
-      </p>
+                  <span
+                    id={`copy-status-${person.id}`}
+                    class="copy-link-status"
+                    class:copy-status-error={copyFeedback[person.id] === 'error'}
+                    role="status"
+                    aria-atomic="true"
+                    >{copyFeedback[person.id] === 'copied'
+                      ? `Ready to share with ${person.callsign}.`
+                      : copyFeedback[person.id] === 'error'
+                        ? 'Copy blocked. Select the URL in this row.'
+                        : copyFeedback[person.id] === 'copying'
+                          ? 'Copying to your clipboard…'
+                          : ''}</span
+                  >
+                </div>
+                {#if person.deviceId || person.suit.deviceId}
+                  <details class="access-manage">
+                    <summary>Replace a linked device</summary>
+                    <div>
+                      <p>
+                        Deliver pending events and disconnect the device before unlinking it. Event
+                        history is kept.
+                      </p>
+                      <div class="access-manage-actions">
+                        {#if person.deviceId}<button
+                            class="crew-button secondary"
+                            disabled={person.connected || link !== 'online'}
+                            onclick={() => release(person.id)}>Unlink ring</button
+                          >{/if}{#if person.suit.deviceId}<button
+                            class="crew-button secondary"
+                            disabled={person.suit.connected || link !== 'online'}
+                            onclick={() => release(person.id, 'spacesuit')}>Unlink suit</button
+                          >{/if}
+                      </div>
+                    </div>
+                  </details>
+                {/if}
+              {:else}
+                <div class="access-device-list">
+                  <section class="access-device" aria-label="Ring simulator">
+                    <span class="access-device-icon"><Icon name="heart" size={23} /></span>
+                    <div class="access-device-info">
+                      <div>
+                        <h3>Ring</h3>
+                        <span
+                          class="access-device-status"
+                          class:is-connected={link === 'online' && person.connected}
+                          >{link !== 'online'
+                            ? 'Status unavailable'
+                            : person.connected
+                              ? 'Connected'
+                              : person.deviceId
+                                ? 'Offline · reserved'
+                                : 'Not linked'}</span
+                        >
+                      </div>
+                      <p>Biometrics, double-tap captures and swipe emergencies.</p>
+                      <small
+                        >{person.connected
+                          ? 'Already transmitting. Keep the existing simulator tab open.'
+                          : 'Open the simulator, then choose “Link this ring”.'}</small
+                      >
+                    </div>
+                    <a
+                      class="crew-button"
+                      href={ringUrl(person.id)}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label="Open my ring simulator in a new tab"
+                      >Open my ring <Icon name="arrow" size={17} /></a
+                    >
+                  </section>
+                  <section class="access-device" aria-label="EVA suit simulator">
+                    <span class="access-device-icon"><Icon name="orbit" size={23} /></span>
+                    <div class="access-device-info">
+                      <div>
+                        <h3>EVA suit</h3>
+                        <span
+                          class="access-device-status"
+                          class:is-connected={link === 'online' && person.suit.connected}
+                          >{link !== 'online'
+                            ? 'Status unavailable'
+                            : person.suit.connected
+                              ? 'Connected'
+                              : person.suit.deviceId
+                                ? 'Offline · reserved'
+                                : 'Not linked'}</span
+                        >
+                      </div>
+                      <p>Separate suit telemetry for spacewalk demonstrations.</p>
+                      <small
+                        >{person.suit.connected
+                          ? 'Already transmitting. Keep the existing simulator tab open.'
+                          : 'Open the simulator, then choose “Link this suit”.'}</small
+                      >
+                    </div>
+                    <a
+                      class="crew-button secondary"
+                      href={`${baseUrl.replace(/\/$/, '')}/suit?astronaut=${person.id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label="Open my suit simulator in a new tab"
+                      >Open my suit <Icon name="arrow" size={17} /></a
+                    >
+                  </section>
+                </div>
+                <p class="access-device-help">
+                  Simulators open in a new tab. Leave that tab visible while transmitting; return to
+                  My health to review your readings. Device replacements are managed from the
+                  central monitor.
+                </p>
+              {/if}
+            </article>
+          {/each}
+        </div>
+        {#if astronautId}{@render connectionSettings()}{/if}
+      </section>
     {:else if view === 'lab'}
       <section class="crew-page-intro">
         <div>

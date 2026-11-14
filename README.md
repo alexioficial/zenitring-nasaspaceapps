@@ -24,7 +24,7 @@ Open `http://localhost:3000` on the server computer. For separate phones/tablets
 | Historical Apollo explorer        | `/archive`                                     |
 | Preserved single-person prototype | `/legacy`                                      |
 
-Other crew IDs are `atlas` and `lyra`. The central monitor opens directly to the crew overview without the personal navigation bar. Its **Astronaut links** view offers one **Copy astronaut link** action per person. This opens their health workspace; **My devices → Open my ring** opens the simulator from there. Ring replacement is a secondary action inside **Device options**. Personal monitors have their own navigation and a fixed astronaut identity from the URL; their WebSocket session receives only that astronaut's records. These links select a demo context, not authenticated accounts.
+Other crew IDs are `atlas` and `lyra`. The central monitor opens directly to the crew overview without the personal navigation bar. Its **Astronaut links** view offers one **Copy astronaut link** action per person. This opens their health workspace; **My devices → Open my ring** opens the simulator from there. Ring replacement is a secondary action inside **Replace a linked device**. Personal monitors have their own navigation and a fixed astronaut identity from the URL; their WebSocket session receives only that astronaut's records. These links select a demo context, not authenticated accounts.
 
 All devices need network access to the server. Allow inbound TCP 3000 on the server's private network; avoid Wi-Fi client isolation. **localhost on a phone points to the phone**, not your computer. The linking view exposes an editable LAN address. No QR service or external connection service is required.
 

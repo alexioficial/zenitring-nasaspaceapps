@@ -21,6 +21,11 @@
       ? freshness(source.connected, source.latest?.receivedAt ?? null, source.intervalMs, now)
       : 'offline',
   );
+  let suitStatus = $derived(
+    online
+      ? freshness(member.suit.connected, member.suit.latest?.receivedAt ?? null, 3000, now)
+      : 'offline',
+  );
   const phaseAt = (t: number): Phase =>
     member.phaseHistory.findLast((p) => p.changedAt <= t)?.phase ?? 'cabin';
   let points = $derived(
@@ -181,12 +186,24 @@
         ><small>Last reception: {ageLabel(device.state.latest?.receivedAt ?? null, now)}</small>
       </div>{/each}
   </div>
-  {#if member.phase === 'spacewalk'}
+  {#if member.phase === 'spacewalk' || member.suit.deviceId || member.suit.latest}
     <section class="suit-environment" aria-label="Suit environment">
-      <h3>Inside the suit</h3>
-      <p>Atmosphere and equipment · separate from personal vital signs</p>
+      <h3>Suit telemetry</h3>
+      <p>
+        {suitStatus === 'live'
+          ? 'Receiving current suit signals'
+          : suitStatus === 'waiting'
+            ? 'Suit connected · waiting for a measurement'
+            : suitStatus === 'stale'
+              ? 'Suit signal stale · last known values'
+              : 'Suit offline · last known / unavailable values'} · {ageLabel(
+          member.suit.latest?.receivedAt ?? null,
+          now,
+        )}
+      </p>
+      <p>Suit ECG, atmosphere and equipment. These readings stay separate from the ring.</p>
       <div class="source-metrics">
-        {#each suitKeys.filter((k) => k !== 'pulse') as key}<div title={suitInfo[key].description}>
+        {#each suitKeys as key}<div title={suitInfo[key].description}>
             <span>{suitInfo[key].label}</span><strong
               >{member.suit.latest?.values[key].toFixed(suitInfo[key].digits) ?? '—'}
               <small>{suitInfo[key].unit}</small></strong
@@ -194,8 +211,10 @@
           </div>{/each}
       </div>
       <p class="snapshot-caption">
-        {status === 'live' ? 'Simulated measurements' : 'Last known / unavailable measurements'}. O₂
-        partial pressure is not SpO₂. No suit HRV or blood-oxygen measurement is supplied.
+        {suitStatus === 'live'
+          ? 'Simulated measurements'
+          : 'Last known / unavailable measurements'}. O₂ partial pressure is not SpO₂. No suit HRV
+        or blood-oxygen measurement is supplied.
       </p>
     </section>
   {/if}
