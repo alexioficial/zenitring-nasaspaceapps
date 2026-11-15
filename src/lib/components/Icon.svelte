@@ -1,5 +1,6 @@
 <script lang="ts">
   export type IconName =
+    | 'more'
     | 'person'
     | 'switch'
     | 'database'
@@ -34,6 +35,7 @@
     | 'temperature';
   let { name, size = 20 }: { name: IconName; size?: number } = $props();
   const paths: Record<IconName, string> = {
+    more: 'M5 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2ZM12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2ZM19 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z',
     person: 'M16 6a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM4 22v-3a8 8 0 0 1 16 0v3',
     switch: 'M3 7h18l-5-5M21 17H3l5 5',
     database:

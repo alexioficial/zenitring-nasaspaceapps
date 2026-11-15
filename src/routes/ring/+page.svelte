@@ -6,15 +6,8 @@
   import { RingClient } from '$lib/crew/ring-client';
   import { GestureRecognizer, type Gesture } from '$lib/crew/gestures';
   import { socketUrl } from '$lib/crew/connection';
-  import {
-    crewDefaults,
-    metricKeys,
-    metricInfo,
-    newId,
-    clockLabel,
-    validMetrics,
-  } from '$lib/crew/model';
-  import type { EventInput, Scenario } from '$lib/crew/types';
+  import { crewDefaults, metricInfo, newId, clockLabel, validMetrics } from '$lib/crew/model';
+  import type { EventInput, MetricKey, Scenario } from '$lib/crew/types';
   import '$lib/crew/crew.css';
 
   let selected = $state('vega');
@@ -53,6 +46,13 @@
       : null;
   });
   let astronaut = $derived(crewDefaults.find((c) => c.id === selected)!);
+  // The four readings that matter first, in the same order and words as My health.
+  const ringRows: [MetricKey, string][] = [
+    ['pulse', 'Heart rate'],
+    ['spo2', 'SpO₂'],
+    ['respiration', 'Respiration'],
+    ['skin', 'Skin deviation'],
+  ];
   let delivery = $derived(lastEvent ? ui?.deliveries[lastEvent.id] : undefined);
   let pendingEmergencies = $derived(ui?.pending.filter((e) => e.kind === 'emergency') ?? []);
   function remember() {
@@ -213,37 +213,37 @@
 <svelte:head
   ><title>ZENIT · Ring simulator</title><meta
     name="description"
-    content="A mobile simulated astronaut ring. Double tap to capture a moment; deliberately swipe to send an emergency to the crew monitor."
+    content="A mobile astronaut ring. Double tap to capture a moment; deliberately swipe to send an emergency to the crew monitor."
   /></svelte:head
 >
 
-<div class="crew-app ring-app">
+<div class="crew-app sim-app astronaut-workspace">
   <ViewHeader
     title="Ring simulator"
-    context={`${selected.toUpperCase()} · Demo tool generating simulated readings`}
+    context={`${astronaut.callsign} · ${astronaut.name}`}
     keepSourceOpen
   />
-  <main class="ring-content">
-    <p class="simulator-orientation">
-      Keep this tab open to send readings.
-      <a href={`/astronaut/${selected}`} target="_blank" rel="noreferrer"
-        >Open {selected.toUpperCase()}’s astronaut view ↗</a
+  <main class="crew-content sim-content">
+    <div class="sim-heading">
+      <h1>{active ? 'Ring' : 'Link your ring'}</h1>
+      <a class="sim-link" href={`/astronaut/${selected}`} target="_blank" rel="noreferrer"
+        >My health <Icon name="arrow" size={16} /></a
       >
-    </p>
+    </div>
     {#if !active}
-      <section class="ring-pairing">
-        <h1>A ring.<br />A connection.</h1>
-        <p>
-          Represent one astronaut. Send simulated signals and real gesture events to the shared crew
+      <section class="sim-pairing">
+        <p class="sim-lead">
+          Choose the astronaut this ring belongs to. It sends readings and real gestures to the crew
           monitor.
         </p>
         <form
+          class="sim-form"
           onsubmit={(e) => {
             e.preventDefault();
             start();
           }}
         >
-          <label for="ring-astronaut">Choose your astronaut</label><select
+          <label for="ring-astronaut">Astronaut</label><select
             id="ring-astronaut"
             bind:value={selected}
             >{#each crewDefaults as c}<option value={c.id}>{c.callsign} · {c.name}</option
@@ -254,88 +254,72 @@
             maxlength="60"
             required
           />
-          <p class="ring-device-id">DEVICE / {deviceId.slice(0, 12) || 'Preparing…'}</p>
           <button class="crew-button" disabled={!ready}
             >Link this ring <Icon name="link" size={18} /></button
           >
+          <p class="sim-meta">Device ID {deviceId.slice(0, 12) || 'Preparing…'}</p>
         </form>
-        <p class="ring-pairing-foot">
-          One active ring per astronaut. If a ring is already reserved, the monitor must release its
-          binding first.
+        <p class="sim-note">
+          One ring per astronaut. If it is reserved, release it from the crew monitor first.
         </p>
       </section>
     {:else if ui}
-      <section class="ring-identity">
-        <span class="crew-insignia" style={`--crew-color:${astronaut.color}`}
-          >{astronaut.callsign.slice(0, 1)}<small>{astronaut.callsign}</small></span
-        >
-        <div>
-          <span class="crew-eyebrow">{astronaut.role}</span>
-          <h1>{astronaut.name}</h1>
-          <p>{deviceName} / {deviceId.slice(0, 8)}</p>
-        </div>
-      </section>
-      <div class="ring-connection" class:ring-disconnected={ui.status !== 'online'}>
+      <div class="sim-status" class:is-offline={ui.status !== 'online'} role="status">
         <span
-          ><span class="status-dot"></span>{ui.status === 'online'
+          ><i aria-hidden="true"></i>{ui.status === 'online'
             ? 'Connected to crew monitor'
             : ui.status === 'connecting'
               ? 'Connecting to mission server'
               : ui.status === 'conflict'
                 ? 'Ring association blocked'
                 : 'Offline · events will queue'}</span
-        ><strong>{ui.config.intervalMs / 1000}s<span> transmission</span></strong>
+        ><span class="sim-rate">Every {ui.config.intervalMs / 1000} s</span>
       </div>
       {#if ui.error}<p class="crew-error" role="alert">{ui.error}</p>{/if}
-      {#if pendingEmergencies.length}<div class="ring-undelivered" role="alert">
-          <strong>Emergency NOT DELIVERED</strong>
+      {#if pendingEmergencies.length}<div class="sim-undelivered" role="alert">
+          <strong>Emergency not delivered</strong>
           <p>
             {pendingEmergencies.length} emergency {pendingEmergencies.length === 1
               ? 'event is'
-              : 'events are'} still pending. The central monitor has not confirmed receipt. Reconnect
-            this phone; keep the page open.
+              : 'events are'} still pending. The crew monitor has not confirmed receipt. Reconnect and
+            keep this page open.
           </p>
         </div>{/if}
-      <section class="ring-telemetry" aria-label="Simulated signal being transmitted">
-        <div class="ring-telemetry-heading">
-          <span class="crew-eyebrow"
-            >{ui.paused ? 'RETAINED MEASUREMENTS' : 'SIMULATED TELEMETRY'}</span
-          ><span
-            >{ui.transmittedAt
-              ? `Sent ${clockLabel(ui.transmittedAt)}`
-              : 'Not yet transmitted'}</span
-          >
+      <section class="medbay-telemetry sim-readings" aria-label="Signal being transmitted">
+        <div class="medbay-vitals-heading">
+          <h2>{ui.paused ? 'Retained readings' : 'Sending now'}</h2>
+          <span>{ui.transmittedAt ? `Sent ${clockLabel(ui.transmittedAt)}` : 'Not yet sent'}</span>
         </div>
-        <div class="ring-values">
-          {#each metricKeys as key}<div>
-              <span>{metricInfo[key].label}</span><strong
-                >{ui.values[key].toFixed(metricInfo[key].digits)}<small
-                  >{metricInfo[key].unit}</small
-                ></strong
-              >
+        <dl class="medbay-vitals" class:medbay-retained={ui.paused}>
+          {#each ringRows as [key, label]}<div>
+              <dt><span>{label}</span></dt>
+              <dd>
+                {ui.values[key].toFixed(metricInfo[key].digits)}<small>{metricInfo[key].unit}</small
+                >
+              </dd>
             </div>{/each}
-        </div>
-        <p>
-          Skin Δ is a change from a fictional baseline, not body temperature. HRV is variation
-          between heartbeats.
+        </dl>
+        <p class="medbay-secondary-metric">
+          HRV <strong>{ui.values.hrv.toFixed(metricInfo.hrv.digits)} ms</strong>
+        </p>
+        <p class="medbay-measured">
+          Skin deviation is a change from a fictional baseline, not body temperature. Keep this tab
+          open and the screen awake to keep sending.
         </p>
       </section>
-      <section class="ring-primary-actions" aria-label="Quick actions">
-        <button class="crew-button" onclick={() => capture('button')}
-          ><Icon name="save" size={20} /> Capture moment</button
-        >
-        <button
-          class="crew-button secondary"
-          aria-expanded={confirmEmergency}
-          onclick={() => (confirmEmergency = !confirmEmergency)}>Send emergency</button
-        >
-        {#if confirmEmergency}<div class="ring-emergency-confirm">
+      <section class="sim-actions" aria-label="Quick actions">
+        <div class="sim-buttons">
+          <button class="crew-button" onclick={() => capture('button')}>Capture moment</button>
+          <button
+            class="crew-button secondary"
+            aria-expanded={confirmEmergency}
+            onclick={() => (confirmEmergency = !confirmEmergency)}>Send emergency</button
+          >
+        </div>
+        {#if confirmEmergency}<div class="sim-confirm" role="group" aria-label="Confirm emergency">
             <h2>Send an emergency to the crew?</h2>
-            <p>
-              This records an emergency and its current readings. Delivery is confirmed separately
-              below.
-            </p>
-            <div>
+            <p>This records an emergency and its current readings. Delivery is confirmed below.</p>
+            <div class="sim-buttons">
               <button class="crew-button danger" onclick={() => capture('button', true)}
                 >Confirm emergency</button
               ><button class="crew-button secondary" onclick={() => (confirmEmergency = false)}
@@ -343,36 +327,32 @@
               >
             </div>
           </div>{/if}
-      </section>
-      <section
-        class="ring-feedback"
-        class:feedback-emergency={lastEvent?.kind === 'emergency'}
-        aria-live="polite"
-      >
-        <span class="crew-eyebrow">{lastEvent ? 'CAPTURE & DELIVERY' : 'READY'}</span><strong
-          >{feedback}</strong
-        >{#if lastEvent}<p>
-            {clockLabel(lastEvent.occurredAt)} · {delivery?.status === 'confirmed'
-              ? `Confirmed by server at ${clockLabel(delivery.receivedAt!)}`
-              : delivery?.status === 'rejected'
-                ? `Not delivered: ${delivery.message}`
-                : 'Pending delivery · waiting for server confirmation'}
-          </p>
-          {#if delivery?.status === 'rejected'}<button
-              class="crew-inline-button"
-              onclick={() => ring?.retryRejected(lastEvent!.id)}>Retry this event</button
-            >{/if}{:else}<p>
-            A gesture captures available readings. It never guesses a symptom.
-          </p>{/if}
-      </section>
-      <section class="ring-gesture-section" aria-label="Ring gesture controls">
-        <div class="ring-touch-heading">
-          <h2>Record a moment</h2>
-          <span>GESTURE SURFACE</span>
+        <div
+          class="sim-feedback"
+          class:is-emergency={lastEvent?.kind === 'emergency'}
+          aria-live="polite"
+        >
+          <strong>{feedback}</strong>
+          {#if lastEvent}<p>
+              {clockLabel(lastEvent.occurredAt)} · {delivery?.status === 'confirmed'
+                ? `Confirmed by server at ${clockLabel(delivery.receivedAt!)}`
+                : delivery?.status === 'rejected'
+                  ? `Not delivered: ${delivery.message}`
+                  : 'Pending · waiting for server confirmation'}
+            </p>
+            {#if delivery?.status === 'rejected'}<button
+                class="crew-inline-button"
+                onclick={() => ring?.retryRejected(lastEvent!.id)}>Retry this event</button
+              >{/if}{:else}<p>
+              A gesture captures available readings. It never guesses a symptom.
+            </p>{/if}
         </div>
+      </section>
+      <section class="sim-gesture" aria-label="Ring gesture controls">
+        <h2>Record a moment</h2>
         <button
           bind:this={surface}
-          class="ring-gesture-surface"
+          class="sim-surface"
           class:surface-pressed={pressed}
           onpointerdown={down}
           onpointermove={move}
@@ -390,24 +370,25 @@
             {pressed}
             pulse={visualPulse}
             emergency={lastEvent?.kind === 'emergency'}
+            labeled={false}
           />
-          <span class="surface-direction"><span>←</span> swipe deliberately <span>→</span></span
-          ><span class="surface-footer">Double tap anywhere on this surface</span>
+          <span class="sim-surface-hint">Double tap anywhere on this surface</span>
         </button>
-        <div class="gesture-legend">
-          <div><strong>•• Double tap</strong><span>Capture this moment</span></div>
-          <div><strong>↔ Deliberate swipe</strong><span>Activate an emergency</span></div>
-        </div>
+        <ul class="sim-legend">
+          <li><strong>Double tap</strong><span>Capture this moment</span></li>
+          <li><strong>Deliberate swipe</strong><span>Send an emergency</span></li>
+        </ul>
       </section>
 
-      <details class="ring-controls">
-        <summary>Simulation controls <span>{ui.transmissions} transmissions</span></summary>
+      <details class="crew-disclosure sim-controls">
+        <summary>Simulation controls <span class="sim-count">{ui.transmissions} sent</span></summary
+        >
         <div>
           <h3>Signal scenario</h3>
-          <div class="ring-scenarios">
-            {#each [{ id: 'normal', label: 'Normal' }, { id: 'drift', label: 'Progressive change' }, { id: 'excursion', label: 'Demo excursion' }] as s}<button
+          <div class="sim-scenarios">
+            {#each [{ id: 'normal', label: 'Normal' }, { id: 'drift', label: 'Progressive' }, { id: 'excursion', label: 'Excursion' }] as s}<button
                 class="crew-button secondary"
-                class:scenario-chosen={ui.config.scenario === s.id}
+                aria-pressed={ui.config.scenario === s.id}
                 disabled={ui.status !== 'online'}
                 onclick={() => scenario(s.id as Scenario)}>{s.label}</button
               >{/each}
@@ -416,7 +397,7 @@
             Values move gradually. These scenarios and ranges are presentation fixtures, not medical
             conditions.
           </p>
-          <div class="ring-control-actions">
+          <div class="sim-buttons">
             <button
               class="crew-button secondary"
               onclick={() => {
@@ -432,10 +413,7 @@
               }}>{ui.paused ? 'Resume telemetry' : 'Pause telemetry'}</button
             >
           </div>
-          <p>
-            Pausing telemetry keeps the connection open so the monitor can demonstrate a stale
-            signal.
-          </p>
+          <p>Pausing keeps the connection open so the monitor can show a stale signal.</p>
           <button
             class="crew-inline-button"
             disabled={ui.pending.length > 0}
@@ -447,9 +425,11 @@
           </p>
         </div>
       </details>
-      {#if history.length}<details class="ring-controls">
-          <summary>Recent gestures <span>{ui.pending.length} pending</span></summary>
-          <ul class="ring-recent-events">
+      {#if history.length}<details class="crew-disclosure sim-controls">
+          <summary
+            >Recent gestures <span class="sim-count">{ui.pending.length} pending</span></summary
+          >
+          <ul class="sim-recent">
             {#each history as event (event.id)}<li>
                 <strong>{event.kind === 'emergency' ? 'Emergency' : 'Moment'}</strong><span
                   >{clockLabel(event.occurredAt)}</span
@@ -461,26 +441,13 @@
     {#if storageWarning || ui?.storageError}<p class="crew-error" role="alert">
         {storageWarning || ui?.storageError}
       </p>{/if}
-    <footer class="ring-footer">
-      Keep this page visible and the screen awake for regular transmission.<br /><strong
-        >Simulated ZENIT hardware · no commercial wearable connected.</strong
-      ><a href="/crew" target="_blank" rel="noreferrer"
-        >Open crew monitor <Icon name="arrow" size={15} /></a
-      >
+    <footer class="crew-footer">
+      <span><strong>No commercial wearable connected.</strong></span>
+      <div>
+        <a href="/crew" target="_blank" rel="noreferrer"
+          >Open crew monitor <Icon name="arrow" size={15} /></a
+        >
+      </div>
     </footer>
   </main>
 </div>
-
-<style>
-  .simulator-orientation {
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--instrument-line);
-    color: var(--instrument-muted);
-  }
-  .simulator-orientation a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-  }
-</style>

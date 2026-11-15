@@ -99,7 +99,6 @@
         <span class="crew-eyebrow">{member.callsign} / ONE CONTINUOUS HISTORY</span>
         <h2>Follow the astronaut.</h2>
       </div>
-      <span class="source-tag">SIMULATED SIGNALS</span>
     </div>
   {/if}
   {#if presentation !== 'trend'}
@@ -266,10 +265,8 @@
             </div>{/each}
         </div>
         <p class="snapshot-caption">
-          {suitStatus === 'live'
-            ? 'Simulated measurements'
-            : 'Last known / unavailable measurements'}. O₂ partial pressure is not SpO₂. No suit HRV
-          or blood-oxygen measurement is supplied.
+          {suitStatus === 'live' ? 'Live measurements' : 'Last known / unavailable measurements'}.
+          O₂ partial pressure is not SpO₂. No suit HRV or blood-oxygen measurement is supplied.
         </p>
       </section>
     {/if}

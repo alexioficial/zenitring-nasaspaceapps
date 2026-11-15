@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { onMount, untrack } from 'svelte';
+  import { onMount, untrack, tick } from 'svelte';
+  import { page } from '$app/state';
+  import { goto } from '$app/navigation';
   import Icon from '$lib/components/Icon.svelte';
   import ViewHeader from './ViewHeader.svelte';
   import MissionSources from '$lib/components/crew/MissionSources.svelte';
@@ -11,6 +13,8 @@
   import '$lib/crew/health.css';
   import HealthInterpretation from '$lib/components/crew/HealthInterpretation.svelte';
   import PersonalHealth from '$lib/components/crew/PersonalHealth.svelte';
+  import PersonalRecords from './PersonalRecords.svelte';
+  import { personalView, personalViewUrl, type PersonalView } from '$lib/crew/workspace';
   import Trend from '$lib/components/crew/Trend.svelte';
   import EventCard from '$lib/components/crew/EventCard.svelte';
   import SimulationSettings from '$lib/components/crew/SimulationSettings.svelte';
@@ -30,7 +34,7 @@
   import '$lib/crew/device-access.css';
 
   let { astronautId }: { astronautId?: string } = $props();
-  type View = 'personal' | 'overview' | 'events' | 'pair' | 'lab' | 'nasa';
+  type View = PersonalView;
   let mission = $state<MissionState>(
     untrack(() => ({
       crew: initialCrew().filter((c) => !astronautId || c.id === astronautId),
@@ -39,20 +43,30 @@
     })),
   );
   let personalId = $derived(astronautId ?? 'vega');
-  let view = $state<View>(untrack(() => (astronautId ? 'personal' : 'overview')));
+  let view = $state<View>(untrack(() => (astronautId ? personalView(page.url) : 'overview')));
   let selected = $state<string | null>(untrack(() => astronautId ?? null));
   let metric = $state<MetricKey>('pulse');
-  const personalTabs: [View, string, 'heart' | 'pulse' | 'book' | 'link' | 'monitor' | 'orbit'][] =
-    [
-      ['personal', 'My health', 'heart'],
-      ['events', 'My records', 'book'],
-      ['pair', 'My devices', 'link'],
-    ];
-  let moreOpen = $state(false);
+  const personalTabs: [View, string, 'heart' | 'book' | 'link' | 'more'][] = [
+    ['personal', 'Health', 'heart'],
+    ['events', 'Records', 'book'],
+    ['pair', 'Devices', 'link'],
+    ['more', 'Tools', 'more'],
+  ];
+  let checkinRequested = $state(false);
+  let contentElement = $state<HTMLElement>();
+  let recordCount = $derived(mission.events.length + (mission.crew[0]?.healthChecks.length ?? 0));
+  $effect(() => {
+    if (astronautId) view = personalView(page.url);
+  });
   let link = $state('connecting');
   let message = $state('');
   let now = $state(Date.now());
   let baseUrl = $state('');
+  // Nothing linked yet: the Devices tab carries a dot until the first simulator is linked.
+  let needsDevice = $derived.by(() => {
+    const person = mission.crew.find((c) => c.id === personalId);
+    return link === 'online' && !!person && !person.deviceId && !person.suit.deviceId;
+  });
   let historyFilter = $state('all');
   let copyFeedback = $state<Record<string, 'copying' | 'copied' | 'error'>>({});
   const copyTimers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -161,23 +175,37 @@
   });
   function focus(id: string) {
     if (astronautId && id !== astronautId) return;
+    navigate('overview');
     selected = id;
-    view = 'overview';
     historyFilter = 'all';
     message = '';
   }
   function history(id: string) {
     if (astronautId && id !== astronautId) return;
+    navigate('events');
     selected = id;
-    view = 'events';
     historyFilter = 'all';
     message = '';
   }
-  function navigate(next: View) {
-    moreOpen = false;
+  async function navigate(next: View) {
+    checkinRequested = false;
     view = next;
     if (next === 'overview' || next === 'events') selected = astronautId ?? null;
     message = '';
+    if (astronautId)
+      await goto(personalViewUrl(page.url, next), { noScroll: true, keepFocus: true });
+    await tick();
+    if (!contentElement) return;
+    const heading = contentElement.querySelector('h1');
+    if (heading) {
+      heading.tabIndex = -1;
+      heading.focus({ preventScroll: true });
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+  async function newCheckin() {
+    await navigate('personal');
+    checkinRequested = true;
   }
   const ringUrl = (id: string) => `${baseUrl.replace(/\/$/, '')}/ring?astronaut=${id}`;
   const personalUrl = (id: string) => `${baseUrl.replace(/\/$/, '')}/astronaut/${id}`;
@@ -257,7 +285,7 @@
       : 'Crew monitor'}</title
   ><meta
     name="description"
-    content="A shared crew monitor for simulated astronaut rings. Real device communication, explicitly simulated biometrics."
+    content="A shared crew monitor for astronaut rings, with real device communication."
   /></svelte:head
 >
 
@@ -285,47 +313,24 @@
     <div class="medbay-navigation">
       <nav class="crew-navigation" aria-label="Astronaut views">
         {#each personalTabs as [id, label, icon]}<button
-            aria-current={view === id ? 'page' : undefined}
+            aria-current={view === id ||
+            (id === 'more' && ['overview', 'lab', 'nasa'].includes(view))
+              ? 'page'
+              : undefined}
+            aria-label={id === 'events' && recordCount
+              ? `${label}, ${recordCount} ${recordCount === 1 ? 'record' : 'records'}`
+              : id === 'pair' && needsDevice
+                ? `${label}, link a device`
+                : label}
             onclick={() => navigate(id)}
-            ><Icon name={icon} size={28} />{label}{#if id === 'events'}<span class="nav-event-count"
-                >{mission.events.length}</span
-              >{/if}</button
+            data-view={id}
+            ><Icon name={icon} size={28} /><span class="nav-label">{label}</span
+            >{#if id === 'events' && recordCount}<span class="nav-event-count" aria-hidden="true"
+                >{recordCount > 99 ? '99+' : recordCount}</span
+              >{/if}{#if id === 'pair' && needsDevice}<span class="nav-dot" aria-hidden="true"
+              ></span>{/if}</button
           >{/each}
       </nav>
-      <div class="medbay-nav-labels">
-        <span class="medbay-data-label"><Icon name="database" size={20} />Simulated data</span><span
-          class="medbay-concept-label"><Icon name="eye" size={20} />Concept preview</span
-        >
-      </div>
-      <details class="workspace-more" bind:open={moreOpen}>
-        <summary
-          >More{view === 'overview'
-            ? ' · Signal details'
-            : view === 'lab'
-              ? ' · Simulation settings'
-              : view === 'nasa'
-                ? ' · NASA resources'
-                : ''}</summary
-        >
-        <nav aria-label="More astronaut tools">
-          <button
-            class="crew-button secondary"
-            aria-current={view === 'overview' ? 'page' : undefined}
-            onclick={() => navigate('overview')}>Signal details</button
-          >
-          <button
-            class="crew-button secondary"
-            aria-current={view === 'nasa' ? 'page' : undefined}
-            onclick={() => navigate('nasa')}>NASA resources</button
-          >
-          <button
-            class="crew-button secondary"
-            aria-current={view === 'lab' ? 'page' : undefined}
-            onclick={() => navigate('lab')}>Simulation settings</button
-          >
-          <a class="crew-inline-button" href="/research">Research scenarios ↗</a>
-        </nav>
-      </details>
     </div>
   {/if}
   {#if emergencies.length}
@@ -354,7 +359,12 @@
           onclick={() => connection.connect()}>Reconnect</button
         >{/if}
     </p>{/if}
-  <main id="crew-content" class="crew-content">
+  <main
+    id="crew-content"
+    class="crew-content"
+    class:wrap={!!astronautId}
+    bind:this={contentElement}
+  >
     {#if !astronautId}<div class="central-monitor-tools">
         <span class="crew-muted"
           >{member
@@ -390,6 +400,8 @@
         {send}
         ondetail={focus}
         onhistory={history}
+        ondevices={() => navigate('pair')}
+        startCheckin={checkinRequested}
       />
     {:else if view === 'overview' && !member}
       <section class="crew-page-intro">
@@ -512,7 +524,7 @@
             </button>
           {/each}
           <div class="manifest-foot">
-            <span><span class="status-dot"></span>Sources: simulated rings and suits</span><span
+            <span><span class="status-dot"></span>Sources: rings and suits</span><span
               >Demo references, not diagnoses.</span
             >
           </div>
@@ -591,13 +603,13 @@
       <section class="crew-page-intro detail-intro">
         <div>
           <span class="crew-eyebrow">{member.callsign} / {member.role}</span>
-          <h1>{member.name}</h1>
+          <h1>{astronautId ? 'Signal details' : member.name}</h1>
           {#if !astronautId}<a class="crew-inline-button" href={`/astronaut/${member.id}`}
               >Switch to {member.callsign}’s astronaut view <Icon name="arrow" size={17} /></a
             >{/if}
           <p>
             {detailSource.label} · {member.phase} · {detailStatus === 'live'
-              ? 'Receiving simulated telemetry'
+              ? 'Receiving telemetry'
               : 'No current primary signal — retained values stay labelled'}
           </p>
         </div>
@@ -653,9 +665,7 @@
               >
             </div>
             <Trend samples={member.samples} {metric} intervalMs={member.config.intervalMs} />
-            <p class="snapshot-caption">
-              Simulated measurements · up to 120 recent samples. Missing signals remain gaps.
-            </p>
+            <p class="snapshot-caption">Up to 120 recent samples. Missing signals remain gaps.</p>
           </div>
           <details class="crew-disclosure">
             <summary>Signal interpretation & sources</summary>
@@ -728,6 +738,63 @@
             />{/each}
         </section>
       </div>
+    {:else if view === 'events' && astronautId && mission.crew[0]}
+      <PersonalRecords
+        member={mission.crew[0]}
+        events={mission.events}
+        online={link === 'online'}
+        {now}
+        {send}
+        onnew={newCheckin}
+      />
+    {:else if view === 'more'}
+      <section class="personal-tools">
+        <header class="personal-page-heading">
+          <h1>Tools</h1>
+          <p>Details and tools, when you need them.</p>
+        </header>
+        <nav aria-label="More astronaut tools">
+          <button onclick={() => navigate('overview')}
+            ><Icon name="pulse" size={23} /><span
+              ><strong>Signal details</strong><small
+                >Measurements, freshness &amp; device sources</small
+              ></span
+            ><Icon name="chevron" size={17} /></button
+          >
+          <button onclick={() => navigate('nasa')}
+            ><Icon name="orbit" size={23} /><span
+              ><strong>NASA resources</strong><small
+                >Historical observations &amp; health context</small
+              ></span
+            ><Icon name="chevron" size={17} /></button
+          >
+          <button onclick={() => navigate('lab')}
+            ><Icon name="monitor" size={23} /><span
+              ><strong>Simulation settings</strong><small
+                >Demo ranges &amp; transmission intervals</small
+              ></span
+            ><Icon name="chevron" size={17} /></button
+          >
+          <a href="/research"
+            ><Icon name="book" size={23} /><span
+              ><strong>Research scenarios</strong><small
+                >Synthetic experiments outside mission records</small
+              ></span
+            ><Icon name="arrow" size={17} /></a
+          >
+          <button onclick={download}
+            ><Icon name="save" size={23} /><span
+              ><strong>Export my session</strong><small>Download this view as a file</small></span
+            ><Icon name="arrow" size={17} /></button
+          >
+          <a href="/"
+            ><Icon name="switch" size={23} /><span
+              ><strong>Switch view</strong><small>Choose an astronaut or the crew monitor</small
+              ></span
+            ><Icon name="chevron" size={17} /></a
+          >
+        </nav>
+      </section>
     {:else if view === 'events'}
       <section class="crew-page-intro">
         <div>
@@ -769,8 +836,8 @@
       <section class="crew-page-intro">
         <div>
           <span class="crew-eyebrow">RESEARCH / DATA PROVENANCE</span>
-          <h1>Evidence with a source.</h1>
-          <p>NASA observations and references, clearly separated from simulated telemetry.</p>
+          <h1>{astronautId ? 'NASA resources' : 'Evidence with a source.'}</h1>
+          <p>NASA observations and references, clearly separated from crew telemetry.</p>
         </div>
       </section>
       <RadiationContext />
@@ -782,14 +849,12 @@
       >
         <header class="access-heading">
           <span class="crew-eyebrow"
-            >{astronautId
-              ? 'PERSONAL MONITOR / SIMULATED DEVICES'
-              : 'CENTRAL MONITOR / SHARE ACCESS'}</span
+            >{astronautId ? 'PERSONAL MONITOR / DEVICES' : 'CENTRAL MONITOR / SHARE ACCESS'}</span
           >
           <h1>{astronautId ? 'My devices' : 'Astronaut links'}</h1>
           <p>
             {astronautId
-              ? 'Choose a simulator to send your signals to the crew monitor.'
+              ? 'Open a simulator, tap Link, then come back here.'
               : 'Copy a personal link and send it to that astronaut. They can view their health and open their devices from there.'}
           </p>
         </header>
@@ -934,15 +999,19 @@
                   </details>
                 {/if}
               {:else}
+                {@const ringOn = link === 'online' && person.connected}
+                {@const suitOn = link === 'online' && person.suit.connected}
                 <div class="access-device-list">
-                  <section class="access-device" aria-label="Ring simulator">
+                  <section
+                    class="access-device"
+                    class:is-linked={ringOn}
+                    aria-label="Ring simulator"
+                  >
                     <span class="access-device-icon"><Icon name="heart" size={23} /></span>
                     <div class="access-device-info">
                       <div>
-                        <h3>Ring</h3>
-                        <span
-                          class="access-device-status"
-                          class:is-connected={link === 'online' && person.connected}
+                        <h2>Ring</h2>
+                        <span class="access-device-status" class:is-connected={ringOn}
                           >{link !== 'online'
                             ? 'Status unavailable'
                             : person.connected
@@ -952,30 +1021,31 @@
                                 : 'Not linked'}</span
                         >
                       </div>
-                      <p>Biometrics, double-tap captures and swipe emergencies.</p>
-                      <small
-                        >{person.connected
-                          ? 'Already transmitting. Keep the existing simulator tab open.'
-                          : 'Open the simulator, then choose “Link this ring”.'}</small
-                      >
+                      <p>
+                        {ringOn
+                          ? 'Sending readings. Keep its tab open.'
+                          : 'Heart rate, SpO₂ and gestures.'}
+                      </p>
                     </div>
-                    <a
-                      class="crew-button"
-                      href={ringUrl(person.id)}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="Open my ring simulator in a new tab"
-                      >Open my ring <Icon name="arrow" size={17} /></a
-                    >
+                    {#if !ringOn}<a
+                        class="crew-button"
+                        href={ringUrl(person.id)}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="Open my ring simulator in a new tab"
+                        >Open ring simulator <Icon name="arrow" size={17} /></a
+                      >{/if}
                   </section>
-                  <section class="access-device" aria-label="EVA suit simulator">
+                  <section
+                    class="access-device"
+                    class:is-linked={suitOn}
+                    aria-label="EVA suit simulator"
+                  >
                     <span class="access-device-icon"><Icon name="orbit" size={23} /></span>
                     <div class="access-device-info">
                       <div>
-                        <h3>EVA suit</h3>
-                        <span
-                          class="access-device-status"
-                          class:is-connected={link === 'online' && person.suit.connected}
+                        <h2>EVA suit</h2>
+                        <span class="access-device-status" class:is-connected={suitOn}
                           >{link !== 'online'
                             ? 'Status unavailable'
                             : person.suit.connected
@@ -985,28 +1055,27 @@
                                 : 'Not linked'}</span
                         >
                       </div>
-                      <p>Separate suit telemetry for spacewalk demonstrations.</p>
-                      <small
-                        >{person.suit.connected
-                          ? 'Already transmitting. Keep the existing simulator tab open.'
-                          : 'Open the simulator, then choose “Link this suit”.'}</small
-                      >
+                      <p>
+                        {suitOn
+                          ? 'Sending readings. Keep its tab open.'
+                          : 'Optional · for spacewalks.'}
+                      </p>
                     </div>
-                    <a
-                      class="crew-button secondary"
-                      href={`${baseUrl.replace(/\/$/, '')}/suit?astronaut=${person.id}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="Open my suit simulator in a new tab"
-                      >Open my suit <Icon name="arrow" size={17} /></a
-                    >
+                    {#if !suitOn}<a
+                        class="crew-button secondary"
+                        href={`${baseUrl.replace(/\/$/, '')}/suit?astronaut=${person.id}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="Open my suit simulator in a new tab"
+                        >Open suit simulator <Icon name="arrow" size={17} /></a
+                      >{/if}
                   </section>
                 </div>
-                <p class="access-device-help">
-                  Simulators open in a new tab. Leave that tab visible while transmitting; return to
-                  My health to review your readings. Device replacements are managed from the
-                  central monitor.
-                </p>
+                {#if ringOn || suitOn}<button
+                    class="crew-button access-continue"
+                    onclick={() => navigate('personal')}
+                    >See my health <Icon name="arrow" size={17} /></button
+                  >{/if}
               {/if}
             </article>
           {/each}
@@ -1017,7 +1086,7 @@
       <section class="crew-page-intro">
         <div>
           <span class="crew-eyebrow">DEMONSTRATION / SOURCE CONTROLS</span>
-          <h1>Make the signal tell a story.</h1>
+          <h1>{astronautId ? 'Simulation settings' : 'Make the signal tell a story.'}</h1>
           <p>
             Changes apply to the selected transmitter. Operational emergency actions stay in the
             event log.
@@ -1056,67 +1125,21 @@
         </section>
       </div>
     {/if}
-    <footer class="crew-footer">
-      <span
-        >ZENIT / {astronautId ? 'Personal monitor' : 'Central crew monitor'}<br /><strong
-          >All biometrics simulated. No clinical assessment.</strong
-        ></span
-      >
-      <div>
-        {#if !astronautId}<a href="/archive">Apollo 11 archive</a><a href="/legacy"
-            >Personal demo archive</a
-          >{/if}<button onclick={download}>Export visible session</button>{#if !astronautId}<a
-            href="/api/mission-export"
-            download="zenit-complete-log.json">Complete server archive</a
-          >{/if}
-      </div>
-    </footer>
+    {#if astronautId}
+      <footer class="crew-footer">
+        <span><strong>Not a clinical assessment.</strong></span>
+      </footer>
+    {:else}
+      <footer class="crew-footer">
+        <span>ZENIT / Central crew monitor<br /><strong>No clinical assessment.</strong></span>
+        <div>
+          <a href="/archive">Apollo 11 archive</a><a href="/legacy">Personal demo archive</a><button
+            onclick={download}>Export visible session</button
+          ><a href="/api/mission-export" download="zenit-complete-log.json"
+            >Complete server archive</a
+          >
+        </div>
+      </footer>
+    {/if}
   </main>
 </div>
-
-<style>
-  .workspace-more {
-    background: white;
-    border-bottom: 1px solid var(--instrument-line);
-    padding: 0 32px;
-  }
-  .workspace-more summary {
-    min-height: 44px;
-    align-content: center;
-    cursor: pointer;
-    color: var(--instrument-muted);
-    font-size: 13px;
-  }
-  .workspace-more nav {
-    display: flex;
-    gap: 10px 20px;
-    flex-wrap: wrap;
-    padding: 4px 0 16px;
-  }
-  .workspace-more button[aria-current='page'] {
-    border-color: var(--instrument-accent);
-    color: var(--instrument-accent);
-  }
-  @media (max-width: 720px) {
-    .workspace-more {
-      padding: 0 20px;
-    }
-  }
-  @media (max-width: 480px) {
-    .crew-navigation {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      padding: 0 8px;
-    }
-    .crew-navigation > button {
-      justify-content: center;
-      padding: 0 5px;
-      gap: 5px;
-    }
-  }
-  @media (max-width: 360px) {
-    .crew-navigation :global(svg) {
-      display: none;
-    }
-  }
-</style>

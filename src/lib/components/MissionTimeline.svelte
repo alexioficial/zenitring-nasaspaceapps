@@ -36,7 +36,6 @@
       <h2 id="timeline-title">Your health, in context</h2>
       <p>Heart rate across your mission</p>
     </div>
-    <span class="tag">Simulated data</span>
   </div>
   <div class="reading-strip">
     <div class="current-reading" class:violet={phase === 1}>
@@ -81,7 +80,7 @@
         viewBox="0 0 900 250"
         preserveAspectRatio="none"
         role="img"
-        aria-label="Simulated pulse through preparation, spacewalk and return. Gaps show missing samples. Ring and suit ECG use separate colors."
+        aria-label="Pulse through preparation, spacewalk and return. Gaps show missing samples. Ring and suit ECG use separate colors."
       >
         <rect
           x={x(phases[phase].start)}

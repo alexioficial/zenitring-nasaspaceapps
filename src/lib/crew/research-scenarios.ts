@@ -36,7 +36,7 @@ export const researchScenarios = [
     title: 'Suit atmosphere change',
     expected: 'suit-change',
     description:
-      'Environmental CO₂ changes in a simulated suit. Expected: distinguish atmosphere from personal vital signs and ask about suit alerts.',
+      'Environmental CO₂ changes in a suit. Expected: distinguish atmosphere from personal vital signs and ask about suit alerts.',
   },
   {
     id: 'dropout',

@@ -165,7 +165,11 @@ export function attachHub(
           );
           target.deviceId = m.deviceId;
           target.deviceName =
-            typeof m.deviceName === 'string' ? m.deviceName.slice(0, 60) : `Simulated ${m.role}`;
+            typeof m.deviceName === 'string'
+              ? m.deviceName.slice(0, 60)
+              : m.role === 'spacesuit'
+                ? 'Spacesuit'
+                : 'Ring';
           target.lastSeen = Date.now();
           if (m.role === 'ring') c.appliedRevision = null;
           repository.saveCrew(c);

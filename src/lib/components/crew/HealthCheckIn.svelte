@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import {
     healthTopics,
     medicalOperationsSource,
@@ -26,12 +26,16 @@
     online,
     now,
     send,
+    initialCheckId,
+    startNew = false,
   }: {
     member: CrewMember;
     events: CrewEvent[];
     online: boolean;
     now: number;
     send: (m: ClientMessage & { id: string }) => Promise<boolean>;
+    initialCheckId?: string;
+    startNew?: boolean;
   } = $props();
   let topic = $state<HealthTopic>('recovery');
   let feeling = $state<Feeling | null>(null);
@@ -40,12 +44,12 @@
   let symptoms = $state<Symptom[]>([]);
   let activity = $state<Activity>('unspecified');
   let reviewing = $state(false);
-  let editing = $state(false);
+  let editing = $state(untrack(() => startNew));
   let busy = $state(false);
   let error = $state('');
   let storageReady = $state(false);
   let storageWarning = $state('');
-  let selected = $state<string | null>(null);
+  let selected = $state<string | null>(untrack(() => initialCheckId ?? null));
   let input = $derived<HealthInput>({
     topic,
     feeling: feeling ?? 'usual',
@@ -168,9 +172,12 @@
 <section class="health-checkin" aria-labelledby="checkin-title">
   <div class="checkin-heading">
     <div>
-      <span class="crew-eyebrow">YOUR SIGNALS → YOUR CONTEXT → YOUR NEXT STEP</span>
-      <h2 id="checkin-title">Understand this moment.</h2>
-      <p>Tell us what you notice. Your ring or suit supplies the readings.</p>
+      <h2 id="checkin-title">{showingForm ? 'How do you feel?' : 'Your saved check-in'}</h2>
+      <p>
+        {showingForm
+          ? 'Your words add context. A check-in is shared only when you save it.'
+          : 'Review your report and record what happened next.'}
+      </p>
     </div>
     {#if current && !showingForm}<button
         class="crew-button secondary"
@@ -266,7 +273,7 @@
       <p class="checkin-evidence">
         {evidence
           ? `${evidence.eventId ? 'Saved moment' : 'Available reading'}: ${evidence.source === 'spacesuit' ? 'suit' : 'ring'}, measured ${clockLabel(evidence.measuredAt)}.`
-          : 'No primary-source reading available. You can still record how you feel.'} Telemetry is simulated.
+          : 'No primary-source reading available. You can still record how you feel.'}
       </p>
       <button class="crew-button" disabled={!feeling}>Understand my signals</button>
     </form>

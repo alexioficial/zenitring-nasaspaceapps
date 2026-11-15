@@ -88,7 +88,7 @@
     mission = addEntry(mission, input, crypto.randomUUID());
     if (!storageError) persist();
     notice = mission.monitorConnected
-      ? 'Entry received by the simulated medical monitor.'
+      ? 'Entry received by the medical monitor.'
       : 'Entry recorded. Delivery pending until the medical link is restored.';
   }
   async function capture(gesture: 'ring-double-tap' | 'ring-hold' | 'screen') {
@@ -112,7 +112,7 @@
     mission = syncDemoInstruments(mission);
     if (!storageError) persist();
     notice =
-      'Simulated instrument measurements imported. Future snapshots include them with their own sources.';
+      'Instrument measurements imported. Future snapshots include them with their own sources.';
   }
   function toggleMonitor() {
     const wasConnected = mission.monitorConnected;
@@ -154,7 +154,7 @@
 <svelte:head
   ><title>ZENIT · Mission health</title><meta
     name="description"
-    content="Astronaut health in mission context. Explore NASA Apollo 11 observations and a local-first simulated crew health workflow."
+    content="Astronaut health in mission context. Explore NASA Apollo 11 observations and a local-first crew health workflow."
   /></svelte:head
 >
 
@@ -297,7 +297,7 @@
           <div class="source-content">
             <p>
               <strong>Apollo 11 Mission Report.</strong> Approximate digitized observations are available
-              in the archive. They are kept separate from the simulated mission readings.
+              in the archive. They are kept separate from the mission readings.
             </p>
             <a
               href="https://www.nasa.gov/wp-content/uploads/static/apollo50th/pdf/A11_MissionReport.pdf#page=268"

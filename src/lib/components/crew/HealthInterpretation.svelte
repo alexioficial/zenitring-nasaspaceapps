@@ -33,9 +33,7 @@
       {#each assessment.facts as fact}<li>{fact}</li>{/each}
     </ul>
     {#if evidence}<p class="interpretation-time">
-        Simulated {evidence.source === 'spacesuit' ? 'suit' : 'ring'} · {new Date(
-          evidence.measuredAt,
-        )
+        {evidence.source === 'spacesuit' ? 'Suit' : 'Ring'} · {new Date(evidence.measuredAt)
           .toISOString()
           .slice(0, 10)} · measured {clockLabel(evidence.measuredAt)}{evidence.eventId
           ? ' · captured moment'

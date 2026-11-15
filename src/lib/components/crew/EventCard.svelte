@@ -103,7 +103,7 @@
         {/if}
       </div>
       <p class="snapshot-caption">
-        Immutable simulated snapshot{event.snapshotAt
+        Immutable snapshot{event.snapshotAt
           ? ` · measured ${clockLabel(event.snapshotAt)}`
           : ' · no available measurement'}. A gesture does not identify a symptom.
       </p>

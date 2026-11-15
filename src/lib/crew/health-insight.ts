@@ -49,7 +49,7 @@ export function healthInsight(assessment: AutomaticAssessment, answer: Automatic
   if (assessment.state === 'collecting')
     return {
       ...base,
-      headline: 'Getting enough readings to compare',
+      headline: 'Collecting readings',
       meaning: `${assessment.count} of 9 readings received for this comparison. A single reading cannot show a sustained change.`,
       unknown: 'There is not enough continuous data to explain a trend yet.',
       action: 'Keep the active sensor connected. You can report symptoms at any time.',
@@ -58,11 +58,9 @@ export function healthInsight(assessment: AutomaticAssessment, answer: Automatic
     return {
       ...base,
       headline: 'No sustained change detected',
-      meaning:
-        'The recent readings do not match this demo’s change rules. That does not rule out a health problem.',
+      meaning: 'Your readings are steady. This does not rule out a health problem.',
       unknown: 'The sensors cannot tell us how you feel.',
-      action:
-        'Continue your scheduled health checks. Report symptoms even if the numbers look unchanged.',
+      action: 'Report symptoms even if the numbers look unchanged.',
     };
   if (assessment.kind === 'suit-change')
     return {
@@ -72,7 +70,7 @@ export function healthInsight(assessment: AutomaticAssessment, answer: Automatic
         answer === 'no-alert'
           ? 'You reported no suit alert, but the environmental change still needs review. These values describe the suit, not your blood oxygen or body temperature.'
           : 'The air conditions inside your suit have changed. Check the suit’s own display and tell us whether it shows an alert.',
-      unknown: 'These simulated changes do not establish a fault or a safe operating condition.',
+      unknown: 'These changes do not establish a fault or a safe operating condition.',
       action: 'Review the suit display and the relevant mission procedure with your crew.',
     };
   if (answer === 'finished')

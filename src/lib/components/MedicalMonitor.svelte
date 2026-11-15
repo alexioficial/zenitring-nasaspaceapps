@@ -15,7 +15,7 @@
   <div class="panel-heading">
     <div>
       <h2 id="medical-title">Medical monitor</h2>
-      <p>Simulated reception · Crew member 01</p>
+      <p>Reception · Crew member 01</p>
     </div>
     <span class="connection" class:offline={!mission.monitorConnected}
       ><Icon

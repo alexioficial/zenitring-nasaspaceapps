@@ -36,6 +36,8 @@ export default defineConfig({
   ],
   server: {
     watch: {
+      // Browser profiles and generated design reports are not application inputs.
+      ignored: ['**/.taste-skill/**'],
       // Docker Desktop on Windows may not forward filesystem events.
       usePolling: process.env.CHOKIDAR_USEPOLLING === 'true',
     },

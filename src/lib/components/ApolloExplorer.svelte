@@ -87,7 +87,7 @@
       A historical observation does not determine another astronaut’s health status.
     </p>
     <button class="button primary" onclick={onSimulate}
-      >Explore the simulated mission <Icon name="arrow" size={16} /></button
+      >Explore the mission <Icon name="arrow" size={16} /></button
     >
   </aside>
 </div>

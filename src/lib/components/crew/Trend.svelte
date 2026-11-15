@@ -35,7 +35,7 @@
       viewBox="0 0 600 140"
       preserveAspectRatio="none"
       role="img"
-      aria-label={`${metricInfo[metric].label} trend in ${metricInfo[metric].unit}. ${points.length} simulated samples. Gaps indicate missing or expired samples.`}
+      aria-label={`${metricInfo[metric].label} trend in ${metricInfo[metric].unit}. ${points.length} samples. Gaps indicate missing or expired samples.`}
     >
       {#if !compact}{#each [low, (low + high) / 2, high] as value}<line
             x1="20"

@@ -1,16 +1,13 @@
 <script lang="ts">
+  import { onMount, tick, untrack } from 'svelte';
   import Icon from '../Icon.svelte';
-  import AstronautFigure from './AstronautFigure.svelte';
+  import MissionStatus from './MissionStatus.svelte';
   import VitalReadings from './VitalReadings.svelte';
   import HealthCheckIn from './HealthCheckIn.svelte';
   import AutomaticHealth from './AutomaticHealth.svelte';
-  import { healthTopics } from '$lib/crew/health';
   import '$lib/crew/health.css';
   import MissionSources from './MissionSources.svelte';
-  import { bundledRadiation } from '$lib/nasa/radlab';
-  import RadiationContext from './RadiationContext.svelte';
   import { activeSource } from '$lib/crew/suit';
-  import { freshness, ageLabel, clockLabel } from '$lib/crew/model';
   import type { MissionState, ClientMessage } from '$lib/crew/types';
   let {
     mission,
@@ -18,34 +15,43 @@
     now,
     ondetail,
     onhistory,
+    ondevices,
     send,
     identity,
+    startCheckin = false,
   }: {
     send: (m: ClientMessage & { id: string }) => Promise<boolean>;
     identity: string;
+    startCheckin?: boolean;
     mission: MissionState;
     online: boolean;
     now: number;
     ondetail: (id: string) => void;
     onhistory: (id: string) => void;
+    ondevices: () => void;
   } = $props();
   let person = $derived(mission.crew.find((c) => c.id === identity)!);
   let primary = $derived(activeSource(person));
-  let status = $derived(
-    online
-      ? freshness(primary.connected, primary.latest?.receivedAt ?? null, primary.intervalMs, now)
-      : 'offline',
-  );
-  const nasaRecord = bundledRadiation();
-  let nasaPanel = $state<HTMLDetailsElement>();
-  function exploreNasa() {
-    if (!nasaPanel) return;
-    nasaPanel.open = true;
-    nasaPanel.scrollIntoView({ behavior: 'instant', block: 'start' });
-    nasaPanel.querySelector<HTMLElement>('summary')?.focus();
-  }
   let reportForm = $state<HTMLDetailsElement>();
-  function addContext() {
+  let trendOpen = $state(false);
+  onMount(() => {
+    const screen = matchMedia('(min-width: 651px)');
+    const resize = () => (trendOpen = screen.matches);
+    resize();
+    screen.addEventListener('change', resize);
+    return () => screen.removeEventListener('change', resize);
+  });
+  let checkinStarted = $state(false);
+  $effect(() => {
+    if (startCheckin && !checkinStarted) {
+      checkinStarted = true;
+      untrack(() => void addContext());
+    }
+  });
+  let reportRequest = $state(0);
+  async function addContext() {
+    reportRequest += 1;
+    await tick();
     if (!reportForm) return;
     reportForm.open = true;
     reportForm.scrollIntoView({ behavior: 'instant', block: 'start' });
@@ -57,19 +63,18 @@
 
 <div class="medbay-overview">
   <section class="medbay-heading">
-    <div>
-      <h1>My health</h1>
-    </div>
+    <h1>My health</h1>
   </section>
-  <div class="medbay-console">
-    <section class="medbay-telemetry" aria-label="My telemetry">
-      <VitalReadings member={person} {online} {now} />
-      <MissionSources member={person} {online} {now} {send} presentation="trend" />
-      <button class="crew-inline-button" onclick={() => ondetail(identity)}
-        >All measurements &amp; source details <Icon name="arrow" size={16} /></button
+  {#if open.length}
+    <div class="medbay-open-emergency" role="alert">
+      <strong>Your emergency is still open.</strong>
+      <button class="crew-button danger" onclick={() => onhistory(identity)}
+        >Review emergency <Icon name="arrow" size={17} /></button
       >
-    </section>
-    <AstronautFigure member={person} {online} {now} />
+    </div>
+  {/if}
+  <MissionStatus member={person} {online} {now} {ondevices} />
+  <div class="medbay-console" class:is-solo={!primary.latest}>
     <div class="medbay-assessment">
       {#key identity}<AutomaticHealth
           member={person}
@@ -77,129 +82,57 @@
           {now}
           compact
           oncontext={addContext}
+          connectHref={`/${primary.type === 'spacesuit' ? 'suit' : 'ring'}?astronaut=${identity}`}
         />{/key}
-      {#if status !== 'live'}
-        <a
-          class="crew-button medbay-connect"
-          href={`/${primary.type === 'spacesuit' ? 'suit' : 'ring'}?astronaut=${identity}`}
-          target="_blank"
-          rel="noreferrer"
-          >Open my {primary.type === 'spacesuit' ? 'suit' : 'ring'} simulator <Icon
-            name="arrow"
-            size={17}
-          /></a
+    </div>
+    <!-- Until the source has sent something there is nothing to show: no empty table. -->
+    {#if primary.latest}<section class="medbay-telemetry" aria-label="My telemetry">
+        <VitalReadings member={person} {online} {now} />
+        <details class="medbay-trend" bind:open={trendOpen}>
+          <summary>Heart rate trend <Icon name="chevron" size={17} /></summary>
+          <MissionSources member={person} {online} {now} {send} presentation="trend" />
+        </details>
+        <button class="crew-inline-button" onclick={() => ondetail(identity)}
+          >All measurements &amp; source details <Icon name="arrow" size={16} /></button
         >
-      {/if}
-    </div>
+      </section>{/if}
   </div>
-  <section class="medbay-phase" aria-label="Mission phase control">
-    <div>
-      <h2>Mission phases</h2>
-      <p>{primary.label} is the primary source.</p>
-    </div>
-    <MissionSources member={person} {online} {now} {send} presentation="phase" />
-  </section>
-  <p class="medbay-scene-credit">AI-generated concept illustration</p>
-</div>
-<section class="medbay-nasa-data" aria-label="NASA data in this demo">
-  <div>
-    <h2>NASA data in this demo</h2>
-    <p>
-      <strong>{nasaRecord.points.length} historical radiation readings</strong> · DosTel1 · ISS / Columbus
-      · April 2022
-    </p>
-    <p>
-      Real environmental observations, separate from your simulated health readings. They are not
-      your personal radiation dose and do not explain your symptoms.
-    </p>
-  </div>
-  <button class="crew-button secondary" onclick={exploreNasa}
-    >Explore NASA data<Icon name="arrow" size={18} /></button
-  >
-</section>
-{#if open.length}
-  <div class="medbay-open-emergency">
-    <strong>Your emergency is still open.</strong><button
-      class="crew-button danger"
-      onclick={() => onhistory(identity)}>Review emergency <Icon name="arrow" size={17} /></button
+  <details class="mission-phase-settings">
+    <summary
+      ><span>Mission phase</span><strong
+        >{person.phase === 'spacewalk'
+          ? 'Spacewalk'
+          : person.phase === 'recovery'
+            ? 'Recovery'
+            : 'Cabin'}</strong
+      ><Icon name="chevron" size={17} /></summary
     >
-  </div>
-{/if}
-{#key identity}
+    <section class="medbay-phase" aria-label="Mission phase control">
+      <div>
+        <h2>Select a mission phase</h2>
+        <p>{primary.label} is the primary source.</p>
+      </div>
+      <MissionSources member={person} {online} {now} {send} presentation="phase" />
+    </section>
+  </details>
+</div>
+{#key `${identity}:${reportRequest}`}
   <details
     bind:this={reportForm}
     class="optional-checkin medbay-report"
-    open={person.healthChecks.at(-1)?.guide.level === 'help' ||
+    open={startCheckin ||
+      reportRequest > 0 ||
+      person.healthChecks.at(-1)?.guide.level === 'help' ||
       person.healthChecks.at(-1)?.followups.at(-1)?.outcome === 'worse'}
   >
-    <summary
-      ><span>Report symptoms or review saved check-ins</span><span class="medbay-summary-note"
-        >Your words add context to your readings</span
-      ></summary
-    >
-    <HealthCheckIn member={person} {events} {online} {now} {send} />
+    <summary><span>Health check-in</span><Icon name="chevron" size={18} /></summary>
+    <HealthCheckIn
+      member={person}
+      {events}
+      {online}
+      {now}
+      {send}
+      startNew={reportRequest > 0 || startCheckin}
+    />
   </details>
 {/key}
-<div class="medbay-followup">
-  <section class="health-journal-preview">
-    <h2>Your recorded moments</h2>
-    <p>Keep the reading. Add what you experienced.</p>
-    {#if events.length}{#each events.slice(0, 3) as event (event.id)}<button
-          class="activity-preview"
-          onclick={() => onhistory(identity)}
-          ><span>{clockLabel(event.occurredAt)}</span><strong
-            >{event.kind === 'emergency'
-              ? `Emergency · ${event.status}`
-              : 'Moment captured'}</strong
-          ><small
-            >{event.annotations.length
-              ? `${event.annotations.length} notes attached`
-              : 'Ready for your context'}<Icon name="arrow" size={16} /></small
-          ></button
-        >{/each}<button class="crew-inline-button" onclick={() => onhistory(identity)}
-        >Open my records <Icon name="arrow" size={17} /></button
-      >
-    {:else}<div class="personal-empty">
-        <Icon name="book" size={28} />
-        <h3>No moments recorded yet</h3>
-        <p>Capture on your active source, then add your words to the received event.</p>
-        <a
-          class="crew-inline-button"
-          href={`/${primary.type === 'spacesuit' ? 'suit' : 'ring'}?astronaut=${identity}`}
-          target="_blank"
-          rel="noreferrer"
-          >Open {primary.type === 'spacesuit' ? 'suit' : 'ring'} controls <Icon
-            name="arrow"
-            size={17}
-          /></a
-        >
-      </div>{/if}
-    <p class="health-source-note">
-      Received means saved by the server. It does not mean reviewed by a medical officer. This demo
-      shares event notes with the crew monitor.
-    </p>
-  </section>
-  <details class="health-learning medbay-learning">
-    <summary>Understand your health</summary>
-    <p>What the indicators can tell you, and why your own report matters.</p>
-    {#each Object.values(healthTopics) as topic}<article>
-        <h3>{topic.title}</h3>
-        <p>{topic.why}</p>
-        <a href={topic.source} target="_blank" rel="noreferrer">{topic.sourceTitle} ↗</a>
-      </article>{/each}
-    <article>
-      <h3>When to involve the crew</h3>
-      <p>
-        Ask directly when you need help. Bring new, worsening or unexplained changes to the crew
-        medical officer. A received record is not a medical consultation.
-      </p>
-    </article>
-  </details>
-</div>
-<details class="crew-disclosure medbay-sources">
-  <summary>Mission sources, suit telemetry &amp; phase history</summary>
-  <MissionSources member={person} {online} {now} {send} />
-</details>
-<details class="crew-disclosure" bind:this={nasaPanel}>
-  <summary>Explore NASA environmental context · historical radiation</summary><RadiationContext />
-</details>

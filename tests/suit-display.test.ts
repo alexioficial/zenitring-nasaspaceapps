@@ -26,7 +26,137 @@ plugin({
 const { default: MissionSources } =
   await import('../src/lib/components/crew/MissionSources.svelte');
 const { default: SuitSignal } = await import('../src/lib/components/crew/SuitSignal.svelte');
+const { default: AutomaticHealth } =
+  await import('../src/lib/components/crew/AutomaticHealth.svelte');
+const { scenarioCrew } = await import('../src/lib/crew/research-scenarios');
+const { default: MissionStatus } = await import('../src/lib/components/crew/MissionStatus.svelte');
 const now = Date.now();
+
+test('mission context keeps ring, suit and server reception independent without an illustration', () => {
+  const member = memberWithSuit();
+  const html = render(MissionStatus, { props: { member, online: true, now } }).body;
+  expect(html).toContain('aria-label="Ring: Not linked"');
+  expect(html).toContain('aria-label="Suit: Receiving"');
+  expect(html).toContain('aria-label="Crew link: Online"');
+  expect(html).toContain('Ring is primary');
+  expect(html).not.toContain('<img');
+});
+
+test('an unlinked primary source is a shortcut to Devices, and a receiving one is not', () => {
+  const member = memberWithSuit();
+  const shortcut = render(MissionStatus, {
+    props: { member, online: true, now, ondevices: () => {} },
+  }).body;
+  expect(shortcut).toContain('aria-label="Ring: Not linked. Go to Devices"');
+  // The suit is not primary in Cabin, so it stays plain status.
+  expect(shortcut).not.toContain('Suit: Receiving. Go to Devices');
+  expect(shortcut.match(/source-shortcut/g)).toHaveLength(1);
+  member.deviceId = 'ring-vega';
+  member.connected = true;
+  member.latest = {
+    id: 'ring-sample',
+    deviceId: 'ring-vega',
+    astronautId: member.id,
+    measuredAt: now,
+    receivedAt: now,
+    values: { pulse: 72, hrv: 50, spo2: 98, skin: 0.1, respiration: 14 },
+  };
+  const receiving = render(MissionStatus, {
+    props: { member, online: true, now, ondevices: () => {} },
+  }).body;
+  expect(receiving).toContain('aria-label="Ring: Receiving"');
+  expect(receiving).not.toContain('source-shortcut');
+  expect(
+    render(MissionStatus, { props: { member: initialCrew()[0], online: false, now } }).body,
+  ).toContain('aria-label="Ring: No signal"');
+});
+
+test('missing primary readings offer connection before the optional health report', () => {
+  const { body } = render(AutomaticHealth, {
+    props: {
+      member: initialCrew()[0],
+      online: true,
+      now,
+      compact: true,
+      aiEnabled: false,
+      connectHref: '/ring?astronaut=vega',
+      oncontext: () => {},
+    },
+  });
+  expect(body).toContain('href="/ring?astronaut=vega"');
+  expect(body).toContain('Open ring simulator');
+  expect(body.indexOf('Open ring simulator')).toBeLessThan(body.indexOf('Record how I feel'));
+  expect(body).toContain('without waiting for new data');
+});
+
+test('the phone assessment without readings is short: one action, no labels or disclaimers', () => {
+  const { body } = render(AutomaticHealth, {
+    props: {
+      member: initialCrew()[0],
+      online: true,
+      now,
+      compact: true,
+      aiEnabled: false,
+      connectHref: '/ring?astronaut=vega',
+      oncontext: () => {},
+    },
+  });
+  expect(body).toContain('Link your ring');
+  expect(body).toContain('Link it to see your readings.');
+  for (const noise of [
+    'Built-in explanation',
+    'Health assessment',
+    'Not a diagnosis.',
+    'How this assessment works',
+  ])
+    expect(body).not.toContain(noise);
+});
+
+test('a ring that was linked before asks to be reconnected rather than linked', () => {
+  const member = initialCrew()[0];
+  member.deviceId = 'ring-vega';
+  member.connected = false;
+  const { body } = render(AutomaticHealth, {
+    props: {
+      member,
+      online: true,
+      now,
+      compact: true,
+      aiEnabled: false,
+      connectHref: '/ring?astronaut=vega',
+    },
+  });
+  expect(body).toContain('Reconnect your ring');
+  expect(body).toContain('Reconnect it to see current readings.');
+  expect(body).not.toContain('Link your ring');
+});
+
+test('the research replay keeps its labels and explanation for its own audience', () => {
+  const { body } = render(AutomaticHealth, {
+    props: { member: initialCrew()[0], online: true, now, aiEnabled: false },
+  });
+  expect(body).toContain('Built-in explanation');
+  expect(body).toContain('Not a diagnosis.');
+  expect(body).toContain('How this assessment works');
+});
+
+test('review starts with an explanation then comparable evidence and the real contextual question', () => {
+  const { body } = render(AutomaticHealth, {
+    props: {
+      member: scenarioCrew('recovery', now),
+      online: true,
+      now,
+      compact: true,
+      aiEnabled: false,
+      connectHref: '/ring?astronaut=vega',
+      oncontext: () => {},
+    },
+  });
+  expect(body.indexOf('insight-summary')).toBeLessThan(body.indexOf('insight-evidence'));
+  expect(body).toContain('Yes, finished');
+  expect(body).toContain('I feel unwell');
+  expect(body).not.toContain('Open ring simulator');
+});
 function memberWithSuit() {
   const member = initialCrew()[0];
   member.suit = {
@@ -115,13 +245,38 @@ test('the suit detail uses its own reception state when the primary ring is offl
 
 const { default: VitalReadings } = await import('../src/lib/components/crew/VitalReadings.svelte');
 
-test('personal medbay keeps unavailable ring readings empty instead of implying a measurement', () => {
+test('personal medbay shows no table of dashes before the first reading', () => {
   const member = initialCrew()[0];
   const html = render(VitalReadings, { props: { member, online: true, now } }).body;
-  expect(html).toContain('No readings received');
-  expect(html).toContain('Last known / unavailable');
-  expect(html).toContain('SpO₂');
-  expect(html).toContain('—');
+  expect(html).toContain('No readings yet.');
+  expect(html).not.toContain('—');
+  expect(html).not.toContain('<dl');
+});
+
+test('ring readings are labelled live while receiving and last known once they stop', () => {
+  const member = initialCrew()[0];
+  member.deviceId = 'ring-vega';
+  member.connected = true;
+  member.latest = {
+    id: 'ring-sample',
+    deviceId: 'ring-vega',
+    astronautId: member.id,
+    measuredAt: now,
+    receivedAt: now,
+    values: { pulse: 72, hrv: 50, spo2: 98.4, skin: 0.1, respiration: 14 },
+  };
+  const live = render(VitalReadings, { props: { member, online: true, now } }).body;
+  expect(live).toContain('Live');
+  expect(live).toContain('72');
+  expect(live).toContain('98.4');
+  expect(live).toContain('Updated 0s ago');
+  expect(live).not.toContain('medbay-retained');
+  member.connected = false;
+  const retained = render(VitalReadings, { props: { member, online: true, now } }).body;
+  expect(retained).toContain('Last known');
+  expect(retained).toContain('72');
+  expect(retained).toContain('medbay-retained');
+  expect(retained).not.toContain('>Live<');
 });
 
 test('personal medbay changes to suit measurements during EVA without inventing blood SpO2', () => {

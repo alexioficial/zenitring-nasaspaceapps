@@ -1,5 +1,6 @@
 <script lang="ts">
   import ViewHeader from '$lib/components/crew/ViewHeader.svelte';
+  import Icon from '$lib/components/Icon.svelte';
   import { onMount } from 'svelte';
   import { SuitClient } from '$lib/crew/suit-client';
   import { socketUrl } from '$lib/crew/connection';
@@ -7,7 +8,6 @@
   import { suitKeys, suitInfo } from '$lib/crew/suit';
   import type { EventInput } from '$lib/crew/types';
   import '$lib/crew/crew.css';
-  import '$lib/crew/sources.css';
   let selected = $state('vega');
   let deviceId = '';
   let ready = $state(false);
@@ -16,6 +16,7 @@
   let revision = $state(0);
   let last = $state<EventInput | null>(null);
   let warning = $state('');
+  let astronaut = $derived(crewDefaults.find((c) => c.id === selected)!);
   let ui = $derived.by(() => {
     void revision;
     return suit
@@ -79,110 +80,118 @@
 <svelte:head
   ><title>ZENIT · Suit simulator</title><meta
     name="description"
-    content="Independent simulated spacesuit telemetry. Read-only monitoring; no life-support controls."
+    content="Independent spacesuit telemetry. Read-only monitoring; no life-support controls."
   /></svelte:head
 >
-<div class="crew-app ring-app">
+<div class="crew-app sim-app astronaut-workspace">
   <ViewHeader
     title="Suit simulator"
-    context={`${selected.toUpperCase()} · Demo tool generating simulated readings`}
+    context={`${astronaut.callsign} · ${astronaut.name}`}
     keepSourceOpen
   />
-  <main class="ring-content">
-    <p class="simulator-orientation">
-      Keep this tab open to send readings.
-      <a href={`/astronaut/${selected}`} target="_blank" rel="noreferrer"
-        >Open {selected.toUpperCase()}’s astronaut view ↗</a
+  <main class="crew-content sim-content">
+    <div class="sim-heading">
+      <h1>{active ? 'EVA suit' : 'Link your suit'}</h1>
+      <a class="sim-link" href={`/astronaut/${selected}`} target="_blank" rel="noreferrer"
+        >My health <Icon name="arrow" size={16} /></a
       >
-    </p>
+    </div>
     {#if !active}
-      <section class="ring-pairing">
-        <h1>Outside.<br />Still connected.</h1>
-        <p>
+      <section class="sim-pairing">
+        <p class="sim-lead">
           Send a separate suit signal to the same astronaut’s mission history. The ring keeps its
           own identity.
         </p>
         <form
+          class="sim-form"
           onsubmit={(e) => {
             e.preventDefault();
             start();
           }}
         >
-          <label for="suit-astronaut">Choose your astronaut</label><select
+          <label for="suit-astronaut">Astronaut</label><select
             id="suit-astronaut"
             bind:value={selected}
             >{#each crewDefaults as c}<option value={c.id}>{c.callsign} · {c.name}</option
               >{/each}</select
-          ><button class="crew-button" disabled={!ready}>Link this suit</button>
+          ><button class="crew-button" disabled={!ready}
+            >Link this suit <Icon name="link" size={18} /></button
+          >
         </form>
+        <p class="sim-note">Optional. Only needed to demonstrate a spacewalk.</p>
       </section>
     {:else if ui}
-      <section class="crew-page-intro">
-        <div>
-          <span class="crew-eyebrow"
-            >{crewDefaults.find((c) => c.id === selected)?.callsign} / SUIT TRANSMITTER</span
-          >
-          <h1>Spacewalk signals</h1>
-          <p>Read-only telemetry concept · 3-second sampling</p>
-        </div>
-      </section>
-      <div class="ring-connection" class:ring-disconnected={ui.status !== 'online'}>
+      <div class="sim-status" class:is-offline={ui.status !== 'online'} role="status">
         <span
-          ><span class="status-dot"></span>{ui.status === 'online'
+          ><i aria-hidden="true"></i>{ui.status === 'online'
             ? 'Connected to crew monitor'
             : ui.status === 'conflict'
               ? 'Suit association blocked'
               : 'Monitor link unavailable'}</span
-        >
+        ><span class="sim-rate">Every 3 s</span>
       </div>
       {#if ui.error}<p class="crew-error" role="alert">{ui.error}</p>{/if}
-      <section class="source-metrics" aria-label="Local simulated suit readings">
-        {#each suitKeys as key}<div>
-            <span>{suitInfo[key].label}</span><strong
-              >{ui.values[key].toFixed(suitInfo[key].digits)}
-              <small>{suitInfo[key].unit}</small></strong
-            >
-          </div>{/each}
-      </section>
-      <p class="snapshot-caption">
-        {ui.paused ? 'Retained reading' : 'Locally sampled'}
-        {clockLabel(ui.sampledAt)}. Fictional values, not NASA measurements or safe operating
-        limits.
-      </p>
-      <button
-        class="crew-button"
-        onclick={() => {
-          last = suit!.capture();
-        }}>Capture suit moment</button
-      >
-      <section class="ring-feedback" aria-live="polite">
-        <strong>{last ? 'Suit moment captured' : 'Ready to capture'}</strong>{#if last}<p>
-            Original time {clockLabel(last.occurredAt)} · {ui.deliveries[last.id]?.status ===
-            'confirmed'
-              ? `Confirmed by server at ${clockLabel(ui.deliveries[last.id].receivedAt!)}`
-              : 'Pending delivery · not confirmed'}
-          </p>
-          {#if ui.deliveries[last.id]?.status === 'rejected'}<p>{ui.deliveries[last.id].message}</p>
-            <button class="crew-inline-button" onclick={() => suit!.retry(last!.id)}
-              >Retry suit event</button
-            >{/if}{/if}
-        <p>
-          {ui.pending.length} pending events. Add the astronaut’s words in the shared event log.
+      <section class="medbay-telemetry sim-readings" aria-label="Local suit readings">
+        <div class="medbay-vitals-heading">
+          <h2>{ui.paused ? 'Retained readings' : 'Sending now'}</h2>
+          <span>{ui.paused ? 'Paused at' : 'Sampled'} {clockLabel(ui.sampledAt)}</span>
+        </div>
+        <dl class="medbay-vitals medbay-suit-vitals" class:medbay-retained={ui.paused}>
+          {#each suitKeys as key}<div>
+              <dt><span>{suitInfo[key].label}</span></dt>
+              <dd>
+                {ui.values[key].toFixed(suitInfo[key].digits)}<small>{suitInfo[key].unit}</small>
+              </dd>
+            </div>{/each}
+        </dl>
+        <p class="medbay-measured">
+          Fictional values, not NASA measurements or safe operating limits. Keep this tab open and
+          the screen awake to keep sending.
         </p>
       </section>
-      <div class="source-buttons">
-        <button
-          class="crew-button secondary"
-          onclick={() => (ui?.status === 'online' ? suit!.disconnect() : suit!.connect())}
-          >{ui.status === 'online' ? 'Disconnect suit' : 'Connect suit'}</button
-        ><button class="crew-button secondary" onclick={() => suit!.pause()}
-          >{ui.paused ? 'Resume suit telemetry' : 'Pause suit telemetry'}</button
-        >
-      </div>
-      <p class="snapshot-caption">
-        Local sampling continues when disconnected. Pausing retains the last reading. Keep this page
-        visible; mobile browsers can suspend background work.
-      </p>
+      <section class="sim-actions" aria-label="Quick actions">
+        <div class="sim-buttons">
+          <button
+            class="crew-button"
+            onclick={() => {
+              last = suit!.capture();
+            }}>Capture suit moment</button
+          >
+        </div>
+        <div class="sim-feedback" aria-live="polite">
+          <strong>{last ? 'Suit moment captured' : 'Ready to capture'}</strong>
+          {#if last}<p>
+              Original time {clockLabel(last.occurredAt)} · {ui.deliveries[last.id]?.status ===
+              'confirmed'
+                ? `Confirmed by server at ${clockLabel(ui.deliveries[last.id].receivedAt!)}`
+                : 'Pending · waiting for server confirmation'}
+            </p>
+            {#if ui.deliveries[last.id]?.status === 'rejected'}<p>
+                {ui.deliveries[last.id].message}
+              </p>
+              <button class="crew-inline-button" onclick={() => suit!.retry(last!.id)}
+                >Retry suit event</button
+              >{/if}{/if}
+          <p>
+            {ui.pending.length} pending events. Add the astronaut’s words in the shared event log.
+          </p>
+        </div>
+      </section>
+      <section class="sim-actions" aria-label="Connection controls">
+        <div class="sim-buttons">
+          <button
+            class="crew-button secondary"
+            onclick={() => (ui?.status === 'online' ? suit!.disconnect() : suit!.connect())}
+            >{ui.status === 'online' ? 'Disconnect suit' : 'Connect suit'}</button
+          ><button class="crew-button secondary" onclick={() => suit!.pause()}
+            >{ui.paused ? 'Resume telemetry' : 'Pause telemetry'}</button
+          >
+        </div>
+        <p class="sim-note">
+          Sampling continues when disconnected; pausing keeps the last reading. Mobile browsers can
+          suspend background work, so keep this page visible.
+        </p>
+      </section>
     {/if}
     {#if warning || ui?.storageError}<p class="crew-error" role="alert">
         {warning || ui?.storageError}
@@ -206,24 +215,13 @@
         </p>
       </div>
     </details>
-    <footer class="ring-footer">
-      <a href="/crew" target="_blank" rel="noreferrer">Open crew monitor ↗</a><strong
-        >Simulated suit · no flight hardware connected.</strong
-      >
+    <footer class="crew-footer">
+      <span><strong>No flight hardware connected.</strong></span>
+      <div>
+        <a href="/crew" target="_blank" rel="noreferrer"
+          >Open crew monitor <Icon name="arrow" size={15} /></a
+        >
+      </div>
     </footer>
   </main>
 </div>
-
-<style>
-  .simulator-orientation {
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--instrument-line);
-    color: var(--instrument-muted);
-  }
-  .simulator-orientation a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-  }
-</style>

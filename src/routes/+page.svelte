@@ -21,7 +21,7 @@
     <a class="crew-brand" href="/" aria-label="ZENIT home"
       ><Icon name="orbit" size={29} /><span>ZENIT<small>Space health monitor</small></span></a
     >
-    <span>NASA Space Apps · Simulated mission</span>
+    <span>NASA Space Apps</span>
   </header>
   <main id="choose-view" class="entry-main">
     <section class="entry-mission" aria-label="Space health monitor introduction">
@@ -87,7 +87,7 @@
           <a href="/research">Research scenarios <Icon name="arrow" size={16} /></a>
         </nav>
       </details>
-      <p class="entry-note">Demo identities · simulated health readings · no sign-in required</p>
+      <p class="entry-note">Demo identities · no sign-in required</p>
     </div>
   </main>
 </div>

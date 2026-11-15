@@ -8,20 +8,20 @@ export const metricInfo: Record<
   pulse: {
     label: 'Heart rate',
     unit: 'bpm',
-    description: 'Heartbeats per minute. Simulated ring signal.',
+    description: 'Heartbeats per minute.',
     digits: 0,
   },
   hrv: {
     label: 'HRV',
     unit: 'ms',
     description:
-      'Heart rate variability: variation between heartbeats. A simulated estimate, not an assessment of stress or readiness.',
+      'Heart rate variability: variation between heartbeats. An estimate, not an assessment of stress or readiness.',
     digits: 0,
   },
   spo2: {
     label: 'SpO₂',
     unit: '%',
-    description: 'Simulated estimate of peripheral oxygen saturation.',
+    description: 'Estimate of peripheral oxygen saturation.',
     digits: 1,
   },
   skin: {
@@ -34,7 +34,7 @@ export const metricInfo: Record<
   respiration: {
     label: 'Respiration',
     unit: '/min',
-    description: 'Simulated breaths per minute.',
+    description: 'Breaths per minute.',
     digits: 0,
   },
 };

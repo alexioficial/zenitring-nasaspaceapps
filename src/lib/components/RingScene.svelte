@@ -7,12 +7,15 @@
     pulse = 0,
     emergency = false,
     compact = false,
+    labeled = true,
   }: {
     connected?: boolean;
     pressed?: boolean;
     pulse?: number;
     emergency?: boolean;
     compact?: boolean;
+    /** The small “RING CONCEPT” caption; screens that explain themselves can drop it. */
+    labeled?: boolean;
   } = $props();
   let host: HTMLSpanElement;
   let loaded = $state(false);
@@ -53,7 +56,9 @@
   <span class="ring-shadow"></span>
   <span class="canvas-host" bind:this={host}></span>
   {#if !loaded}<span class="fallback-band"></span>{/if}
-  <span class="visual-label">{failed ? 'RING CONCEPT · 2D VIEW' : 'RING CONCEPT · 3D VIEW'}</span>
+  {#if labeled}<span class="visual-label"
+      >{failed ? 'RING CONCEPT · 2D VIEW' : 'RING CONCEPT · 3D VIEW'}</span
+    >{/if}
 </span>
 
 <style>

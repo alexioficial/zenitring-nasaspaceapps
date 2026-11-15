@@ -19,6 +19,7 @@
     aiEnabled = true,
     compact = false,
     oncontext,
+    connectHref,
   }: {
     member: CrewMember;
     now: number;
@@ -26,8 +27,11 @@
     aiEnabled?: boolean;
     compact?: boolean;
     oncontext?: () => void;
+    connectHref?: string;
   } = $props();
   let assessment = $derived(analyzeSignals(member, now, online));
+  // A source that was linked before only needs reconnecting, not linking from scratch.
+  let wasLinked = $derived(!!activeSource(member).deviceId);
   let response = $state<{ episode: string; answer: AutomaticAnswer } | null>(null);
   let answer = $derived(
     response &&
@@ -70,7 +74,7 @@
   let visibleExplanation = $derived(explanationKey === requestKey ? explanation : null);
   const questions = {
     activity: {
-      title: 'Have you been exercising?',
+      title: 'Were you exercising before this change?',
       options: [
         { id: 'finished', label: 'Yes, finished' },
         { id: 'active', label: 'Still active' },
@@ -168,23 +172,48 @@
   class="automatic-health health-insight"
   class:automatic-review={assessment.state === 'review' && !insight.help}
   class:insight-help={insight.help}
+  class:compact-insight={compact}
+  data-state={assessment.state}
   aria-label="Automatic health assessment"
 >
-  <div class="automatic-top">
-    <h2>What’s happening?</h2>
-    <span class="insight-provider">{visibleExplanation ? 'Gemini' : 'Built-in explanation'}</span>
-  </div>
-  <h3 class="assessment-title">
+  <!-- The title speaks for itself; only the research replay shows who wrote the explanation. -->
+  {#if !compact}<div class="automatic-top">
+      <span class="insight-provider">{visibleExplanation ? 'Gemini' : 'Built-in explanation'}</span>
+    </div>{/if}
+  <h2 class="assessment-title">
     <Icon
       name={insight.help ? 'medical' : assessment.state === 'review' ? 'rise' : 'pulse'}
       size={28}
-    /><span>{insight.headline}</span>
-  </h3>
+    /><span
+      >{connectHref && online && assessment.state === 'unavailable' && !insight.help
+        ? `${wasLinked ? 'Reconnect' : 'Link'} your ${assessment.source === 'spacesuit' ? 'suit' : 'ring'}`
+        : insight.headline}</span
+    >
+  </h2>
   {#if insight.help}<p class="insight-urgent" role="alert">{insight.action}</p>{/if}
+
+  <div class="insight-meaning" aria-label="What it could mean">
+    {#if !compact}<h4>
+        {assessment.state === 'review' && !insight.help ? 'What it could mean' : 'What this means'}
+      </h4>{/if}
+    <p class="insight-summary">
+      {connectHref && online && assessment.state === 'unavailable' && !insight.help
+        ? wasLinked
+          ? 'Reconnect it to see current readings.'
+          : 'Link it to see your readings.'
+        : (visibleExplanation?.summary ?? insight.meaning)}
+    </p>
+    {#if aiState === 'Gemini is explaining this change…'}<p class="insight-ai-status" role="status">
+        Gemini is reviewing this change. The built-in explanation remains available.
+      </p>
+    {:else if visibleExplanation}<p class="insight-ai-status">
+        Gemini explanation · readings through {clockLabel(aiMeasuredAt)}
+      </p>{/if}
+  </div>
 
   {#if insight.evidence.length}
     <div class="insight-evidence" aria-label="What changed">
-      <h4>What changed</h4>
+      <svelte:element this={compact ? 'h3' : 'h4'}>What changed</svelte:element>
       <dl>
         {#each insight.evidence as observation}<div>
             <dt>{observation.label}</dt>
@@ -208,29 +237,6 @@
     </div>
   {/if}
 
-  <div class="insight-meaning" aria-label="What it could mean">
-    <h4>
-      {assessment.state === 'review' && !insight.help ? 'What it could mean' : 'What this means'}
-    </h4>
-    <p class="insight-summary">{visibleExplanation?.summary ?? insight.meaning}</p>
-    {#if assessment.state === 'review' && !insight.help}<p class="insight-unknown">
-        <strong>Still unknown:</strong>
-        {visibleExplanation?.uncertainty ?? insight.unknown}
-      </p>{/if}
-    {#if aiState === 'Gemini is explaining this change…'}<p class="insight-ai-status" role="status">
-        Gemini is reviewing this change. The built-in explanation remains available.
-      </p>
-    {:else if aiState.includes('unavailable')}<p class="insight-ai-status" role="status">
-        Gemini could not respond. You are reading ZENIT’s built-in explanation.
-      </p>
-    {:else if aiState.includes('not configured')}<p class="insight-ai-status">
-        Gemini is not connected. ZENIT’s built-in explanation is shown.
-      </p>
-    {:else if visibleExplanation}<p class="insight-ai-status">
-        Gemini explanation · readings through {clockLabel(aiMeasuredAt)}
-      </p>{/if}
-  </div>
-
   {#if answer && !editingAnswer}
     <div class="insight-answer">
       <span><Icon name="check" size={18} />{answerLabel}</span><button
@@ -238,7 +244,7 @@
       >
     </div>
   {:else if assessment.question}
-    <h4 class="insight-action-label">What to do now</h4>
+    {#if !compact}<h4 class="insight-action-label">What to do now</h4>{/if}
     <fieldset class="automatic-question">
       <legend>{questions[assessment.question].title}</legend>
       <div class="insight-options">
@@ -255,7 +261,11 @@
     </fieldset>
   {/if}
 
-  {#if !insight.help && (answer || !assessment.question)}
+  {#if assessment.state === 'review' && !insight.help}<p class="insight-unknown">
+      <strong>Still unknown:</strong>
+      {visibleExplanation?.uncertainty ?? insight.unknown}
+    </p>{/if}
+  {#if !insight.help && (answer || !assessment.question) && !(connectHref && online && assessment.state === 'unavailable')}
     <div class="automatic-next">
       <strong>What to do now</strong>
       <p>{insight.action}</p>
@@ -267,71 +277,94 @@
         editingAnswer = false;
       }}>I contacted the crew</button
     >{/if}
-  {#if oncontext}<button class="medbay-add-context" onclick={oncontext}
+  {#if connectHref && online && assessment.state === 'unavailable' && !insight.help}
+    <a class="crew-button assessment-connect" href={connectHref} target="_blank" rel="noreferrer"
+      >Open {assessment.source === 'spacesuit' ? 'suit' : 'ring'} simulator <Icon
+        name="arrow"
+        size={18}
+      /></a
+    >
+  {/if}
+  {#if oncontext}<button
+      class="medbay-add-context"
+      class:assessment-secondary={assessment.state === 'unavailable' && !insight.help}
+      onclick={oncontext}
       ><Icon name="pen" size={24} />Record how I feel<Icon name="arrow" size={22} /></button
     >{/if}
+  {#if connectHref && online && assessment.state === 'unavailable' && !insight.help}
+    <p class="insight-unavailable-note">
+      If you feel unwell, tell the crew without waiting for new data.
+    </p>
+  {/if}
 
-  <div class="insight-nasa">
-    <h4><Icon name="book" size={18} />Why NASA context matters</h4>
-    <p>{insight.nasa.context}</p>
-    <a href={insight.nasa.url} target="_blank" rel="noreferrer"
-      >{insight.nasa.title}<Icon name="arrow" size={15} /></a
-    >
-  </div>
-  <p class="insight-limit">Simulated health data · Possible explanations, not a diagnosis.</p>
-  <details class="assessment-evidence">
-    <summary>Readings, sources &amp; explanation details</summary>
-    <div class="automatic-provenance">
-      <span>{assessment.source === 'spacesuit' ? 'Suit ECG & atmosphere' : 'Ring telemetry'}</span>
-      <span>{assessment.count} comparable readings</span>
-      <span
-        >{assessment.measuredAt
-          ? `Measured ${clockLabel(assessment.measuredAt)}`
-          : 'No reading yet'}</span
+  <!-- The phone workspace already carries its own disclaimer at the bottom of every view. -->
+  {#if !compact}<p class="insight-limit">Not a diagnosis.</p>{/if}
+  <!-- With no readings there is nothing to explain yet. -->
+  {#if !(compact && assessment.state === 'unavailable')}<details class="assessment-evidence">
+      <summary>How this assessment works <Icon name="chevron" size={17} /></summary>
+      <p>{insight.nasa.context}</p>
+      <a href={insight.nasa.url} target="_blank" rel="noreferrer"
+        >{insight.nasa.title}<Icon name="arrow" size={15} /></a
       >
-    </div>
-    <p>{insight.nasa.relevance}</p>
-    {#if assessment.observations.length}<div class="insight-all-readings">
-        {#each assessment.observations as observation}<p>
-            <strong>{observation.label}:</strong>
-            {observationValue(observation.metric, observation.earlier)} → {observationValue(
-              observation.metric,
-              observation.recent,
-            )}
-            {observation.unit}. {observation.triggered
-              ? 'Sustained change in this demo.'
-              : 'No sustained change under demo rules.'}
-          </p>{/each}
-      </div>{/if}
-    {#if visibleExplanation}<p>Explained by {model}. The live readings continue to update.</p>
-      <div class="insight-source-links">
-        {#each visibleExplanation.sourceIds as id}<a
-            href={automaticSources[id].url}
-            target="_blank"
-            rel="noreferrer">{automaticSources[id].title}</a
-          >{/each}
-      </div>{/if}
-    <p>
-      The values above are medians: the middle value of six earlier readings compared with the
-      middle value of three recent readings. They come from the same device and mission phase, over
-      no more than five minutes. They are not your long-term clinical baseline.
-    </p>
-    <p>
-      Demo triggers: pulse +20 bpm, breathing +4/min, SpO₂ −2 percentage points, skin change +0.4
-      °C; suit CO₂ +0.15 kPa, O₂ ±1 kPa, pressure ±0.5 kPa or air temperature ±2 °C. These are
-      presentation rules, not NASA medical limits.
-    </p>
-    <p>
-      {aiEnabled
-        ? 'Gemini receives numeric observations and your selected answer, without your name or notes. It explains possibilities; it does not set the next action, send alerts or control the suit.'
-        : 'This research replay uses the built-in explanation. It does not contact Gemini.'} Answers here
-      update this explanation only.{#if oncontext}
-        Use Record how I feel to save a check-in shared with the crew.{/if}
-    </p>
-    <p>
-      NASA resources explain the monitoring context. They do not validate this algorithm or its
-      interpretations. Historical RadLab measurements are not used to infer the cause of your
-      symptoms.
-    </p>
-  </details>
+      {#if aiState.includes('unavailable')}<p class="insight-ai-status" role="status">
+          Gemini could not respond. You are reading ZENIT’s built-in explanation.
+        </p>
+      {:else if aiState.includes('not configured')}<p class="insight-ai-status">
+          Gemini is not connected. ZENIT’s built-in explanation is shown.
+        </p>
+      {/if}
+      <div class="automatic-provenance">
+        <span>{assessment.source === 'spacesuit' ? 'Suit ECG & atmosphere' : 'Ring telemetry'}</span
+        >
+        <span>{assessment.count} comparable readings</span>
+        <span
+          >{assessment.measuredAt
+            ? `Measured ${clockLabel(assessment.measuredAt)}`
+            : 'No reading yet'}</span
+        >
+      </div>
+      <p>{insight.nasa.relevance}</p>
+      {#if assessment.observations.length}<div class="insight-all-readings">
+          {#each assessment.observations as observation}<p>
+              <strong>{observation.label}:</strong>
+              {observationValue(observation.metric, observation.earlier)} → {observationValue(
+                observation.metric,
+                observation.recent,
+              )}
+              {observation.unit}. {observation.triggered
+                ? 'Sustained change in this demo.'
+                : 'No sustained change under demo rules.'}
+            </p>{/each}
+        </div>{/if}
+      {#if visibleExplanation}<p>Explained by {model}. The live readings continue to update.</p>
+        <div class="insight-source-links">
+          {#each visibleExplanation.sourceIds as id}<a
+              href={automaticSources[id].url}
+              target="_blank"
+              rel="noreferrer">{automaticSources[id].title}</a
+            >{/each}
+        </div>{/if}
+      <p>
+        The values above are medians: the middle value of six earlier readings compared with the
+        middle value of three recent readings. They come from the same device and mission phase,
+        over no more than five minutes. They are not your long-term clinical baseline.
+      </p>
+      <p>
+        Demo triggers: pulse +20 bpm, breathing +4/min, SpO₂ −2 percentage points, skin change +0.4
+        °C; suit CO₂ +0.15 kPa, O₂ ±1 kPa, pressure ±0.5 kPa or air temperature ±2 °C. These are
+        presentation rules, not NASA medical limits.
+      </p>
+      <p>
+        {aiEnabled
+          ? 'Gemini receives numeric observations and your selected answer, without your name or notes. It explains possibilities; it does not set the next action, send alerts or control the suit.'
+          : 'This research replay uses the built-in explanation. It does not contact Gemini.'} Answers
+        here update this explanation only.{#if oncontext}
+          Use Record how I feel to save a check-in shared with the crew.{/if}
+      </p>
+      <p>
+        NASA resources explain the monitoring context. They do not validate this algorithm or its
+        interpretations. Historical RadLab measurements are not used to infer the cause of your
+        symptoms.
+      </p>
+    </details>{/if}
 </section>

@@ -29,8 +29,16 @@
     <strong><Icon name="person" size={25} />{title}</strong>
     <span>{context}</span>
   </div>
-  <a class="view-switch" href="/" target={keepSourceOpen ? '_blank' : undefined} rel="noreferrer">
-    <Icon name="switch" size={23} />Switch view{keepSourceOpen ? ' ↗' : ''}
+  <a
+    class="view-switch"
+    href="/"
+    target={keepSourceOpen ? '_blank' : undefined}
+    rel="noreferrer"
+    aria-label={keepSourceOpen ? 'Switch view (opens in a new tab)' : 'Switch view'}
+  >
+    <Icon name="switch" size={23} /><span class="view-switch-label"
+      >Switch view{keepSourceOpen ? ' ↗' : ''}</span
+    >
   </a>
   {#if children}<div class="view-connection">{@render children()}</div>{/if}
 </header>
