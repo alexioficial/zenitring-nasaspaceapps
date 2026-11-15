@@ -189,7 +189,7 @@ The rounded, open letterforms soften the precision of the mission frame. Bold he
 - **Display:** Role-chooser statement; the display token contracts to 45px at the chooser's tablet breakpoint and 36px on its phone layout.
 - **Headline:** My health uses the headline token, reducing to 36px at 650px and below.
 - **Title:** Telemetry and assessment headings use the title token. The review title uses a bold 27px desktop treatment with an amber marker.
-- **Body:** Supporting prose remains compact; the overview assessment explanation is 11px with 1.5 line height.
+- **Body:** Supporting prose remains compact; the primary interpretation is 14px with 1.6 line height; source and provider metadata remain subordinate.
 - **Measurement:** Manrope tabular values use the measurement token, 14–19px units and a vertical divider before the value. Tablet values are 29px; phone values are 32px; the six-row desktop suit view uses 32px values. HRV remains a compact secondary ring reading.
 - **Control and provenance:** Semibold actions; compact, regular source/timing annotations. Overview chart labels use 17 SVG viewBox units in Manrope, increasing to 30 units on phones (roughly 13–17 rendered pixels). Some inherited mission timestamps and phase sublabels retain utility monospace; large readings do not.
 
@@ -251,9 +251,11 @@ The integrated left-panel trend uses actual measurement times, UTC-labelled endp
 
 ### Assessment and next step
 
-The right panel leads with Assessment and a subordinate local/AI mode, followed by a contextual title. Review titles use a warm tint and amber edge. Questions use full-width bordered icon answers, with selected state visible. In compact review mode the next step appears after an answer; missing-data states and immediate help retain their guidance. The next step is pale teal, changing to pale red for explicit help.
+The right panel leads with **What’s happening?**, with a truthful Gemini or Built-in explanation label. Its visible sequence is **What changed** (earlier and recent medians), **What it could mean** (plain-language interpretation and relevant uncertainty), and **What to do now**. The interpretation never requires opening a disclosure. Review titles retain the warm tint and amber edge. Initial context answers form a compact two-column group; a confirmed answer replaces the group with a Change answer control. Local rules own the next action, independently of the model.
 
-Add activity context opens the actual check-in form. The underlined, icon-led NASA health resources link remains prominent below it. Source, comparable-reading count, measured time and detailed explanation live in the expandable evidence guide in compact mode. Gemini's explanation retains its source cutoff, uncertainty and experimental status. NASA links supply background, not clinical validation. Explicit symptoms take precedence over reassuring-looking numbers.
+Record how I feel opens the actual check-in form. Context answers affect the current explanation; they do not silently save a medical record or send an emergency. Explicit symptoms and suit alerts take priority over AI and reassuring-looking numbers. Loading and provider failures keep the built-in explanation readable and state its origin. Missing or old readings suppress the previous interpretation.
+
+A contextual NASA summary and source link stay visible. Readings, sources & explanation details expands the full observations, comparison method, source relevance and AI provenance. The NASA data in this demo strip separately opens the historical RadLab explorer: original observation dates and instruments remain explicit, with no personal-dose or symptom-causation claim.
 
 ### Crew, emergency and gesture continuity
 

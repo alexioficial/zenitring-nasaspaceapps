@@ -1,0 +1,246 @@
+/* Explain the reading, uncertainty and next action in the existing medbay panel. */
+.medbay-shell .health-insight h4 {
+  margin: 0 0 7px;
+  font:
+    750 14px/1.3 'Manrope',
+    sans-serif;
+  color: #142b39;
+}
+.medbay-shell .health-insight .insight-provider {
+  font-size: 11px;
+  color: #285c68;
+  background: #e6f0f3;
+  padding: 5px 8px;
+  border-radius: 5px;
+}
+.medbay-shell .medbay-overview .health-insight .automatic-top h2 {
+  font-size: 28px;
+}
+.medbay-shell .medbay-overview .health-insight .assessment-title {
+  font-size: 23px;
+  line-height: 1.25;
+  margin: 16px 0;
+  padding: 12px;
+}
+.health-insight .insight-evidence {
+  margin: 16px 0;
+}
+.health-insight .insight-evidence dl {
+  margin: 0;
+}
+.health-insight .insight-evidence dl > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 0;
+}
+.health-insight .insight-evidence dt {
+  font-size: 13px;
+}
+.medbay-shell .health-insight .insight-evidence dd {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  font-family: 'Manrope', sans-serif;
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+  font-size: 18px;
+}
+.health-insight .insight-evidence dd > span {
+  color: #4c6474;
+}
+.health-insight .insight-evidence dd small {
+  font-size: 12px;
+  font-weight: 500;
+}
+.medbay-shell .health-insight .insight-evidence p {
+  font-size: 11px;
+  color: #4c6474;
+  margin: 5px 0 0;
+}
+.health-insight .insight-meaning {
+  padding: 14px 0;
+  border-top: 1px solid #d2dee5;
+}
+.medbay-shell .health-insight .insight-summary {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+  color: #142b39;
+}
+.medbay-shell .health-insight .insight-unknown {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 8px 0 0;
+  color: #4c6474;
+}
+.medbay-shell .health-insight .insight-ai-status {
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 8px 0 0;
+  color: #4c6474;
+}
+.health-insight .insight-answer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #e8f2f4;
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.health-insight .insight-answer > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 650;
+}
+.health-insight .insight-answer button {
+  border: 0;
+  background: transparent;
+  color: #126f80;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: 36px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.medbay-shell .medbay-overview .health-insight .automatic-question {
+  margin: 10px 0;
+}
+.medbay-shell .medbay-overview .health-insight .automatic-question legend {
+  font-size: 20px;
+}
+.medbay-shell .medbay-overview .health-insight .automatic-question button {
+  font-size: 16px;
+}
+.medbay-shell .health-insight .automatic-next p {
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 6px 0 0;
+}
+.medbay-shell .health-insight .insight-urgent {
+  padding: 14px;
+  border-radius: 8px;
+  background: #fcebee;
+  color: #82272c;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.medbay-shell .medbay-overview .health-insight.insight-help .assessment-title {
+  color: #82272c;
+  background: #fcebee;
+}
+.medbay-shell .medbay-overview .health-insight.insight-help .assessment-title svg {
+  color: #82272c;
+}
+.insight-contacted {
+  width: 100%;
+  margin: 12px 0;
+}
+.health-insight .insight-nasa {
+  border-top: 1px solid #d2dee5;
+  padding-top: 14px;
+  margin-top: 18px;
+}
+.health-insight .insight-nasa h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.medbay-shell .health-insight .insight-nasa p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #344f62;
+  margin: 0 0 7px;
+}
+.health-insight .insight-nasa a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #126f80;
+  font-weight: 650;
+  font-size: 12px;
+  min-height: 32px;
+}
+.medbay-shell .health-insight .insight-limit {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #4c6474;
+  margin: 12px 0 0;
+}
+.medbay-shell .health-insight .assessment-evidence > summary {
+  font-size: 12px;
+  min-height: 44px;
+}
+.medbay-shell .health-insight .assessment-evidence p {
+  font-size: 12px;
+  line-height: 1.65;
+  color: #344f62;
+}
+.insight-source-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12px;
+}
+.medbay-nasa-data {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 0;
+  border-top: 1px solid #cbd8e2;
+  border-bottom: 1px solid #cbd8e2;
+  margin: 0 0 24px;
+}
+.medbay-shell .medbay-nasa-data h2 {
+  font-size: 21px;
+  margin: 0 0 8px;
+}
+.medbay-shell .medbay-nasa-data p {
+  margin: 5px 0;
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 80ch;
+  color: #344f62;
+}
+.medbay-nasa-data button {
+  flex-shrink: 0;
+}
+@media (max-width: 650px) {
+  .medbay-nasa-data {
+    display: block;
+  }
+  .medbay-nasa-data button {
+    margin-top: 10px;
+    width: 100%;
+  }
+  .medbay-shell .medbay-overview .health-insight .automatic-top h2 {
+    font-size: 25px;
+  }
+  .health-insight .insight-evidence dl > div {
+    flex-wrap: wrap;
+  }
+}
+
+.health-insight .insight-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.medbay-shell .medbay-overview .health-insight .insight-options button {
+  margin: 0;
+  padding: 10px;
+  gap: 8px;
+  min-height: 56px;
+  font-size: 14px;
+}
+.medbay-shell .health-insight .insight-action-label {
+  margin-top: 8px;
+}

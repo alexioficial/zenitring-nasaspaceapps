@@ -29,3 +29,9 @@ Fictional biometric values and presentation ranges are not diagnoses or validate
 ## Brand commitments
 
 ZENIT uses the Orbital medbay identity: ceramic-white working surfaces on a cool blue-gray field, a navy mission frame, teal controls and traces, self-hosted Manrope and large sans-serif tabular measurements. A large fictional gold-visor astronaut in a bright cabin scene, with visible AI-generated concept provenance, anchors the personal experience; crew monitoring remains a distinct role. Quiet borders, gently rounded controls, explicit source and freshness labels, touch-comfortable targets, visible focus and reduced motion support precise use. Amber marks attention; red is reserved for explicit emergency/help states, with text accompanying color. NASA history remains separate from current crew simulation.
+
+## Plain-language health interpretation
+
+The astronaut sees What changed, What it could mean and What to do now directly in the assessment panel. Gemini receives numeric observations, confirmed context and curated NASA background; it supplies a short possible explanation and relevant uncertainty. Built-in guidance remains available during loading or provider failure, with explicit attribution. Symptoms and suit alerts take precedence; stale data removes previous interpretations. The model does not control next steps or send alerts. Context answers can be changed; saving a shared check-in remains an explicit Record how I feel action.
+
+NASA source summaries explain the monitoring context beside the interpretation. The separate NASA data in this demo entry opens 84 historical DosTel1 readings and explicitly distinguishes environmental history from current simulated biometrics and personal dose.

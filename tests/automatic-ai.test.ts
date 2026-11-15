@@ -35,6 +35,13 @@ test('Gemini receives only numeric observations and confirmed context, with serv
       expect(String(init?.body)).not.toContain('PRIVATE-NAME');
       const body = JSON.parse(String(init?.body));
       expect(body.generationConfig.responseMimeType).toBe('application/json');
+      const evidence = JSON.parse(body.contents[0].parts[0].text);
+      expect(evidence.confirmedAnswer).toBe('finished');
+      expect(evidence.background.exercise.url).toBe(
+        'https://www.nasa.gov/reference/fundamentals-of-human-health/',
+      );
+      expect(evidence.background.exercise.relevance).toContain('does not prove');
+      expect(body.systemInstruction.parts[0].text).toContain('45 words');
       return Response.json({
         candidates: [
           {

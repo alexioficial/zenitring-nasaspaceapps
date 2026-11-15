@@ -7,6 +7,7 @@
   import { healthTopics } from '$lib/crew/health';
   import '$lib/crew/health.css';
   import MissionSources from './MissionSources.svelte';
+  import { bundledRadiation } from '$lib/nasa/radlab';
   import RadiationContext from './RadiationContext.svelte';
   import { activeSource } from '$lib/crew/suit';
   import { freshness, ageLabel, clockLabel } from '$lib/crew/model';
@@ -35,6 +36,14 @@
       ? freshness(primary.connected, primary.latest?.receivedAt ?? null, primary.intervalMs, now)
       : 'offline',
   );
+  const nasaRecord = bundledRadiation();
+  let nasaPanel = $state<HTMLDetailsElement>();
+  function exploreNasa() {
+    if (!nasaPanel) return;
+    nasaPanel.open = true;
+    nasaPanel.scrollIntoView({ behavior: 'instant', block: 'start' });
+    nasaPanel.querySelector<HTMLElement>('summary')?.focus();
+  }
   let reportForm = $state<HTMLDetailsElement>();
   function addContext() {
     if (!reportForm) return;
@@ -81,9 +90,6 @@
           /></a
         >
       {/if}
-      <a class="medbay-nasa" href="https://www.nasa.gov/hrp/risks/" target="_blank" rel="noreferrer"
-        ><Icon name="book" size={18} /> NASA health resources <Icon name="arrow" size={16} /></a
-      >
     </div>
   </div>
   <section class="medbay-phase" aria-label="Mission phase control">
@@ -95,6 +101,22 @@
   </section>
   <p class="medbay-scene-credit">AI-generated concept illustration</p>
 </div>
+<section class="medbay-nasa-data" aria-label="NASA data in this demo">
+  <div>
+    <h2>NASA data in this demo</h2>
+    <p>
+      <strong>{nasaRecord.points.length} historical radiation readings</strong> · DosTel1 · ISS / Columbus
+      · April 2022
+    </p>
+    <p>
+      Real environmental observations, separate from your simulated health readings. They are not
+      your personal radiation dose and do not explain your symptoms.
+    </p>
+  </div>
+  <button class="crew-button secondary" onclick={exploreNasa}
+    >Explore NASA data<Icon name="arrow" size={18} /></button
+  >
+</section>
 {#if open.length}
   <div class="medbay-open-emergency">
     <strong>Your emergency is still open.</strong><button
@@ -178,6 +200,6 @@
   <summary>Mission sources, suit telemetry &amp; phase history</summary>
   <MissionSources member={person} {online} {now} {send} />
 </details>
-<details class="crew-disclosure">
+<details class="crew-disclosure" bind:this={nasaPanel}>
   <summary>Explore NASA environmental context · historical radiation</summary><RadiationContext />
 </details>

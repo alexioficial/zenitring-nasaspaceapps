@@ -132,13 +132,20 @@ export async function explainAutomatic(
   if (!options.apiKey) return { mode: 'local', reason: 'not-configured' };
   const model = options.model || 'gemini-3.5-flash-lite';
   const sourceIds = [...new Set([assessment.sourceId, 'medical'])];
-  const background = {
-    exercise:
-      'NASA describes exercise as a countermeasure for altered-gravity effects. Heart rate alone does not identify a cause.',
-    suit: 'NASA-STD-3001 section 11.3 covers suit pressure, oxygen and carbon dioxide recording, display and alerts. This synthetic detector does not implement safe limits.',
-    medical:
-      'NASA medical operations includes crew medical support and mission-specific procedures.',
-  };
+  const background = Object.fromEntries(
+    sourceIds.map((id) => {
+      const source = automaticSources[id as keyof typeof automaticSources];
+      return [
+        id,
+        {
+          title: source.title,
+          url: source.url,
+          context: source.context,
+          relevance: source.relevance,
+        },
+      ];
+    }),
+  );
   try {
     const response = await (options.fetcher ?? fetch)(
       `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
@@ -150,7 +157,7 @@ export async function explainAutomatic(
           systemInstruction: {
             parts: [
               {
-                text: 'You explain synthetic telemetry for ZENIT, a NASA Space Apps proof of concept. Write English. Explain possible contributors, never a diagnosis. Use only supplied observations and explicitly confirmed context. Do not invent symptoms, probabilities, baseline health, sensor accuracy or treatment. Do not give medication, suit controls or medical clearance. Do not declare the user safe. State only the unknowns relevant to this pattern. Discuss only the supplied source: do not mention suit atmosphere for ring data. If no activity was confirmed, do not claim exercise occurred. Suit atmosphere is not blood oxygen or body temperature. NASA context is background, not validation of this algorithm. Keep summary and uncertainty each under 90 words. Cite only supplied source IDs. Your output cannot change the detector or next steps.',
+                text: 'You explain synthetic telemetry for ZENIT, a NASA Space Apps proof of concept. Write English. Explain possible contributors, never a diagnosis. Use only supplied observations and explicitly confirmed context. Do not invent symptoms, probabilities, baseline health, sensor accuracy or treatment. Do not give medication, suit controls or medical clearance. Do not declare the user safe. State only the unknowns relevant to this pattern. Discuss only the supplied source: do not mention suit atmosphere for ring data. If no activity was confirmed, do not claim exercise occurred. Suit atmosphere is not blood oxygen or body temperature. NASA context is background, not validation of this algorithm. Use everyday words, short sentences and direct address (you). Start with what this could mean for the astronaut, not a list of numbers or a generic disclaimer. Summary: at most two sentences and 45 words. Uncertainty: one sentence and 25 words. Never repeat a raw list of metrics; the interface shows those separately. Do not add unrelated possible diseases. If the cause is unknown, say so plainly. Do not issue instructions: the interface supplies the next action. Cite only supplied source IDs. Your output cannot change the detector or next steps.',
               },
             ],
           },
@@ -165,9 +172,7 @@ export async function explainAutomatic(
                     source: assessment.source,
                     confirmedAnswer: answer,
                     localContext: contextualize(assessment, answer),
-                    background: Object.fromEntries(
-                      sourceIds.map((id) => [id, background[id as keyof typeof background]]),
-                    ),
+                    background,
                   }),
                 },
               ],

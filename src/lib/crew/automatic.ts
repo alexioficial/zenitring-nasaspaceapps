@@ -6,14 +6,24 @@ export const researchSource = 'https://ntrs.nasa.gov/citations/20240000754';
 export const automaticSources = {
   exercise: {
     title: 'NASA · Exercise and human health',
+    context: 'NASA describes exercise as a countermeasure for the effects of altered gravity.',
+    relevance:
+      'This is why ZENIT asks about activity when pulse changes. It does not prove that exercise caused this change.',
     url: 'https://www.nasa.gov/reference/fundamentals-of-human-health/',
   },
   suit: {
     title: 'NASA · Suited atmosphere, §11.3',
+    context: 'NASA calls for recording and displaying suit pressure, oxygen and carbon dioxide.',
+    relevance:
+      'This supports showing the suit environment alongside your health readings. ZENIT does not apply certified suit limits.',
     url: 'https://www.nasa.gov/reference/11-0-spacesuits-vol-2/',
   },
   medical: {
     title: 'NASA · Medical operations',
+    context:
+      'NASA medical operations includes health monitoring, clinical support and crew medical communication.',
+    relevance:
+      'This supports reviewing symptoms and unexplained changes with the crew. It does not validate this demo’s interpretation.',
     url: 'https://www.nasa.gov/reference/6-0-medical-operations/',
   },
 } as const;
@@ -189,7 +199,7 @@ export function analyzeSignals(
           : kind === 'multi-signal'
             ? 'measurement'
             : null,
-    sourceId: environment ? 'suit' : changed.length ? 'exercise' : 'medical',
+    sourceId: environment ? 'suit' : kind === 'pulse-rise' ? 'exercise' : 'medical',
   };
 }
 export function contextualize(assessment: AutomaticAssessment, answer: AutomaticAnswer | null) {

@@ -1,4 +1,5 @@
 import { expect, test } from 'bun:test';
+import { healthInsight } from '../src/lib/crew/health-insight';
 import { initialCrew } from '../src/lib/crew/model';
 import * as automatic from '../src/lib/crew/automatic';
 import { researchScenarios, scenarioCrew } from '../src/lib/crew/research-scenarios';
@@ -72,4 +73,26 @@ test('a reported symptom or suit alert takes priority over contextual explanatio
   expect(automatic.contextualize(result, 'alert').help).toBe(true);
   expect(automatic.contextualize(result, 'finished').help).toBe(false);
   expect(automatic.contextualize(result, 'resting').explanation).toContain('No recent exercise');
+});
+
+test('plain-language insight distinguishes confirmed context from a possible cause', () => {
+  const assessment = automatic.analyzeSignals(scenarioCrew('recovery', now), now);
+  expect(healthInsight(assessment, null).meaning).toContain('not confirmed any exercise');
+  expect(healthInsight(assessment, 'finished').meaning).toContain('You said');
+  expect(healthInsight(assessment, 'resting').meaning).toContain('cannot use it');
+  const urgent = healthInsight(assessment, 'unwell');
+  expect(urgent.help).toBe(true);
+  expect(urgent.action).toContain('No emergency message has been sent');
+  const stale = automatic.analyzeSignals(scenarioCrew('recovery', now), now + 30000);
+  expect(healthInsight(stale, 'finished').headline).toBe('Current readings are unavailable');
+});
+
+test('NASA source follows the changed indicator and suit readings stay environmental', () => {
+  const c = ring(Array(9).fill(75));
+  c.samples.slice(-3).forEach((s) => (s.values.spo2 = 95));
+  const assessment = automatic.analyzeSignals(c, now);
+  expect(assessment.sourceId).toBe('medical');
+  const suit = automatic.analyzeSignals(scenarioCrew('suit', now), now);
+  expect(healthInsight(suit, 'no-alert').meaning).toContain('not your blood oxygen');
+  expect(healthInsight(suit, 'no-alert').sourceId).toBe('suit');
 });
