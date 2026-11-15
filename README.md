@@ -81,6 +81,7 @@ The ring gesture surface renders a procedural **Three.js** concept: a rounded ti
 - `server/hub.ts`: validated WebSocket protocol, exclusive associations, heartbeat, server timestamps, acknowledgements and retry deduplication.
 - `server/repository.ts`: Bun SQLite persistence. Default `data/zenit.sqlite`, configurable via `MISSION_DB_PATH`.
 - `src/routes/+page.svelte`: role selector and direct guided-simulation entry.
+- `src/routes/crew/`: central crew monitor without personal navigation.
 - `src/routes/astronaut/[id]/`: validated personal links with fixed astronaut identity.
 - `src/lib/components/crew/MissionWorkspace.svelte`: shared monitor views, scoped personal navigation, detail/trends and links distributed from the central monitor.
 - `src/routes/ring/+page.svelte`: phone identity, touch surface, pending delivery and simulation controls.

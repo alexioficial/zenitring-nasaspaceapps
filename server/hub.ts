@@ -587,7 +587,7 @@ export function attachHub(
         exportedAt: new Date().toISOString(),
         simulated: true,
         provenance:
-          'Simulated ZENIT rings and suits; actual WebSocket reception. NASA historical data and reference sources remain separate. AI assisted implementation; no AI health assessment.',
+          'Simulated ZENIT rings and suits; actual WebSocket reception. NASA historical data and reference sources remain separate. AI assisted implementation. Change detection and next steps are local and deterministic; an optional Gemini explanation may describe a detected change and does not diagnose or control actions.',
         crew: repository.crew(),
         events: repository.events(-1),
       },

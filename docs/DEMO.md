@@ -49,7 +49,7 @@ An emergency remains **active** until acknowledged on the monitor. Acknowledgeme
 - Mobile browsers suspend timers/sockets when locked or backgrounded. No website can guarantee 3-second emission in that condition. The monitor exposes stale/disconnected state rather than fabricating readings. There is no installable offline app or cold-start cache.
 - Device clocks should be synchronized; the monitor displays sender measurement/capture time and separate server receipt time. Server rejects timestamps more than one minute ahead. Heart rate, HRV, SpO₂, respiration and skin-temperature deviation are conceptual simulated metrics; skin deviation is not core temperature. No classifier infers symptoms or diagnoses.
 - English interface copy preserves the existing product language. The former `/legacy` prototype is removed. NASA Apollo 11 historical explorer remains `/archive`, separate from the fictional crew measurements.
-- AI assisted software implementation. No AI model interprets crew health. The data and exports identify simulation explicitly.
+- AI assisted software implementation. Change detection and next steps are local and deterministic; an optional Gemini explanation can describe a detected change without diagnosing or controlling actions. The data and exports identify simulation explicitly.
 
 # Additional demonstration: ring → suit → recovery
 

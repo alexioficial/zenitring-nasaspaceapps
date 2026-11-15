@@ -13,4 +13,6 @@ dist/
 /data/
 /docs/superpowers/
 .impeccable
+/.superpowers/
+/.codex/
 /.taste-skill/

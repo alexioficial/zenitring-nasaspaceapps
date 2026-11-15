@@ -1,7 +1,7 @@
 import { Database } from 'bun:sqlite';
 import { dirname } from 'node:path';
 import { mkdirSync } from 'node:fs';
-import { initialCrew } from '../src/lib/crew/model';
+import { crewDefaults, initialCrew } from '../src/lib/crew/model';
 import { emptySuit } from '../src/lib/crew/suit';
 import type { CrewMember, CrewEvent } from '../src/lib/crew/types';
 
@@ -19,13 +19,20 @@ export class Repository {
   }
   crew(): CrewMember[] {
     return (this.db.query('SELECT data FROM crew ORDER BY rowid').all() as { data: string }[]).map(
-      (r) => ({
-        healthChecks: [],
-        suit: emptySuit(),
-        phase: 'cabin',
-        phaseHistory: [],
-        ...JSON.parse(r.data),
-      }),
+      (r) => {
+        const stored = JSON.parse(r.data);
+        // The display name comes from the current crew definition, so a rename
+        // also reaches databases created before it.
+        const name = crewDefaults.find((c) => c.id === stored.id)?.name;
+        return {
+          healthChecks: [],
+          suit: emptySuit(),
+          phase: 'cabin',
+          phaseHistory: [],
+          ...stored,
+          ...(name ? { name } : {}),
+        };
+      },
     );
   }
   saveCrew(c: CrewMember) {

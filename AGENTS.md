@@ -18,8 +18,9 @@ la tripulación desde un monitor central.
 
 - Las mediciones personales y del traje son **simuladas**. La comunicación entre
   dispositivos por WebSocket, la persistencia y las confirmaciones son reales.
-- Hay cuatro identidades ficticias: `vega` (Alex Morgan), `nova` (Sam Rivera),
-  `atlas` (Jordan Lee) y `lyra` (Robin Chen). Se definen en `src/lib/crew/model.ts`.
+- Hay cuatro identidades ficticias: `vega` (Alexi), `nova` (Rivier), `atlas` (Neil) y
+  `lyra` (Buzz). Se definen en `src/lib/crew/model.ts`; el nombre visible se toma
+  siempre de esa definición, también para registros SQLite anteriores.
 - Cada astronauta puede tener un anillo y un traje vinculados independientemente.
 - NASA RadLab y Apollo son fuentes históricas separadas de la misión ficticia.
 - Gemini puede explicar cambios detectados. El detector y los siguientes pasos
@@ -311,8 +312,10 @@ RingClient / SuitClient -> MissionConnection -> /ws -> hub -> SQLite
   No editar `build/`, `.svelte-kit/`, `node_modules/` ni perfiles de navegador como código.
 - `.taste-skill/` son perfiles/reportes de revisión y está excluido del watcher de
   Vite para evitar recargas continuas. `jakiando/` es investigación histórica local
-  ignorada por Git; `.superpowers/`, `.impeccable/` y `docs/superpowers/` contienen
-  auxiliares de trabajo. No tratarlos como implementación activa ni dependencia.
+  ignorada por Git; `.superpowers/`, `.impeccable/`, `.codex/` y `docs/superpowers/`
+  contienen auxiliares de trabajo locales, ignorados por Git (los commits
+  anteriores todavía los contienen). No tratarlos como implementación activa ni
+  dependencia, ni volver a versionarlos.
 
 ## 9. Pruebas y comprobaciones por área
 
@@ -343,7 +346,7 @@ entorno en cambios arbitrarios del código.
 
 Tras revertir la UI de `8d49964` a la de `7dab20f` (conservando su lógica):
 
-- `bun run test`: **84 pass, 0 fail**, 11 archivos y 346 aserciones. Las pruebas
+- `bun run test`: **91 pass, 0 fail**, 11 archivos y 379 aserciones. Las pruebas
   de la UI revertida (`astronaut-surfaces` y casos nuevos de `suit-display`) se
   retiraron con ella. El error SQLite de la prueba de almacenamiento transitorio
   es esperado; esa prueba también pasa.
@@ -359,12 +362,11 @@ Tras revertir la UI de `8d49964` a la de `7dab20f` (conservando su lógica):
 1. Leer este archivo, `git status --short` y el código/pruebas del área solicitada.
    Preservar cambios locales y archivos nuevos del usuario. No restaurar ni limpiar
    el árbol para facilitar la tarea. No hace falta releer todo el repositorio.
-2. Contrastar documentación con implementación. El README todavía describe `/`
-   como monitor en una entrada del mapa, pero ahora es el selector y `/crew` es
-   el monitor. `PRODUCT.md` conserva decisiones visuales anteriores; para diseño
-   actual consultar `DESIGN.md` y las hojas `medbay*.css`. Algunos textos del README,
-   DEMO y exportación dicen que ningún modelo interpreta salud: ya existe la
-   explicación opcional de Gemini, sin diagnóstico ni control de acciones.
+2. Contrastar documentación con implementación. `PRODUCT.md` conserva decisiones
+   visuales anteriores; para diseño actual consultar `DESIGN.md` y las hojas
+   `medbay*.css`. README, DEMO y el texto de exportación ya describen `/` como
+   selector, `/crew` como monitor y la explicación opcional de Gemini, sin
+   diagnóstico ni control de acciones.
 3. Para detalle adicional consultar: `README.md` (operación), `docs/DEMO.md`
    (demostración), `docs/CHALLENGE-ALIGNMENT.md` (alcance del reto),
    `docs/MULTISOURCE-NASA.md` (fuentes/procedencia),
