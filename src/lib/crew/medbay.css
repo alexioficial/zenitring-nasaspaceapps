@@ -332,7 +332,7 @@
   gap: 7px;
   max-width: 155px;
 }
-.medbay-source-tags > div {
+.medbay-source-tags > :is(div, a) {
   display: flex;
   align-items: center;
   gap: 9px;
@@ -623,7 +623,7 @@
     gap: 5px;
     margin-top: -12px;
   }
-  .medbay-source-tags > div {
+  .medbay-source-tags > :is(div, a) {
     padding: 8px;
   }
   .medbay-figure {

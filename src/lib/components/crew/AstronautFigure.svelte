@@ -48,16 +48,37 @@
   />
   {#if member}
     <div class="medbay-source-tags" aria-label="Independent source connections">
-      <div class:source-receiving={ringStatus === 'live'}>
+      <!-- Simulators open in another tab so they keep transmitting while this view stays open. -->
+      <a
+        class="medbay-source-link"
+        class:source-receiving={ringStatus === 'live'}
+        href={`/ring?astronaut=${member.id}`}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`Ring, ${statusText(ringStatus)}. Open my ring simulator in a new tab`}
+      >
         <Icon name="ring" size={20} /><span
-          ><strong>Ring</strong><small>{statusText(ringStatus)}</small></span
+          ><strong
+            >Ring<span class="source-open" aria-hidden="true"><Icon name="arrow" size={14} /></span
+            ></strong
+          ><small>{statusText(ringStatus)}</small></span
         >
-      </div>
-      <div class:source-receiving={suitStatus === 'live'}>
+      </a>
+      <a
+        class="medbay-source-link"
+        class:source-receiving={suitStatus === 'live'}
+        href={`/suit?astronaut=${member.id}`}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`Suit, ${statusText(suitStatus)}. Open my suit simulator in a new tab`}
+      >
         <Icon name="pulse" size={20} /><span
-          ><strong>Suit</strong><small>{statusText(suitStatus)}</small></span
+          ><strong
+            >Suit<span class="source-open" aria-hidden="true"><Icon name="arrow" size={14} /></span
+            ></strong
+          ><small>{statusText(suitStatus)}</small></span
         >
-      </div>
+      </a>
       <div class:source-receiving={online}>
         <Icon name="broadcast" size={20} /><span
           ><strong>Crew link</strong><small>{online ? 'Online' : 'Offline'}</small></span

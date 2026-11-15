@@ -180,6 +180,21 @@ test('the crew overview exposes a live suit independently of an unlinked cabin r
   expect(body).toContain('Suit ECG');
 });
 
+test('My health ring and suit tags open their own simulators in a new tab', async () => {
+  const { default: AstronautFigure } =
+    await import('../src/lib/components/crew/AstronautFigure.svelte');
+  const member = memberWithSuit();
+  const { body } = render(AstronautFigure, { props: { member, online: true, now } });
+  const links = [...body.matchAll(/<a\b[^>]*>/g)].map((m) => m[0]);
+  expect(links).toHaveLength(2);
+  expect(links[0]).toContain(`href="/ring?astronaut=${member.id}"`);
+  expect(links[1]).toContain(`href="/suit?astronaut=${member.id}"`);
+  for (const link of links) expect(link).toContain('target="_blank"');
+  expect(body).toContain('Suit, Receiving. Open my suit simulator in a new tab');
+  // The crew link only reports status; it has no simulator to open.
+  expect(body).toContain('Crew link');
+});
+
 test('retained suit readings are labelled offline or stale rather than receiving', () => {
   const member = memberWithSuit();
   for (const [online, connected, time, label] of [
