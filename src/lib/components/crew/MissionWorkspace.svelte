@@ -13,7 +13,13 @@
   import '$lib/crew/health.css';
   import HealthInterpretation from '$lib/components/crew/HealthInterpretation.svelte';
   import PersonalHealth from '$lib/components/crew/PersonalHealth.svelte';
-  import { personalView, personalViewUrl } from '$lib/crew/workspace';
+  import {
+    personalView,
+    personalViewUrl,
+    guidedScenario,
+    guidedScenarioUrl,
+  } from '$lib/crew/workspace';
+  import type { GuidedScenario } from '$lib/crew/health-learning';
   import Trend from '$lib/components/crew/Trend.svelte';
   import EventCard from '$lib/components/crew/EventCard.svelte';
   import SimulationSettings from '$lib/components/crew/SimulationSettings.svelte';
@@ -201,6 +207,17 @@
       heading.focus({ preventScroll: true });
     }
     window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+  async function openScenario(scenario: GuidedScenario | null) {
+    await goto(guidedScenarioUrl(page.url, scenario), { noScroll: true, keepFocus: true });
+    await tick();
+    const heading = contentElement?.querySelector<HTMLElement>(
+      scenario ? '.guided-health h2' : 'h1',
+    );
+    if (heading) {
+      heading.tabIndex = -1;
+      heading.focus();
+    }
   }
   const ringUrl = (id: string) => `${baseUrl.replace(/\/$/, '')}/ring?astronaut=${id}`;
   const personalUrl = (id: string) => `${baseUrl.replace(/\/$/, '')}/astronaut/${id}`;
@@ -406,15 +423,17 @@
         >
       </div>{/if}
     {#if view === 'personal'}
-      <PersonalHealth
-        identity={personalId}
-        {mission}
-        online={link === 'online'}
-        {now}
-        {send}
-        ondetail={focus}
-        onhistory={history}
-      />
+      {#key personalId}<PersonalHealth
+          identity={personalId}
+          scenario={guidedScenario(page.url)}
+          onscenario={openScenario}
+          {mission}
+          online={link === 'online'}
+          {now}
+          {send}
+          ondetail={focus}
+          onhistory={history}
+        />{/key}
     {:else if view === 'overview' && !member}
       <section class="crew-page-intro">
         <div>
@@ -1093,8 +1112,8 @@
           ></span
         >
         <div>
-          <a href="/archive">Apollo 11 archive</a><a href="/legacy">Personal demo archive</a><button
-            onclick={download}>Export visible session</button
+          <a href="/archive">Apollo 11 archive</a><button onclick={download}
+            >Export visible session</button
           ><a href="/api/mission-export" download="zenit-complete-log.json"
             >Complete server archive</a
           >

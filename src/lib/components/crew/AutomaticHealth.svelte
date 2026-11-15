@@ -20,6 +20,7 @@
     compact = false,
     oncontext,
     connectHref,
+    response = $bindable(null),
   }: {
     member: CrewMember;
     now: number;
@@ -28,11 +29,11 @@
     compact?: boolean;
     oncontext?: () => void;
     connectHref?: string;
+    response?: { episode: string; answer: AutomaticAnswer } | null;
   } = $props();
   let assessment = $derived(analyzeSignals(member, now, online));
   // A source that was linked before only needs reconnecting, not linking from scratch.
   let wasLinked = $derived(!!activeSource(member).deviceId);
-  let response = $state<{ episode: string; answer: AutomaticAnswer } | null>(null);
   let answer = $derived(
     response &&
       (response.answer === 'unwell' ||
@@ -74,6 +75,7 @@
   let explanation = $state<{
     summary: string;
     uncertainty: string;
+    actionReason?: string;
     sourceIds: (keyof typeof automaticSources)[];
   } | null>(null);
   let aiState = $state('Local analysis');
@@ -352,6 +354,10 @@
       <div class="automatic-next">
         <strong>What to do now</strong>
         <p>{insight.action}</p>
+        {#if visibleExplanation?.actionReason}<p class="insight-ai-status">
+            <strong>Why this step:</strong>
+            {visibleExplanation.actionReason}
+          </p>{/if}
       </div>
     {:else if insight.help}{@render contactedButton()}{/if}
     {#if needsSource}
@@ -441,6 +447,10 @@
       <div class="automatic-next">
         <strong>What to do now</strong>
         <p>{insight.action}</p>
+        {#if visibleExplanation?.actionReason}<p class="insight-ai-status">
+            <strong>Why this step:</strong>
+            {visibleExplanation.actionReason}
+          </p>{/if}
       </div>
     {:else if insight.help}{@render contactedButton()}{/if}
     {#if oncontext}<button class="medbay-add-context" onclick={oncontext}

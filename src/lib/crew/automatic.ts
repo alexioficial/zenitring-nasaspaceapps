@@ -4,6 +4,20 @@ import { freshness, validMetrics } from './model';
 
 export const researchSource = 'https://ntrs.nasa.gov/citations/20240000754';
 export const automaticSources = {
+  cardiovascularRisk: {
+    title: 'NASA · Cardiovascular adaptations',
+    context: 'Weightlessness changes how the heart and circulation function.',
+    relevance:
+      'Explains why activity and recovery context matter. A pulse change alone does not establish a cardiovascular condition.',
+    url: 'https://www.nasa.gov/reference/risk-of-cardiovascular-adaptations/',
+  },
+  spacewalkRisk: {
+    title: 'NASA · Spacewalk risks',
+    context: 'Spacewalks involve workload, injury and atmosphere-related risks.',
+    relevance:
+      'Explains why suit readings and reported alerts need context. These readings do not establish a safe operating condition.',
+    url: 'https://www.nasa.gov/reference/risk-of-injury-and-compromised-performance-from-extravehicular-activity-eva/',
+  },
   exercise: {
     title: 'NASA · Exercise and human health',
     context: 'NASA describes exercise as a countermeasure for the effects of altered gravity.',

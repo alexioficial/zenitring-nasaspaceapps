@@ -74,7 +74,6 @@ No hay un script `lint` ni configuración de CI versionada en el estado revisado
 | `/suit?astronaut=vega` | Emisor independiente de traje y capturas de sus lecturas. |
 | `/research` | Seis escenarios sintéticos aislados y explicación opcional de Gemini. |
 | `/archive` | Explorador histórico de Apollo 11. |
-| `/legacy` | Prototipo anterior individual, con estado local propio. |
 | `/health` | GET de disponibilidad HTTP: `{ status: 'ok' }`; no verifica todo el hub. |
 | `/api/radlab` | GET de consulta histórica acotada, caché y respaldo incluido. |
 | `/api/health-explanation` | POST al adaptador privado de Gemini. |
@@ -135,7 +134,6 @@ abren en otra pestaña. No convertir navegar a My health en cerrar el emisor.
 | `src/lib/nasa/` | Parser RadLab y respuesta histórica con procedencia incluida. |
 | `src/lib/three/ring-scene.ts` | Modelo procedural, render y liberación de recursos Three.js. |
 | `src/lib/components/RingScene.svelte` | Carga solo en navegador, ciclo de vida y fallback estático. |
-| `src/lib/mission.ts` | Dominio del prototipo `/legacy`; no es el estado del hub actual. |
 | `src/lib/apollo.ts` | 42 observaciones aproximadas digitalizadas y actividades Apollo. |
 | Componentes fuera de `crew/` | Principalmente el prototipo y Apollo; `Icon` y `RingScene` también se comparten. |
 | `static/fonts/`, `static/images/` | Fuentes locales, licencias y arte conceptual con JSON de procedencia. |
@@ -191,12 +189,30 @@ RingClient / SuitClient -> MissionConnection -> /ws -> hub -> SQLite
   `zenit-health-draft-<id>`. No son el transporte entre equipos.
 - No sobrescribir un outbox corrupto; avisar cuando solo se retiene en memoria.
   Conservar identidad y pendientes antes de permitir cambiar de astronauta.
-- `/legacy` guarda `zenit-svelte-mission-v1` y simula su monitor en el navegador;
-  no conectarlo accidentalmente al almacenamiento de la misión actual.
+- `/legacy` y sus componentes/dominio/pruebas exclusivos se retiraron por petición
+  del usuario. No borrar datos de navegador antiguos ni reintroducir esa ruta.
 
 ## 6. Salud, Gemini y NASA
 
 ### Salud y explicaciones
+
+- My health incluye contexto educativo de riesgos NASA y catálogo de 17 temas.
+  `health-learning.ts` selecciona relevancia sin calcular riesgo clínico; atribuye
+  check-ins guardados por fecha, conserva ayuda pendiente y evita interpretar datos stale.
+- `GuidedHealth.svelte`: ARCHeR y Radi-N2, accesibles desde inicio y My health con
+  `?view=health&scenario=archer|radin2`. Pasos/respuestas viven en memoria, no escriben
+  al hub; cambiar escenario reinicia práctica. La identidad y parámetros ajenos se
+  preservan y navegar a otra vista elimina scenario. Unknown scenario abre My health.
+- `SpaceHealthRisks.svelte` explica contexto; `LearningExplanation.svelte` ofrece
+  Gemini opcional. `learning-ai.ts` valida IDs/respuestas cerradas y reconstruye
+  evidencia sintética en servidor. Comparte origen, tamaño, cuota y timeout con
+  `/api/health-explanation`; nombres y notas libres no se transmiten.
+- La IA explica riesgos y el motivo del siguiente paso local (`actionReason`); no
+  decide tratamientos ni reemplaza acciones. Una consulta de catálogo usa solo el
+  tema y se etiqueta como general; práctica usa solo el paso sintético y respuestas.
+- Radi-N2 muestra recuentos de burbujas inventados durante siete días, no medidas de
+  David Saint-Jacques. No convertir a dosis ni mezclar con RadLab.
+
 
 - Check-ins: activity/recovery, sleep/attention, wellbeing y food/hydration.
   Síntomas y contexto son explícitos; borradores y previews no se comparten hasta
@@ -211,7 +227,7 @@ RingClient / SuitClient -> MissionConnection -> /ws -> hub -> SQLite
   durante pérdida de señal hasta registrar contacto. Pedir ayuda en pantalla no
   contacta a la tripulación ni envía por sí solo un evento de emergencia.
 - `POST /api/health-explanation`: exige mismo Origin, JSON, máximo 48000 bytes y
-  entrada validada de 9–120 muestras. Recalcula el detector antes de llamar al modelo.
+  entrada validada de 9–120 muestras para telemetría, o IDs acotados para educación. Recalcula el detector antes de llamar al modelo.
 - Credencial privada `GEMINI_API_KEY`; `GEMINI_MODEL` tiene como valor por defecto
   `gemini-3.5-flash-lite` en esta implementación. Nunca enviar claves al navegador.
   No enviar nombres ni notas libres: solo observaciones calculadas, respuesta
@@ -307,11 +323,11 @@ RingClient / SuitClient -> MissionConnection -> /ws -> hub -> SQLite
 | Gestos, simulación y frescura | `tests/crew.test.ts` |
 | Salud y evidencia | `tests/health.test.ts` |
 | Detector y presentación comprensible | `tests/automatic.test.ts` |
-| Validación y fallback Gemini | `tests/automatic-ai.test.ts` (proveedor simulado) |
+| Validación y fallback Gemini | `tests/automatic-ai.test.ts`, `tests/learning-ai.test.ts` (proveedor simulado) |
+| Riesgos y escenarios guiados | `tests/health-learning.test.ts` |
 | Navegación, onboarding y registros | `tests/personal-workspace.test.ts` |
 | Renderizado de superficies y estados | `tests/suit-display.test.ts` |
 | NASA | `tests/radlab.test.ts` |
-| Prototipo anterior | `tests/mission.test.ts` |
 
 Las pruebas de integración levantan servidores HTTP/WS reales con SQLite temporal
 o en memoria. Las de UI usan compilación SSR de Svelte mediante plugins de Bun;

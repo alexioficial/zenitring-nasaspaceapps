@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { explainAutomatic, parseAutomaticRequest } from '$lib/server/automatic-ai';
+import { explainLearning, parseLearningRequest } from '$lib/server/learning-ai';
 import type { RequestHandler } from './$types';
 
 let windowStart = 0,
@@ -29,21 +30,27 @@ export const POST: RequestHandler = async ({ request, url }) => {
   }
   text += decoder.decode();
   let parsed;
+  let learning;
   try {
-    parsed = parseAutomaticRequest(JSON.parse(text));
+    const raw = JSON.parse(text);
+    learning = parseLearningRequest(raw);
+    parsed = learning ? null : parseAutomaticRequest(raw);
   } catch {
     return json({ error: 'Invalid evidence.' }, { status: 400, headers });
   }
-  if (!parsed) return json({ error: 'Invalid evidence.' }, { status: 400, headers });
+  if (!parsed && !learning) return json({ error: 'Invalid evidence.' }, { status: 400, headers });
   if (Date.now() - windowStart > 60000) {
     windowStart = Date.now();
     requests = 0;
   }
   if (++requests > 15)
     return json({ mode: 'local', reason: 'unavailable' }, { status: 429, headers });
-  const result = await explainAutomatic(parsed.member, parsed.answer, {
+  const options = {
     apiKey: env.GEMINI_API_KEY,
     model: env.GEMINI_MODEL,
-  });
+  };
+  const result = learning
+    ? await explainLearning(learning, options)
+    : await explainAutomatic(parsed!.member, parsed!.answer, options);
   return json(result, { headers });
 };

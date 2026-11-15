@@ -53,6 +53,12 @@
           <a class="crew-button" href={`/astronaut/${selected}`}
             >Open astronaut view <Icon name="arrow" size={18} /></a
           >
+          <a
+            class="crew-button secondary"
+            href={`/astronaut/${selected}?view=health&scenario=archer`}
+            >Start guided simulation <Icon name="arrow" size={18} /></a
+          >
+          <p>No devices needed · Sleep, wellbeing &amp; radiation scenarios</p>
         </section>
         <section class="view-choice monitor-choice" aria-labelledby="monitor-title">
           <Icon name="monitor" size={30} />

@@ -7,10 +7,12 @@ import {
   type AutomaticAnswer,
 } from '../crew/automatic';
 import type { CrewMember } from '../crew/types';
+import { healthInsight } from '../crew/health-insight';
 
 export type AIExplanation = {
   summary: string;
   uncertainty: string;
+  actionReason?: string;
   sourceIds: (keyof typeof automaticSources)[];
 };
 export type AIResult =
@@ -95,9 +97,10 @@ const schema = {
   properties: {
     summary: { type: 'string' },
     uncertainty: { type: 'string' },
+    actionReason: { type: 'string' },
     sourceIds: { type: 'array', items: { type: 'string', enum: Object.keys(automaticSources) } },
   },
-  required: ['summary', 'uncertainty', 'sourceIds'],
+  required: ['summary', 'uncertainty', 'actionReason', 'sourceIds'],
   additionalProperties: false,
 };
 export function validAIExplanation(v: unknown): v is AIExplanation {
@@ -110,6 +113,10 @@ export function validAIExplanation(v: unknown): v is AIExplanation {
     typeof x.uncertainty === 'string' &&
     x.uncertainty.trim().length > 0 &&
     x.uncertainty.length <= 700 &&
+    (x.actionReason === undefined ||
+      (typeof x.actionReason === 'string' &&
+        x.actionReason.trim().length > 0 &&
+        x.actionReason.length <= 700)) &&
     Array.isArray(x.sourceIds) &&
     x.sourceIds.length > 0 &&
     x.sourceIds.length <= 3 &&
@@ -132,6 +139,8 @@ export async function explainAutomatic(
   if (!options.apiKey) return { mode: 'local', reason: 'not-configured' };
   const model = options.model || 'gemini-3.5-flash-lite';
   const sourceIds = [...new Set([assessment.sourceId, 'medical'])];
+  if (assessment.kind === 'pulse-rise') sourceIds.push('cardiovascularRisk');
+  if (assessment.kind === 'suit-change') sourceIds.push('spacewalkRisk');
   const background = Object.fromEntries(
     sourceIds.map((id) => {
       const source = automaticSources[id as keyof typeof automaticSources];
@@ -157,7 +166,7 @@ export async function explainAutomatic(
           systemInstruction: {
             parts: [
               {
-                text: 'You explain synthetic telemetry for ZENIT, a NASA Space Apps proof of concept. Write English. Explain possible contributors, never a diagnosis. Use only supplied observations and explicitly confirmed context. Do not invent symptoms, probabilities, baseline health, sensor accuracy or treatment. Do not give medication, suit controls or medical clearance. Do not declare the user safe. State only the unknowns relevant to this pattern. Discuss only the supplied source: do not mention suit atmosphere for ring data. If no activity was confirmed, do not claim exercise occurred. Suit atmosphere is not blood oxygen or body temperature. NASA context is background, not validation of this algorithm. Use everyday words, short sentences and direct address (you). Start with what this could mean for the astronaut, not a list of numbers or a generic disclaimer. Summary: at most two sentences and 45 words. Uncertainty: one sentence and 25 words. Never repeat a raw list of metrics; the interface shows those separately. Do not add unrelated possible diseases. If the cause is unknown, say so plainly. Do not issue instructions: the interface supplies the next action. Cite only supplied source IDs. Your output cannot change the detector or next steps.',
+                text: 'You explain synthetic telemetry for ZENIT, a NASA Space Apps proof of concept. Write English. Explain possible contributors, never a diagnosis. Use only supplied observations and explicitly confirmed context. Do not invent symptoms, probabilities, baseline health, sensor accuracy or treatment. Do not give medication, suit controls or medical clearance. Do not declare the user safe. State only the unknowns relevant to this pattern. Discuss only the supplied source: do not mention suit atmosphere for ring data. If no activity was confirmed, do not claim exercise occurred. Suit atmosphere is not blood oxygen or body temperature. NASA context is background, not validation of this algorithm. Use everyday words, short sentences and direct address (you). Start with what this could mean for the astronaut, not a list of numbers or a generic disclaimer. Summary: at most two sentences and 45 words. Uncertainty: one sentence and 25 words. Never repeat a raw list of metrics; the interface shows those separately. Do not add unrelated possible diseases. If the cause is unknown, say so plainly. The interface supplies the next action. In actionReason, explain in at most 45 words why that supplied nextStep fits the observed pattern and confirmed context. Use the supplied NASA risk background when relevant, without claiming a risk has been diagnosed. Do not add, replace or contradict actions. Explain what context the astronaut should bring to that next step, only if already supplied. Cite only supplied source IDs. Your output cannot change the detector or next steps.',
               },
             ],
           },
@@ -172,6 +181,7 @@ export async function explainAutomatic(
                     source: assessment.source,
                     confirmedAnswer: answer,
                     localContext: contextualize(assessment, answer),
+                    nextStep: healthInsight(assessment, answer).action,
                     background,
                   }),
                 },

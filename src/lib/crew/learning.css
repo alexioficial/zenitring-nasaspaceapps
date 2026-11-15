@@ -1,0 +1,221 @@
+.health-learning {
+  color: #142b39;
+  background: #fff;
+  border: 1px solid #cbd8e2;
+  border-radius: 12px;
+  padding: clamp(18px, 3vw, 30px);
+  margin: 18px 0;
+  min-width: 0;
+  line-height: 1.65;
+}
+.health-learning h2 {
+  font-size: clamp(22px, 2.6vw, 30px);
+  line-height: 1.2;
+  margin: 6px 0 14px;
+}
+.health-learning h3 {
+  font-size: 22px;
+  margin: 16px 0 10px;
+}
+.health-learning h4 {
+  font-size: 15px;
+  margin: 16px 0 4px;
+}
+.health-learning p {
+  margin: 8px 0 16px;
+  max-width: 85ch;
+}
+.health-learning a {
+  color: #126f80;
+  text-underline-offset: 4px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.learning-heading,
+.learning-controls,
+.learning-choices,
+.learning-progress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.learning-heading,
+.learning-progress {
+  justify-content: space-between;
+}
+.learning-eyebrow {
+  font-size: 12px;
+  font-weight: 750;
+  color: #126f80;
+  letter-spacing: 0.04em;
+}
+.learning-note,
+.learning-source {
+  color: #4c6474;
+  font-size: 13px;
+}
+.learning-columns {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  margin: 12px 0;
+}
+.learning-next {
+  background: #e5f1f4;
+  border-radius: 8px;
+  padding: 4px 18px 12px;
+}
+.learning-disclosure {
+  background: #faefd9;
+  color: #77511a;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.learning-progress {
+  border-top: 1px solid #cbd8e2;
+  padding-top: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 24px;
+}
+.learning-readings {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 20px 0;
+}
+.learning-readings > div {
+  border-left: 3px solid #126f80;
+  padding-left: 16px;
+}
+.learning-readings dt {
+  font-weight: 700;
+  font-size: 14px;
+}
+.learning-readings dd {
+  font-size: clamp(22px, 2.6vw, 32px);
+  line-height: 1.3;
+  margin: 6px 0;
+  font-variant-numeric: tabular-nums;
+}
+.learning-readings span {
+  font-size: 12px;
+  color: #4c6474;
+}
+.health-learning button,
+.health-learning select,
+.learning-launch button {
+  min-height: 44px;
+}
+.health-learning [aria-pressed='true'] {
+  background: #e3f0f3;
+  color: #126f80;
+  border-color: #126f80;
+  box-shadow: inset 0 -2px #126f80;
+}
+.health-learning select {
+  display: block;
+  width: min(100%, 420px);
+  background: #fff;
+  color: #142b39;
+  border: 1px solid #b9cbd6;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 8px 0 18px;
+}
+.learning-question {
+  border: 0;
+  padding: 0;
+  margin: 20px 0;
+}
+.learning-question legend {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.learning-practice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  margin: 16px 0;
+}
+.learning-practice input {
+  width: 20px;
+  height: 20px;
+  accent-color: #126f80;
+}
+.health-learning .learning-help {
+  background: #fcebee;
+  color: #82272c;
+  border-left: 4px solid #a62e32;
+  padding: 14px;
+}
+.learning-catalog {
+  margin-top: 12px;
+  border-top: 1px solid #cbd8e2;
+}
+.learning-catalog summary {
+  cursor: pointer;
+  padding: 14px 0;
+  min-height: 44px;
+  font-weight: 700;
+  color: #126f80;
+}
+.learning-source {
+  border-top: 1px solid #cbd8e2;
+  padding-top: 14px;
+  margin-top: 22px;
+}
+.learning-controls {
+  margin-top: 24px;
+}
+.learning-launch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+}
+.learning-launch p {
+  margin: 0 auto 0 0;
+  color: #4c6474;
+}
+.health-learning :is(a, button, select, input, summary):focus-visible,
+.health-learning [tabindex='-1']:focus {
+  outline: 3px solid #16899b;
+  outline-offset: 3px;
+}
+@media (max-width: 650px) {
+  .learning-columns,
+  .learning-readings {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .learning-readings > div {
+    padding: 8px 14px;
+  }
+  .learning-choices > button {
+    flex: 1 1 180px;
+  }
+  .learning-heading > button {
+    width: 100%;
+  }
+}
+
+/* Override inherited workspace footer/label rules inside educational content only. */
+.medbay-shell .health-learning .learning-source {
+  display: block;
+  text-align: left;
+}
+.medbay-shell .health-learning .learning-practice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.medbay-shell .health-learning .learning-choices {
+  gap: 12px;
+  margin: 16px 0;
+}

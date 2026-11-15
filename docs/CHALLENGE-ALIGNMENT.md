@@ -44,3 +44,22 @@ The personal screen now answers **What might be happening?** and **What should I
 A preview shows the attached ring or suit measurements and possible contributors, each with supporting context, missing information and a NASA reference. When there are at least three prior readings from the same device and mission phase within five minutes, it shows the pulse difference from their median. This recent comparison is not a personal clinical baseline. Old captures, stale measurements, future timestamps, missing sources and disconnected readings never receive a current comparison. Original measurement time remains visible.
 
 New version 2 guides persist the interpretation together with the original evidence. The central monitor can expand the saved interpretation. Older version 1 records retain their original guidance and are not reinterpreted with today's data. Suit atmospheric context uses NASA's [suited atmosphere requirements, §11.3](https://www.nasa.gov/reference/11-0-spacesuits-vol-2/); pressure and environmental oxygen/CO₂ are not blood measurements or a diagnosis.
+
+## Risk education and resource-led practice
+
+My health now connects explicit recent check-in context, selected Spacewalk phase
+or a fresh pulse-change comparison to educational NASA HRP risk information.
+Historical reports retain their dates; risk relevance is not a personal diagnosis
+or score. A catalogue covers the 17 topics listed on NASA’s risks page, including
+areas ZENIT cannot measure.
+
+The homepage and My health link to isolated ARCHeR-inspired sleep/activity practice
+and Radi-N2-inspired radiation practice. The CSA account of David Saint-Jacques
+provides a real research connection, not the simulated measurements. Resource links
+are included with each explanation. No personal mission records are changed.
+
+Gemini can explain a selected risk as general education or a server-owned synthetic
+scenario step on request. For live synthetic telemetry, the existing endpoint now
+supplies cardiovascular or spacewalk risk context and the local next action; the
+model explains the rationale without selecting treatment or replacing that action.
+No free-text notes, real names or invented personal radiation doses are transmitted.

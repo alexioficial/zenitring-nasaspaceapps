@@ -102,3 +102,42 @@ test('API input is bounded, validates measurements and discards identifying meta
     }),
   ).toBeNull();
 });
+
+test('live AI receives the relevant NASA risk and the fixed next action without identifying data', async () => {
+  for (const scenario of ['recovery', 'suit'] as const) {
+    const c = scenarioCrew(scenario, now);
+    const result = await explainAutomatic(c, null, {
+      now,
+      apiKey: 'test',
+      fetcher: async (_url, init) => {
+        const body = JSON.parse(String(init.body));
+        const evidence = JSON.parse(body.contents[0].parts[0].text);
+        expect(evidence.nextStep.length).toBeGreaterThan(10);
+        expect(
+          evidence.background[scenario === 'suit' ? 'spacewalkRisk' : 'cardiovascularRisk'].url,
+        ).toContain('nasa.gov/reference/risk-');
+        return Response.json({
+          candidates: [
+            {
+              finishReason: 'STOP',
+              content: {
+                parts: [
+                  {
+                    text: JSON.stringify({
+                      summary: 'Context helps explain this change.',
+                      uncertainty: 'The cause is unknown.',
+                      actionReason: 'The supplied next step helps clarify the observation.',
+                      sourceIds: [scenario === 'suit' ? 'spacewalkRisk' : 'cardiovascularRisk'],
+                    }),
+                  },
+                ],
+              },
+            },
+          ],
+        });
+      },
+    });
+    expect(result.mode).toBe('ai');
+    if (result.mode === 'ai') expect(result.explanation.actionReason).toContain('next step');
+  }
+});

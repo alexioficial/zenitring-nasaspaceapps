@@ -48,7 +48,7 @@ An emergency remains **active** until acknowledged on the monitor. Acknowledgeme
 - The application has no authentication, account permissions or flight-grade guarantees. Serve only to a trusted demonstration network. Do not enter real crew health information.
 - Mobile browsers suspend timers/sockets when locked or backgrounded. No website can guarantee 3-second emission in that condition. The monitor exposes stale/disconnected state rather than fabricating readings. There is no installable offline app or cold-start cache.
 - Device clocks should be synchronized; the monitor displays sender measurement/capture time and separate server receipt time. Server rejects timestamps more than one minute ahead. Heart rate, HRV, SpO₂, respiration and skin-temperature deviation are conceptual simulated metrics; skin deviation is not core temperature. No classifier infers symptoms or diagnoses.
-- English interface copy preserves the existing product language. Original single-person demo remains `/legacy` with its previous browser session key. NASA Apollo 11 historical explorer remains `/archive`, separate from the fictional crew measurements.
+- English interface copy preserves the existing product language. The former `/legacy` prototype is removed. NASA Apollo 11 historical explorer remains `/archive`, separate from the fictional crew measurements.
 - AI assisted software implementation. No AI model interprets crew health. The data and exports identify simulation explicitly.
 
 # Additional demonstration: ring → suit → recovery
@@ -70,3 +70,20 @@ Suit atmosphere field selection is linked to NASA-STD-3001 §11.3. The Apollo ex
 5. Compare **One isolated spike** and **Signal lost**: the app must not present those as a persistent physiological diagnosis.
 6. Choose **Suit atmosphere change** and show how environmental readings remain distinct from blood measurements.
 7. In `/astronaut/vega`, use the ring's existing Progressive change/Outside demo ranges simulator settings to drive actual WebSocket readings. Automatic detection appears above the optional manual check-in. Its rules are presentation triggers, not clinical limits.
+
+## Guided simulations and risk explanations
+
+1. From `/`, select an identity and press **Start guided simulation**. Direct links:
+   `/astronaut/vega?view=health&scenario=archer` and
+   `/astronaut/vega?view=health&scenario=radin2`. No device connection is needed.
+2. ARCHeR: compare three fictional days, add context, practice reviewing the assigned
+   schedule and record a practice follow-up. Feeling-unwell or worsening responses prioritize
+   direct crew contact without sending a message.
+3. Radi-N2: follow detector placement, seven-day collection and comparison. Counts
+   are invented, not David Saint-Jacques’s measurements; no dose conversion occurs.
+4. **Explain this with AI** optionally asks Gemini to explain the supplied evidence,
+   relevant NASA risk and why the fixed next step helps. A provider failure retains
+   the complete local explanation. Practice state never enters mission records.
+5. Return to My health and expand **Explore space health risks**. The catalogue is
+   available without telemetry. Topic-only AI explanations explicitly use no personal
+   readings; automatic telemetry explanations use validated observations and context.

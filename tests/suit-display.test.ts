@@ -243,3 +243,76 @@ test('personal medbay changes to suit measurements during EVA without inventing 
   expect(html).toContain('Suit oxygen is atmospheric pressure, not blood SpO₂.');
   expect(html).not.toContain('From fictional baseline');
 });
+
+const { default: GuidedHealth } = await import('../src/lib/components/crew/GuidedHealth.svelte');
+const { default: SpaceHealthRisks } =
+  await import('../src/lib/components/crew/SpaceHealthRisks.svelte');
+
+test('guided learning exposes provenance, manual controls and practice isolation without mission props', () => {
+  for (const scenario of ['archer', 'radin2'] as const) {
+    const body = render(GuidedHealth, { props: { scenario, onscenario: () => {} } }).body;
+    expect(body).toContain('Guided simulation');
+    expect(body).toContain('Synthetic');
+    expect(body).toContain('Step 1 of 3');
+    expect(body).toContain('Return to my readings');
+    expect(body).toContain('Nothing is saved');
+    expect(body).toContain('What we still need to know');
+    expect(body).not.toContain('Enable Gemini');
+    if (scenario === 'radin2') expect(body).toContain('Not David');
+  }
+});
+
+test('risk learning remains useful without readings and never claims a detected condition', () => {
+  const body = render(SpaceHealthRisks, {
+    props: { member: initialCrew()[0], online: false, now },
+  }).body;
+  expect(body).toContain('Explore space health risks');
+  expect(body).toContain('not detected conditions');
+  expect(body).toContain('Bone changes');
+});
+
+const { default: PersonalHealth } =
+  await import('../src/lib/components/crew/PersonalHealth.svelte');
+test('saved unresolved help remains visible inside guided practice', async () => {
+  const { buildHealthGuide } = await import('../src/lib/crew/health');
+  const member = initialCrew()[0];
+  const input = { topic: 'fatigue' as const, feeling: 'help' as const, note: '', eventId: null };
+  member.healthChecks.push({
+    id: 'concern',
+    createdAt: now,
+    phase: 'cabin',
+    input,
+    evidence: null,
+    guide: buildHealthGuide(input, member, null, now),
+    completedSteps: [],
+    followups: [],
+  });
+  const body = render(PersonalHealth, {
+    props: {
+      identity: member.id,
+      mission: { crew: [member], events: [], serverTime: now },
+      online: false,
+      now,
+      send: async () => false,
+      ondetail: () => {},
+      onhistory: () => {},
+      scenario: 'archer',
+    },
+  }).body;
+  expect(body).toContain('Your reported concern still needs attention');
+  expect(body.replace(/\s+/g, ' ')).toContain('Guided practice does not resolve this concern');
+});
+test('automatic concern can be retained by its parent across practice', () => {
+  const body = render(AutomaticHealth, {
+    props: {
+      member: initialCrew()[0],
+      online: false,
+      now,
+      compact: true,
+      aiEnabled: false,
+      response: { episode: 'old', answer: 'unwell' },
+    },
+  }).body;
+  expect(body).toContain('How you feel needs attention');
+  expect(body).toContain('I contacted the crew');
+});

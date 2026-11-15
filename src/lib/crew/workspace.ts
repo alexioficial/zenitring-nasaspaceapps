@@ -1,5 +1,20 @@
 import type { HealthCheck } from './health';
 import type { CrewEvent, CrewMember } from './types';
+import type { GuidedScenario } from './health-learning';
+
+export function guidedScenario(url: URL): GuidedScenario | null {
+  if (personalView(url) !== 'personal') return null;
+  const value = url.searchParams.get('scenario');
+  return value === 'archer' || value === 'radin2' ? value : null;
+}
+
+export function guidedScenarioUrl(current: URL, scenario: GuidedScenario | null): URL {
+  const url = personalViewUrl(current, 'personal');
+  url.searchParams.set('view', 'health');
+  if (scenario) url.searchParams.set('scenario', scenario);
+  else url.searchParams.delete('scenario');
+  return url;
+}
 
 export type PersonalView = 'personal' | 'overview' | 'events' | 'pair' | 'lab' | 'nasa' | 'more';
 const viewNames: Record<PersonalView, string> = {
@@ -22,6 +37,7 @@ export function personalView(url: URL): PersonalView {
 
 export function personalViewUrl(current: URL, view: PersonalView): URL {
   const url = new URL(current);
+  if (view !== 'personal') url.searchParams.delete('scenario');
   if (view === 'personal') url.searchParams.delete('view');
   else url.searchParams.set('view', viewNames[view]);
   url.hash = '';

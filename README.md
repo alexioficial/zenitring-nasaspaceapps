@@ -13,17 +13,16 @@ bun run dev
 
 Open `http://localhost:3000` on the server computer. For separate phones/tablets, use the computer's LAN IP, for example:
 
-| Interface                         | Address                                        |
-| --------------------------------- | ---------------------------------------------- |
-| Choose a view                     | `http://192.168.1.20:3000/`                    |
-| Crew monitor                      | `http://192.168.1.20:3000/crew`                |
-| VEGA personal monitor             | `http://192.168.1.20:3000/astronaut/vega`      |
-| NOVA personal monitor             | `http://192.168.1.20:3000/astronaut/nova`      |
-| VEGA phone ring                   | `http://192.168.1.20:3000/ring?astronaut=vega` |
-| NOVA phone ring                   | `http://192.168.1.20:3000/ring?astronaut=nova` |
-| VEGA spacesuit                    | `http://192.168.1.20:3000/suit?astronaut=vega` |
-| Historical Apollo explorer        | `/archive`                                     |
-| Preserved single-person prototype | `/legacy`                                      |
+| Interface                  | Address                                        |
+| -------------------------- | ---------------------------------------------- |
+| Choose a view              | `http://192.168.1.20:3000/`                    |
+| Crew monitor               | `http://192.168.1.20:3000/crew`                |
+| VEGA personal monitor      | `http://192.168.1.20:3000/astronaut/vega`      |
+| NOVA personal monitor      | `http://192.168.1.20:3000/astronaut/nova`      |
+| VEGA phone ring            | `http://192.168.1.20:3000/ring?astronaut=vega` |
+| NOVA phone ring            | `http://192.168.1.20:3000/ring?astronaut=nova` |
+| VEGA spacesuit             | `http://192.168.1.20:3000/suit?astronaut=vega` |
+| Historical Apollo explorer | `/archive`                                     |
 
 Start at `/` and choose **Astronaut view** or **Crew monitor**. Choose an astronaut before opening the personal view. The header always names the current workspace and identity; **Switch view** returns to the chooser. Personal navigation has three primary sections: **My health**, **My records**, and **My devices**. **More** contains signal details, NASA resources, simulation settings, and research scenarios. The first time an astronaut link opens in a browser it lands on **My devices**; later visits open **My health**. A per-astronaut cookie (`zenit-onboarded-<id>`) remembers this, so clearing site data replays the first run, and a link that already names a view (`?view=records`) is never redirected. Views have reloadable links, and browser Back/Forward follows the selected section. Ring and suit simulators are separate demo tools; they open health views in another tab so their readings continue.
 
@@ -78,17 +77,17 @@ The ring gesture surface renders a procedural **Three.js** concept: a rounded ti
 
 - `src/lib/crew/`: shared protocol/domain, continuous crew-specific simulation, gesture recognizer, reconnecting transport and actual ring emitter.
 - `src/lib/crew/suit.ts` and `suit-client.ts`: separate suit metrics, source selection, local sampling and durable event outbox.
-- `src/lib/three/ring-scene.ts` and `src/lib/components/RingScene.svelte`: shared 3D renderer, lifecycle cleanup and accessible gesture-surface integration for `/ring` and `/legacy`.
+- `src/lib/three/ring-scene.ts` and `src/lib/components/RingScene.svelte`: shared 3D renderer, lifecycle cleanup and accessible gesture-surface integration for `/ring`.
 - `server/hub.ts`: validated WebSocket protocol, exclusive associations, heartbeat, server timestamps, acknowledgements and retry deduplication.
 - `server/repository.ts`: Bun SQLite persistence. Default `data/zenit.sqlite`, configurable via `MISSION_DB_PATH`.
-- `src/routes/+page.svelte`: central crew monitor without personal navigation.
+- `src/routes/+page.svelte`: role selector and direct guided-simulation entry.
 - `src/routes/astronaut/[id]/`: validated personal links with fixed astronaut identity.
 - `src/lib/components/crew/MissionWorkspace.svelte`: shared monitor views, scoped personal navigation, detail/trends and links distributed from the central monitor.
 - `src/routes/ring/+page.svelte`: phone identity, touch surface, pending delivery and simulation controls.
 - `src/routes/suit/+page.svelte`: independent suit transmitter, retained local measurements and pending capture delivery.
 - `src/lib/nasa/` and `src/routes/api/radlab/`: provenance-preserving RadLab snapshot, parser and fixed-query refresh with fallback. Upstream calls time out after eight seconds; successful responses are shared for five minutes.
 - `src/lib/components/crew/`: shared metric trends, event annotations, emergency audit and configuration forms.
-- `tests/`: legacy regressions, gesture/simulation behavior and real multi-client WebSocket integration tests.
+- `tests/`: gesture/simulation behavior and real multi-client WebSocket integration tests.
 
 Server storage owns configurations, independent ring/suit reservations, mission phases, events, annotations and emergency actions. It retains 120 recent telemetry samples per source and all events and phase changes. Earlier ring-only records are read with an empty suit and Cabin phase. The UI shows up to 200 recent events plus all unresolved emergencies. **Complete server archive** exports every retained event; visible-session export captures the current monitor snapshot.
 
@@ -112,7 +111,7 @@ Apollo 11's 42 selected approximate digitized observations remain separate from 
 
 Preserved context includes [NASA exercise overview](https://www.nasa.gov/ochmo-tb-031-exercise-overview-2/), [NASA behavioral health evidence](https://humanresearchroadmap.nasa.gov/evidence/reports/HRP-ER-BMED-HFBP-20250210.pdf#page=43) and the [NASA suit investigation report](https://www.nasa.gov/wp-content/uploads/2023/07/suit_water_intrusion_mishap_investigation_report.pdf#page=39). The initial research links [NASA human spaceflight risks](https://www.nasa.gov/hrp/risks/) and [five hazards](https://www.nasa.gov/hrp/hazards/) to the motivation for contextual monitoring and continuity of onboard records.
 
-AI assisted software development, documentation and prior transcription. No AI model assesses an astronaut. All current ring metrics, scenarios and reference ranges are explicitly simulated; skin-temperature deviation is not core temperature. Legacy behavior and its limitations are documented in [the original README](docs/LEGACY.md) and [original design](docs/LEGACY-DESIGN.md).
+AI assisted software development, documentation and prior transcription. Optional Gemini explanations contextualize evidence and NASA risks; local rules retain ownership of next actions. All current ring metrics, scenarios and reference ranges are explicitly simulated; skin-temperature deviation is not core temperature. The former `/legacy` prototype has been removed.
 
 ## Automatic assessment and Gemini
 
