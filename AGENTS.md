@@ -155,9 +155,11 @@ RingClient / SuitClient -> MissionConnection -> /ws -> hub -> SQLite
 1. Los roles son `ring`, `spacesuit`, `monitor` y `astronaut`. Registro obligatorio
    antes de transmitir. El rol personal recibe solo su astronauta y sus eventos;
    el hub también valida el alcance de sus acciones. Esto no sustituye autenticación.
-2. Una reserva por tipo de fuente y astronauta persiste tras desconexión y reinicio.
-   Otro dispositivo no puede apropiársela estando offline. Solo el monitor central
-   libera reservas y solo después de desconectar el emisor.
+2. La última conexión de anillo o traje reemplaza automáticamente la anterior para
+   ese astronauta y tipo de fuente, incluso si estaba offline. El emisor reemplazado
+   recibe `device-replaced`, conserva su outbox y no se reconecta automáticamente.
+   Sigue habiendo un solo emisor activo por fuente; reconectar manualmente recupera
+   el control. El monitor aún puede desvincular una fuente desconectada.
 3. El anillo emite cada 3000 ms por defecto; su intervalo configurable es 1000–15000
    ms. La configuración guardada y la revisión realmente aplicada son cosas distintas.
    El traje tiene su propio intervalo de 3000 ms y muestrea localmente sin conexión.
@@ -191,7 +193,10 @@ RingClient / SuitClient -> MissionConnection -> /ws -> hub -> SQLite
 - Los datos antiguos se completan con traje vacío, Cabin e historial/check-ins
   vacíos. Mantener lectura compatible; no borrar SQLite para adaptar un cambio.
 - `sessionStorage`: identidad de la pestaña (`zenit-ring-identity`,
-  `zenit-suit-identity`). `localStorage`: outboxes por dispositivo y borradores
+  `zenit-suit-identity`). `device-identity.ts` conserva también una copia por fuente
+  y astronauta en `localStorage` (`zenit-ring-identity-<id>` /
+  `zenit-suit-identity-<id>`), para recuperar identidad y pendientes al reabrir.
+  La identidad de pestaña existente tiene prioridad. `localStorage`: outboxes por dispositivo y borradores
   `zenit-health-draft-<id>`. No son el transporte entre equipos.
 - No sobrescribir un outbox corrupto; avisar cuando solo se retiene en memoria.
   Conservar identidad y pendientes antes de permitir cambiar de astronauta.

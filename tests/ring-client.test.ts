@@ -121,3 +121,39 @@ test('an unreadable saved outbox is preserved instead of overwritten by a new ge
   expect(ring.storageError).not.toBe('');
   ring.dispose();
 });
+
+for (const replacementId of ['first', 'second']) {
+  test(`replaced sender stops retrying, retains pending evidence and can resume: ${replacementId}`, async () => {
+    const { hub, url } = await setup();
+    const first = new RingClient({
+      url,
+      deviceId: 'first',
+      astronautId: 'nova',
+      deviceName: 'first tab',
+    });
+    const second = new RingClient({
+      url,
+      deviceId: replacementId,
+      astronautId: 'nova',
+      deviceName: 'second tab',
+    });
+    cleanup.push(async () => {
+      first.dispose();
+      second.dispose();
+    });
+    first.connect();
+    await until(() => first.status === 'online');
+    second.connect();
+    await until(() => second.status === 'online' && first.status === 'replaced');
+    const pending = structuredClone(first.capture('swipe'));
+    await Bun.sleep(1200);
+    expect(first.status).toBe('replaced');
+    expect(second.status).toBe('online');
+    expect(hub.snapshot().events).toHaveLength(0);
+    first.connect();
+    await until(() => first.deliveries[pending.id]?.status === 'confirmed');
+    expect(hub.snapshot().events[0].occurredAt).toBe(pending.occurredAt);
+    expect(hub.snapshot().events[0].snapshot).toEqual(pending.snapshot);
+    expect(second.status).toBe('replaced');
+  });
+}

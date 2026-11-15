@@ -287,17 +287,26 @@ describe('shared WebSocket mission', () => {
       state.type === 'state' && state.state.crew.find((c) => c.id === 'vega')?.latest?.values.pulse,
     ).toBe(82);
   });
-  test('binding is exclusive, including while the original ring is offline', async () => {
-    const { url } = await fixture();
+  test('a new ring replaces active and offline bindings without losing evidence', async () => {
+    const { url, hub } = await fixture();
     const a = await client(url, 'ring', 'ring-a', 'vega');
     await a.wait((m) => m.type === 'registered');
+    a.send({ type: 'event', event: event('before-replacement') });
+    await a.wait((m) => m.type === 'ack');
     const b = await client(url, 'ring', 'ring-b', 'vega');
-    expect((await b.wait((m) => m.type === 'error')).type).toBe('error');
-    a.ws.close();
+    await b.wait((m) => m.type === 'registered');
+    const replaced = await a.wait((m) => m.type === 'error');
+    expect(replaced.type === 'error' && replaced.code).toBe('device-replaced');
+    await Bun.sleep(30);
+    expect(hub.snapshot().crew[0].deviceId).toBe('ring-b');
+    expect(hub.snapshot().crew[0].connected).toBe(true);
+    b.ws.close();
     await Bun.sleep(30);
     const c = await client(url, 'ring', 'ring-c', 'vega');
-    const error = await c.wait((m) => m.type === 'error');
-    expect(error.type === 'error' && error.code).toBe('binding-conflict');
+    await c.wait((m) => m.type === 'registered');
+    expect(hub.snapshot().crew[0].deviceId).toBe('ring-c');
+    expect(hub.snapshot().events[0].id).toBe('before-replacement');
+    expect(hub.snapshot().events[0].deviceId).toBe('ring-a');
   });
   test('lost-ack retries preserve original snapshots and never duplicate an emergency', async () => {
     const { url, hub } = await fixture();

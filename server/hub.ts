@@ -130,7 +130,15 @@ export function attachHub(
         ensure(!peers.has(ws), 'already-registered', 'Reconnect to change your device binding.');
         ensure(idOK(m.deviceId) && ['ring', 'spacesuit', 'monitor', 'astronaut'].includes(m.role));
         ensure(
-          ![...peers.values()].some((p) => p.deviceId === registration.deviceId),
+          ![...peers.values()].some(
+            (p) =>
+              p.deviceId === registration.deviceId &&
+              !(
+                p.role === registration.role &&
+                p.astronautId === registration.astronautId &&
+                (p.role === 'ring' || p.role === 'spacesuit')
+              ),
+          ),
           'device-active',
           'This device already has an active connection.',
         );
@@ -138,18 +146,6 @@ export function attachHub(
           const c = repository.crew().find((c) => c.id === registration.astronautId);
           ensure(c, 'unknown-astronaut', 'Select a crew member.');
           const target = m.role === 'spacesuit' ? c.suit : c;
-          ensure(
-            !target.deviceId || target.deviceId === m.deviceId,
-            'binding-conflict',
-            'This source is reserved for another device. Release it from the monitor after disconnecting.',
-          );
-          ensure(
-            ![...peers.values()].some(
-              (p) => p.role === registration.role && p.astronautId === c.id,
-            ),
-            'binding-conflict',
-            'This astronaut already has an active device of this type.',
-          );
           ensure(
             !repository
               .crew()
@@ -169,6 +165,20 @@ export function attachHub(
           target.lastSeen = Date.now();
           if (m.role === 'ring') c.appliedRevision = null;
           repository.saveCrew(c);
+          // The newest connection owns this source. Retire the previous socket before
+          // registering its replacement so late messages cannot mutate the new source.
+          for (const [previous, peer] of peers) {
+            if (peer.role === m.role && peer.astronautId === c.id) {
+              peers.delete(previous);
+              send(previous, {
+                type: 'error',
+                code: 'device-replaced',
+                message:
+                  'Another tab or device is now sending this source. Your saved events are kept. Reconnect here to resume from this tab.',
+              });
+              previous.close(4001, 'Source moved to another connection');
+            }
+          }
           peers.set(ws, {
             role: m.role,
             deviceId: m.deviceId,

@@ -108,24 +108,24 @@ test('one astronaut receives independent ring and suit signals; suit outage neve
   expect(activeSource(hub.snapshot().crew[0]).type).toBe('ring');
 });
 
-test('device reservations are independent, exclusive and survive disconnect', async () => {
+test('suit replacement leaves the ring connected and accepts an offline replacement', async () => {
   const { hub, connect } = await fixture();
   const ring = await connect('ring', 'ring');
   await ring.wait('registered');
   const suit = await connect('spacesuit', 'suit');
   await suit.wait('registered');
-  const blocked = await connect('spacesuit', 'suit-b');
-  expect((await blocked.wait('error')).type).toBe('error');
-  suit.ws.close();
+  const replacement = await connect('spacesuit', 'suit-b');
+  await replacement.wait('registered');
+  const notice = await suit.wait('error');
+  expect(notice.type === 'error' && notice.code).toBe('device-replaced');
+  replacement.ws.close();
   await until(() => !hub.snapshot().crew[0].suit.connected);
   const retry = await connect('spacesuit', 'suit-c');
-  expect((await retry.wait('error')).type).toBe('error');
-  const monitor = await connect('monitor', 'monitor');
-  await monitor.wait('registered');
-  monitor.send({ type: 'release', id: 'release', astronautId: 'vega', sourceType: 'spacesuit' });
-  await monitor.wait('ack');
+  await retry.wait('registered');
   expect(hub.snapshot().crew[0].deviceId).toBe('ring');
-  expect(hub.snapshot().crew[0].suit.deviceId).toBeNull();
+  expect(hub.snapshot().crew[0].connected).toBe(true);
+  expect(hub.snapshot().crew[0].suit.deviceId).toBe('suit-c');
+  expect(hub.snapshot().crew[0].suit.connected).toBe(true);
 });
 
 test('suit rejects wrong-source, wrong-astronaut, invalid atmosphere and phase commands', async () => {

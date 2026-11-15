@@ -1,5 +1,5 @@
 import type { ClientMessage, ServerMessage } from './types';
-export type LinkStatus = 'offline' | 'connecting' | 'online' | 'conflict';
+export type LinkStatus = 'offline' | 'connecting' | 'online' | 'conflict' | 'replaced';
 export function socketUrl() {
   return `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/ws`;
 }
@@ -59,8 +59,12 @@ export class MissionConnection {
       if (m.type === 'error') {
         this.error = m.message;
         if (m.id) this.commands.delete(m.id);
-        if (['binding-conflict', 'device-active', 'unknown-astronaut'].includes(m.code)) {
-          this.status = 'conflict';
+        if (
+          ['binding-conflict', 'device-active', 'unknown-astronaut', 'device-replaced'].includes(
+            m.code,
+          )
+        ) {
+          this.status = m.code === 'device-replaced' ? 'replaced' : 'conflict';
           this.reconnect = false;
           socket.close();
         }
@@ -75,7 +79,7 @@ export class MissionConnection {
     socket.onclose = () => {
       if (this.socket !== socket) return;
       this.socket = null;
-      if (this.status !== 'conflict') this.status = 'offline';
+      if (this.status !== 'conflict' && this.status !== 'replaced') this.status = 'offline';
       this.changed();
       if (this.reconnect)
         this.retry = setTimeout(() => this.connect(), Math.min(8000, 500 * 2 ** this.attempts++));

@@ -1,6 +1,7 @@
 <script lang="ts">
   import ViewHeader from '$lib/components/crew/ViewHeader.svelte';
   import { onMount } from 'svelte';
+  import { DeviceIdentityStore } from '$lib/crew/device-identity';
   import { SuitClient } from '$lib/crew/suit-client';
   import { socketUrl } from '$lib/crew/connection';
   import { crewDefaults, newId, clockLabel } from '$lib/crew/model';
@@ -8,6 +9,8 @@
   import type { EventInput } from '$lib/crew/types';
   import '$lib/crew/crew.css';
   import '$lib/crew/sources.css';
+  const identityStore = new DeviceIdentityStore('suit');
+  let identityRestored = false;
   let selected = $state('vega');
   let deviceId = '';
   let ready = $state(false);
@@ -33,11 +36,13 @@
   });
   function start() {
     if (!ready) return;
-    try {
-      sessionStorage.setItem('zenit-suit-identity', JSON.stringify({ deviceId, selected }));
-    } catch {
-      warning = 'Identity is in this tab only. Keep the tab open through the demonstration.';
+    if (!identityRestored) {
+      const saved = identityStore.restore(selected, false);
+      if (saved) deviceId = saved.deviceId;
     }
+    identityRestored = true;
+    identityStore.save({ deviceId, selected });
+    if (identityStore.warning) warning = identityStore.warning;
     suit?.dispose();
     suit = new SuitClient({
       url: socketUrl(),
@@ -56,20 +61,17 @@
     deviceId = newId();
     const query = new URLSearchParams(location.search).get('astronaut');
     if (crewDefaults.some((c) => c.id === query)) selected = query!;
-    let resume = false;
-    try {
-      const saved = JSON.parse(sessionStorage.getItem('zenit-suit-identity') ?? 'null');
-      if (saved?.deviceId && crewDefaults.some((c) => c.id === saved.selected)) {
-        deviceId = saved.deviceId;
-        selected = saved.selected;
-        resume = true;
-        if (query && query !== selected)
-          warning =
-            'Resuming this tab’s original astronaut to preserve its pending evidence. Use a fresh tab for another astronaut.';
-      }
-    } catch {
-      warning = 'Identity could not be restored. Keep this tab open until events are confirmed.';
+    const saved = identityStore.restore(selected);
+    const resume = !!saved;
+    if (saved) {
+      deviceId = saved.deviceId;
+      selected = saved.selected;
+      identityRestored = true;
+      if (query && query !== selected)
+        warning =
+          'Resuming this tab’s original astronaut to preserve its pending evidence. Use a fresh tab for another astronaut.';
     }
+    if (identityStore.warning) warning = identityStore.warning;
     ready = true;
     if (resume) start();
     return () => suit?.dispose();
@@ -129,9 +131,11 @@
         <span
           ><span class="status-dot"></span>{ui.status === 'online'
             ? 'Connected to crew monitor'
-            : ui.status === 'conflict'
-              ? 'Suit association blocked'
-              : 'Monitor link unavailable'}</span
+            : ui.status === 'replaced'
+              ? 'Source active in another tab or device'
+              : ui.status === 'conflict'
+                ? 'Suit association blocked'
+                : 'Monitor link unavailable'}</span
         >
       </div>
       {#if ui.error}<p class="crew-error" role="alert">{ui.error}</p>{/if}

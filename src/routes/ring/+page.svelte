@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
   import Icon from '$lib/components/Icon.svelte';
   import RingScene from '$lib/components/RingScene.svelte';
+  import { DeviceIdentityStore } from '$lib/crew/device-identity';
   import { RingClient } from '$lib/crew/ring-client';
   import { GestureRecognizer, type Gesture } from '$lib/crew/gestures';
   import { socketUrl } from '$lib/crew/connection';
@@ -33,6 +34,8 @@
   let pressed = $state(false);
   let surface = $state<HTMLButtonElement>();
   let pointer: number | null = null;
+  const identityStore = new DeviceIdentityStore('ring');
+  let identityRestored = false;
   const recognizer = new GestureRecognizer();
   let ui = $derived.by(() => {
     void revision;
@@ -55,21 +58,19 @@
   let astronaut = $derived(crewDefaults.find((c) => c.id === selected)!);
   let delivery = $derived(lastEvent ? ui?.deliveries[lastEvent.id] : undefined);
   let pendingEmergencies = $derived(ui?.pending.filter((e) => e.kind === 'emergency') ?? []);
-  function remember() {
-    try {
-      sessionStorage.setItem(
-        'zenit-ring-identity',
-        JSON.stringify({ deviceId, selected, deviceName }),
-      );
-    } catch {
-      storageWarning =
-        'Device identity is in this tab only. Keep this page open through the demonstration.';
-    }
-  }
   function start() {
     if (!ready) return;
     ring?.dispose();
-    remember();
+    if (!identityRestored) {
+      const saved = identityStore.restore(selected, false);
+      if (saved) {
+        deviceId = saved.deviceId;
+        deviceName = saved.deviceName ?? deviceName;
+      }
+    }
+    identityRestored = true;
+    identityStore.save({ deviceId, selected, deviceName });
+    if (identityStore.warning) storageWarning = identityStore.warning;
     const key = `zenit-ring-outbox-${deviceId}`;
     ring = new RingClient({
       url: socketUrl(),
@@ -107,34 +108,19 @@
   onMount(() => {
     deviceId = newId();
     const query = new URLSearchParams(location.search).get('astronaut');
-    let resume = false;
-    try {
-      const saved = JSON.parse(sessionStorage.getItem('zenit-ring-identity') ?? 'null');
-      if (saved?.deviceId) {
-        deviceId = saved.deviceId;
-        selected = saved.selected;
-        deviceName = saved.deviceName;
-        resume = true;
-      }
-    } catch {
-      storageWarning =
-        'Browser storage is unavailable. Keep this tab open until pending events are confirmed.';
-    }
-    // Preserve a tab's original association and outbox when opening another crew link.
-    // Changing identity must be explicit and is blocked while events are pending.
-    if (query && crewDefaults.some((c) => c.id === query)) {
-      let savedIdentity = false;
-      try {
-        savedIdentity = !!sessionStorage.getItem('zenit-ring-identity');
-      } catch {
-        /* No durable identity. */
-      }
-      if (!savedIdentity) selected = query;
-      else if (query !== selected)
+    if (query && crewDefaults.some((c) => c.id === query)) selected = query;
+    const saved = identityStore.restore(selected);
+    const resume = !!saved;
+    if (saved) {
+      deviceId = saved.deviceId;
+      selected = saved.selected;
+      deviceName = saved.deviceName ?? 'Cabin ring';
+      identityRestored = true;
+      if (query && query !== selected)
         storageWarning =
-          'This tab belongs to a different astronaut. Reconnect it to deliver pending events first, then use Change astronaut / device or open this link in a fresh tab.';
+          'Resuming this tab’s original astronaut to preserve pending evidence. Use Change astronaut / device or open a fresh tab for another astronaut.';
     }
-    if (!crewDefaults.some((c) => c.id === selected)) selected = 'vega';
+    if (identityStore.warning) storageWarning = identityStore.warning;
     ready = true;
     // Resume the original association before exposing any rebinding control.
     if (resume) start();
@@ -196,13 +182,14 @@
     ring?.connection.command({ type: 'simulation', id: newId(), scenario: value });
   }
   function changeBinding() {
-    if (ui?.pending.length) {
+    if (ui?.pending.length || ui?.storageError) {
       feedback = 'Deliver every pending event before changing the astronaut or device.';
       return;
     }
     ring?.dispose();
     ring = null;
     active = false;
+    identityRestored = false;
     deviceId = newId();
     history = [];
     lastEvent = null;
@@ -259,8 +246,8 @@
           >
         </form>
         <p class="ring-pairing-foot">
-          One active ring per astronaut. If a ring is already reserved, the monitor must release its
-          binding first.
+          One active ring per astronaut. Connecting here automatically replaces the previous ring
+          connection.
         </p>
       </section>
     {:else if ui}
@@ -280,12 +267,17 @@
             ? 'Connected to crew monitor'
             : ui.status === 'connecting'
               ? 'Connecting to mission server'
-              : ui.status === 'conflict'
-                ? 'Ring association blocked'
-                : 'Offline · events will queue'}</span
+              : ui.status === 'replaced'
+                ? 'Source active in another tab or device'
+                : ui.status === 'conflict'
+                  ? 'Ring association blocked'
+                  : 'Offline · events will queue'}</span
         ><strong>{ui.config.intervalMs / 1000}s<span> transmission</span></strong>
       </div>
       {#if ui.error}<p class="crew-error" role="alert">{ui.error}</p>{/if}
+      {#if ui.status === 'replaced'}
+        <button class="crew-button" onclick={() => ring?.connect()}>Use this ring here</button>
+      {/if}
       {#if pendingEmergencies.length}<div class="ring-undelivered" role="alert">
           <strong>Emergency NOT DELIVERED</strong>
           <p>
@@ -441,8 +433,8 @@
             onclick={changeBinding}>Change astronaut / device</button
           >
           <p>
-            Release the old binding on the monitor before linking a different ring. Pending events
-            must be confirmed first.
+            Connecting another ring automatically replaces this connection. Pending events must be
+            confirmed first.
           </p>
         </div>
       </details>
