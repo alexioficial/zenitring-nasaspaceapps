@@ -186,7 +186,7 @@ Mission navy supplies text and the role header. Ceramic white carries editing su
 
 The rounded, open letterforms soften the precision of the mission frame. Bold headings and readings establish hierarchy; smaller source labels remain subordinate to values and instructions.
 
-- **Display:** Role-chooser statement; the display token contracts to 45px at the chooser's tablet breakpoint and 36px on its phone layout.
+- **Display:** The presentation landing uses a surface-specific Manrope display size (`clamp(52px, 5.4vw, 78px)`, 1.05 line height), 56px at its tablet breakpoint and `clamp(47px, 10vw, 64px)` at 700px and below. This is a landing override, not a change to the workspace type tokens.
 - **Headline:** My health uses the headline token, reducing to 36px at 650px and below.
 - **Title:** Telemetry and assessment headings use the title token. The review title uses a bold 27px desktop treatment with an amber marker.
 - **Body:** Supporting prose remains compact; the primary interpretation is 14px with 1.6 line height; source and provider metadata remain subordinate.
@@ -199,7 +199,9 @@ The rounded, open letterforms soften the precision of the mission frame. Bold he
 
 The desktop navy header is a single line: ZENIT / Space health monitor, Astronaut view, astronaut identity and Switch view. Personal navigation contains My health, My records and My devices; simulation/concept labels and More share the strip. Crew monitor retains its separate multi-person manifest and activity rail. Role choice happens before entering either workspace; simulator links open separately where needed to preserve telemetry.
 
-The shared workspace container is capped at 1640px. The astronaut workspace uses 12px vertical and 18px horizontal content padding, increasing to 18px by 14px on phones. The chooser retains its own 1280px maximum and two-column composition, stacking below 650px.
+The shared workspace container is capped at 1640px. The astronaut workspace uses 12px vertical and 18px horizontal content padding, increasing to 18px by 14px on phones.
+
+The presentation landing at `/` extends the same identity with a white sticky header and a split text-and-astronaut opening. Its hero is capped at 1376px, narrative sections at 1240px and demo entry at 1040px. The context example, research stories and role selector use paired columns that stack at 700px and below. Navy communication bands alternate with white narrative sections and a pale demo-entry field. Landing styling lives separately in `src/lib/landing.css`; its generous presentation spacing does not change workspace density.
 
 Above 1100px, My health places integrated telemetry and measured-time history at left, the large gold-visor astronaut at center and assessment at right, using `minmax(0, 1.16fr) minmax(0, 1fr) minmax(0, 1fr)` with an 18px gap. The cabin raster extends behind the central scene with a soft masked edge. The scene starts near the title and extends to the phase track; its 640px by 960px image is deliberately cropped in a minimum-610px figure. Source badges sit at its upper right. Four primary ring rows plus compact HRV, or six suit rows, share the left panel with the trend. The continuous icon-led phase track spans the base. Expanded evidence and answers may increase height; no fixed viewport-fit guarantee is implied.
 
@@ -220,6 +222,10 @@ Button background feedback lasts 150ms; phase background feedback lasts 180ms wi
 White working panels and menus use 12px corners; buttons and fields use 8px, while overview source badges use 10px. The phase track uses interlocking clipped chevrons with 12px outer corners. Each chevron’s solid body (between its notch and point) has the same width, and its icon and labels are centred in that body rather than in the clipped box. Simulation labels and Switch view use 6px corners; inherited smaller provenance tags remain compact. Thin borders group content, while horizontal rules separate measurement rows. The astronaut silhouette supplies the expressive form; the interface stays quiet and geometric. Source insignias identify people and devices, not health scores.
 
 ## Components
+
+### Project landing
+
+The landing reuses the fictional astronaut raster and the existing ring renderer, with concept provenance visible. A compact header keeps Explore the demo available while scrolling to the identity and role selector at `#choose-view`. The illustrative context interaction uses three text buttons with explicit pressed states and a polite announcement of the changed explanation; its fictional readings stay fixed. Research links, prototype scope and connected-demo setup remain visually distinct from the example. Primary landing actions are 50px high, compact header and context controls at least 44px, with a 3px teal focus outline offset by 5px. This presentation surface retains the medbay palette and shapes without imposing its composition on My health.
 
 ### Buttons
 
