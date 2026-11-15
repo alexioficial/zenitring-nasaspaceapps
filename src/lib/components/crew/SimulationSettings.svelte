@@ -37,7 +37,7 @@
 
 <form class="simulation-settings" onsubmit={save}>
   <div class="settings-intro">
-    <span class="crew-eyebrow">Simulation lab · {member.callsign}</span>
+    <span class="crew-eyebrow">Simulation lab · {member.name}</span>
     <h3>Control the signal at its source.</h3>
     <p>
       These controls change this ring's transmitter. Ranges are demonstration references, never

@@ -51,7 +51,6 @@ export function scenarioCrew(id: ResearchScenario, now: number, readings = 9): C
   const c = initialCrew()[0];
   c.id = 'research';
   c.name = 'Synthetic astronaut';
-  c.callsign = 'DEMO';
   c.deviceId = 'research-ring';
   c.connected = id !== 'dropout';
   c.phase = id === 'suit' ? 'spacewalk' : 'cabin';

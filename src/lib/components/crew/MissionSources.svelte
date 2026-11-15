@@ -96,7 +96,7 @@
   {#if presentation === 'full'}
     <div class="source-heading">
       <div>
-        <span class="crew-eyebrow">{member.callsign} / ONE CONTINUOUS HISTORY</span>
+        <span class="crew-eyebrow">{member.name} / ONE CONTINUOUS HISTORY</span>
         <h2>Follow the astronaut.</h2>
       </div>
       <span class="source-tag">SIMULATED SIGNALS</span>

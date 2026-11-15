@@ -52,10 +52,10 @@ export const defaultConfig: Config = {
   },
 };
 export const crewDefaults = [
-  { id: 'vega', name: 'Alexi', role: 'Commander', callsign: 'VEGA', color: '#236c80' },
-  { id: 'nova', name: 'Rivier', role: 'Flight engineer', callsign: 'NOVA', color: '#65558c' },
-  { id: 'atlas', name: 'Neil', role: 'Mission specialist', callsign: 'ATLAS', color: '#7a663d' },
-  { id: 'lyra', name: 'Buzz', role: 'Medical officer', callsign: 'LYRA', color: '#46775c' },
+  { id: 'vega', name: 'Alexi', role: 'Commander', color: '#236c80' },
+  { id: 'nova', name: 'Rivier', role: 'Flight engineer', color: '#65558c' },
+  { id: 'atlas', name: 'Neil', role: 'Mission specialist', color: '#7a663d' },
+  { id: 'lyra', name: 'Buzz', role: 'Medical officer', color: '#46775c' },
 ];
 export function initialCrew(): CrewMember[] {
   return crewDefaults.map((c) => ({

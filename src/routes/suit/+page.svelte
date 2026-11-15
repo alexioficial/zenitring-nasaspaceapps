@@ -111,8 +111,7 @@
           <label for="suit-astronaut">Choose your astronaut</label><select
             id="suit-astronaut"
             bind:value={selected}
-            >{#each crewDefaults as c}<option value={c.id}>{c.callsign} · {c.name}</option
-              >{/each}</select
+            >{#each crewDefaults as c}<option value={c.id}>{c.name}</option>{/each}</select
           ><button class="crew-button" disabled={!ready}>Link this suit</button>
         </form>
       </section>
@@ -120,7 +119,7 @@
       <section class="crew-page-intro">
         <div>
           <span class="crew-eyebrow"
-            >{crewDefaults.find((c) => c.id === selected)?.callsign} / SUIT TRANSMITTER</span
+            >{crewDefaults.find((c) => c.id === selected)?.name} / SUIT TRANSMITTER</span
           >
           <h1>Spacewalk signals</h1>
           <p>Read-only telemetry concept · 3-second sampling</p>

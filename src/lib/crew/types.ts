@@ -93,7 +93,6 @@ export type CrewMember = {
   id: string;
   name: string;
   role: string;
-  callsign: string;
   color: string;
   deviceId: string | null;
   deviceName: string | null;

@@ -803,18 +803,9 @@
 .crew-helmet {
   display: block;
   width: 52px;
-  height: 48px;
+  height: 100%;
   object-fit: cover;
   object-position: center top;
-}
-.medbay-shell .crew-insignia:has(.crew-helmet) small {
-  position: absolute;
-  bottom: 2px;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  background: #edf4f7;
-  font-size: 8px;
 }
 .medbay-shell .crew-app .automatic-top h2 {
   margin: 0;

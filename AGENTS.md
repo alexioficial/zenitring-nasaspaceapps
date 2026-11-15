@@ -20,7 +20,9 @@ la tripulación desde un monitor central.
   dispositivos por WebSocket, la persistencia y las confirmaciones son reales.
 - Hay cuatro identidades ficticias: `vega` (Alexi), `nova` (Rivier), `atlas` (Neil) y
   `lyra` (Buzz). Se definen en `src/lib/crew/model.ts`; el nombre visible se toma
-  siempre de esa definición, también para registros SQLite anteriores.
+  siempre de esa definición, también para registros SQLite anteriores. La interfaz
+  muestra solo el nombre: los indicativos (VEGA, NOVA…) se retiraron por petición
+  del usuario. Los IDs siguen en URLs y SQLite; no renombrarlos.
 - Cada astronauta puede tener un anillo y un traje vinculados independientemente.
 - NASA RadLab y Apollo son fuentes históricas separadas de la misión ficticia.
 - Gemini puede explicar cambios detectados. El detector y los siguientes pasos

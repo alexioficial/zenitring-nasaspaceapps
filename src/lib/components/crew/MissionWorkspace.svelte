@@ -293,7 +293,7 @@
 <svelte:head
   ><title
     >ZENIT · {astronautId
-      ? `${mission.crew[0]?.callsign ?? astronautId} personal monitor`
+      ? `${mission.crew[0]?.name ?? astronautId} personal monitor`
       : 'Crew monitor'}</title
   ><meta
     name="description"
@@ -310,7 +310,7 @@
   <ViewHeader
     title={astronautId ? 'Astronaut view' : 'Crew monitor'}
     context={astronautId
-      ? `${mission.crew[0]?.callsign ?? astronautId} · ${mission.crew[0]?.name ?? 'My health'}`
+      ? (mission.crew[0]?.name ?? 'My health')
       : 'Medical overview · All astronauts'}
   >
     <span class="crew-link-status" class:unavailable={link !== 'online'}>
@@ -379,7 +379,7 @@
       <div>
         {#each emergencies as emergency (emergency.id)}<button
             onclick={() => history(emergency.astronautId)}
-            >{mission.crew.find((c) => c.id === emergency.astronautId)?.callsign}
+            >{mission.crew.find((c) => c.id === emergency.astronautId)?.name}
             <span
               >{emergency.status === 'active'
                 ? 'Active · respond now'
@@ -399,7 +399,7 @@
     {#if !astronautId}<div class="central-monitor-tools">
         <span class="crew-muted"
           >{member
-            ? `Reviewing ${member.callsign} from the crew monitor`
+            ? `Reviewing ${member.name} from the crew monitor`
             : 'Shared readings, records and requests for help'}</span
         >
         <div>
@@ -491,7 +491,7 @@
                     alt=""
                     width="42"
                     height="42"
-                  /><small>{person.callsign}</small></span
+                  /></span
                 ><span
                   ><strong>{person.name}</strong><small>{person.role}</small><span
                     class="crew-device-name">{primary.label} · {person.phase}</span
@@ -579,7 +579,7 @@
               class:preview-emergency={event.kind === 'emergency'}
               onclick={() => focus(event.astronautId)}
               ><span
-                >{mission.crew.find((c) => c.id === event.astronautId)?.callsign} / {clockLabel(
+                >{mission.crew.find((c) => c.id === event.astronautId)?.name} / {clockLabel(
                   event.occurredAt,
                 )}</span
               ><strong
@@ -633,10 +633,10 @@
         >{/if}
       <section class="crew-page-intro detail-intro">
         <div>
-          <span class="crew-eyebrow">{member.callsign} / {member.role}</span>
+          <span class="crew-eyebrow">{member.role}</span>
           <h1>{member.name}</h1>
           {#if !astronautId}<a class="crew-inline-button" href={`/astronaut/${member.id}`}
-              >Switch to {member.callsign}’s astronaut view <Icon name="arrow" size={17} /></a
+              >Switch to {member.name}’s astronaut view <Icon name="arrow" size={17} /></a
             >{/if}
           <p>
             {detailSource.label} · {member.phase} · {detailStatus === 'live'
@@ -756,7 +756,7 @@
             </section>{/if}
           <div class="section-title">
             <div>
-              <span class="crew-eyebrow">{member.callsign} / CAPTURED EVIDENCE</span>
+              <span class="crew-eyebrow">{member.name} / CAPTURED EVIDENCE</span>
               <h2>Events & observations</h2>
             </div>
             <span>{visibleEvents.length}</span>
@@ -776,11 +776,7 @@
         <div>
           <span class="crew-eyebrow">MISSION / EVENT HISTORY</span>
           <h1>
-            {astronautId
-              ? 'My records'
-              : member
-                ? `${member.callsign} · Event log`
-                : 'Crew event log'}
+            {astronautId ? 'My records' : member ? `${member.name} · Event log` : 'Crew event log'}
           </h1>
           <p>Original readings, later annotations and a permanent emergency audit.</p>
         </div>
@@ -883,11 +879,11 @@
                     alt=""
                     width="42"
                     height="42"
-                  /><small>{person.callsign}</small></span
+                  /></span
                 >
                 <div>
                   <h2>{person.name}</h2>
-                  <p>{person.callsign} · {person.role}</p>
+                  <p>{person.role}</p>
                 </div>
               </header>
               {#if !astronautId}
@@ -896,7 +892,7 @@
                     href={personalUrl(person.id)}
                     target="_blank"
                     rel="noreferrer"
-                    aria-label={`Open ${person.callsign} personal monitor in a new tab`}
+                    aria-label={`Open ${person.name} personal monitor in a new tab`}
                     >{personalUrl(person.id)}</a
                   >
                   <div class="access-statuses">
@@ -946,7 +942,7 @@
                     role="status"
                     aria-atomic="true"
                     >{copyFeedback[person.id] === 'copied'
-                      ? `Ready to share with ${person.callsign}.`
+                      ? `Ready to share with ${person.name}.`
                       : copyFeedback[person.id] === 'error'
                         ? 'Copy blocked. Select the URL in this row.'
                         : copyFeedback[person.id] === 'copying'
@@ -1072,7 +1068,7 @@
             {#each mission.crew as person}<button
                 class:chosen={selected === person.id || (!selected && person.id === 'vega')}
                 onclick={() => (selected = person.id)}
-                ><span>{person.callsign}</span><strong>{person.name}</strong><small
+                ><strong>{person.name}</strong><small
                   >{person.connected ? 'Connected ring' : 'Ring offline'}</small
                 ></button
               >{/each}

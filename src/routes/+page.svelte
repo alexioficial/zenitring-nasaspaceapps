@@ -46,9 +46,7 @@
           <p>Understand <strong>my health</strong>, report how I feel and see what to do next.</p>
           <label for="choose-astronaut">Who are you in this demo?</label>
           <select id="choose-astronaut" bind:value={selected}>
-            {#each crewDefaults as person}<option value={person.id}
-                >{person.callsign} · {person.name}</option
-              >{/each}
+            {#each crewDefaults as person}<option value={person.id}>{person.name}</option>{/each}
           </select>
           <a class="crew-button" href={`/astronaut/${selected}`}
             >Open astronaut view <Icon name="arrow" size={18} /></a

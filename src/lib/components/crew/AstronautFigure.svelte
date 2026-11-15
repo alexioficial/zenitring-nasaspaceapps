@@ -65,5 +65,5 @@
       </div>
     </div>
   {/if}
-  <figcaption>{member ? `${member.callsign} · ` : ''}AI-generated concept illustration</figcaption>
+  <figcaption>{member ? `${member.name} · ` : ''}AI-generated concept illustration</figcaption>
 </figure>

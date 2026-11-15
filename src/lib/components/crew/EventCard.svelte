@@ -62,7 +62,7 @@
       ><Icon name={event.kind === 'emergency' ? 'pulse' : 'save'} size={19} /></span
     >
     <span
-      ><span class="event-kicker">{member.callsign} · {clockLabel(event.occurredAt)}</span><strong
+      ><span class="event-kicker">{member.name} · {clockLabel(event.occurredAt)}</span><strong
         >{event.kind === 'emergency' ? 'Emergency gesture' : 'Moment captured'}</strong
       ></span
     >

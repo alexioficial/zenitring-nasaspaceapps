@@ -17,11 +17,11 @@ Open `http://localhost:3000` on the server computer. For separate phones/tablets
 | -------------------------- | ---------------------------------------------- |
 | Choose a view              | `http://192.168.1.20:3000/`                    |
 | Crew monitor               | `http://192.168.1.20:3000/crew`                |
-| VEGA personal monitor      | `http://192.168.1.20:3000/astronaut/vega`      |
-| NOVA personal monitor      | `http://192.168.1.20:3000/astronaut/nova`      |
-| VEGA phone ring            | `http://192.168.1.20:3000/ring?astronaut=vega` |
-| NOVA phone ring            | `http://192.168.1.20:3000/ring?astronaut=nova` |
-| VEGA spacesuit             | `http://192.168.1.20:3000/suit?astronaut=vega` |
+| Alexi personal monitor     | `http://192.168.1.20:3000/astronaut/vega`      |
+| Rivier personal monitor    | `http://192.168.1.20:3000/astronaut/nova`      |
+| Alexi phone ring           | `http://192.168.1.20:3000/ring?astronaut=vega` |
+| Rivier phone ring          | `http://192.168.1.20:3000/ring?astronaut=nova` |
+| Alexi spacesuit            | `http://192.168.1.20:3000/suit?astronaut=vega` |
 | Historical Apollo explorer | `/archive`                                     |
 
 Start at `/` and choose **Astronaut view** or **Crew monitor**. Choose an astronaut before opening the personal view. The header always names the current workspace and identity; **Switch view** returns to the chooser. Personal navigation has three primary sections: **My health**, **My records**, and **My devices**. **More** contains signal details, NASA resources, simulation settings, and research scenarios. The first time an astronaut link opens in a browser it lands on **My devices**; later visits open **My health**. A per-astronaut cookie (`zenit-onboarded-<id>`) remembers this, so clearing site data replays the first run, and a link that already names a view (`?view=records`) is never redirected. Views have reloadable links, and browser Back/Forward follows the selected section. Ring and suit simulators are separate demo tools; they open health views in another tab so their readings continue.

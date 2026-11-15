@@ -173,7 +173,7 @@ test('connected suit readings remain visible in Cabin without replacing the ring
 test('the crew overview exposes a live suit independently of an unlinked cabin ring', () => {
   const member = memberWithSuit();
   const { body } = render(SuitSignal, { props: { member, online: true, now } });
-  expect(body).toContain('VEGA EVA suit signal');
+  expect(body).toContain('Alexi EVA suit signal');
   expect(body).toContain('Receiving');
   expect(body).toContain('94');
   expect(body).toContain('30.00');

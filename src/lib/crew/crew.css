@@ -482,14 +482,6 @@
     25px/1 ui-monospace,
     monospace;
 }
-.crew-insignia small {
-  font:
-    8px/1 ui-monospace,
-    monospace !important;
-  letter-spacing: 0.09em;
-  color: inherit !important;
-  margin: 0 !important;
-}
 .crew-device-name {
   display: block;
   font:
@@ -1304,17 +1296,9 @@
   color: white;
   border-color: var(--instrument-ink);
 }
-.lab-layout > nav button > span {
-  display: block;
-  font:
-    10px ui-monospace,
-    monospace;
-  letter-spacing: 0.1em;
-}
 .lab-layout > nav button > strong {
   display: block;
   font-size: 15px;
-  margin-top: 8px;
   font-weight: 550;
 }
 .lab-layout > nav button > small {

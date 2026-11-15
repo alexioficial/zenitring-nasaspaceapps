@@ -246,8 +246,7 @@
           <label for="ring-astronaut">Choose your astronaut</label><select
             id="ring-astronaut"
             bind:value={selected}
-            >{#each crewDefaults as c}<option value={c.id}>{c.callsign} · {c.name}</option
-              >{/each}</select
+            >{#each crewDefaults as c}<option value={c.id}>{c.name}</option>{/each}</select
           ><label for="ring-device-name">Device name</label><input
             id="ring-device-name"
             bind:value={deviceName}
@@ -267,7 +266,7 @@
     {:else if ui}
       <section class="ring-identity">
         <span class="crew-insignia" style={`--crew-color:${astronaut.color}`}
-          >{astronaut.callsign.slice(0, 1)}<small>{astronaut.callsign}</small></span
+          >{astronaut.name.slice(0, 1)}</span
         >
         <div>
           <span class="crew-eyebrow">{astronaut.role}</span>

@@ -12,7 +12,7 @@
   <span
     class="manifest-suit"
     class:suit-live={status === 'live'}
-    aria-label={`${member.callsign} EVA suit signal`}
+    aria-label={`${member.name} EVA suit signal`}
   >
     <span class="manifest-suit-state"
       ><strong>EVA suit</strong><span
