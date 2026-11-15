@@ -70,7 +70,7 @@ No hay un script `lint` ni configuración de CI versionada en el estado revisado
 
 | Ruta | Responsabilidad |
 | --- | --- |
-| `/` | Selector entre Astronaut view y Crew monitor; permite elegir identidad. |
+| `/` | Landing de presentación en inglés; explica el proyecto y conserva el selector de identidad y vistas en `#choose-view`. |
 | `/crew` | Monitor central: tripulación, detalles, historial y enlaces personales. |
 | `/astronaut/[id]` | Espacio personal con identidad fija y validada en servidor. |
 | `/ring?astronaut=vega` | Emisor de anillo, superficie de gestos y controles de simulación. |
@@ -131,6 +131,7 @@ abren en otra pestaña. No convertir navegar a My health en cerrar el emisor.
 | `src/lib/components/crew/EvidenceChart.svelte` | Comparaciones de datos locales con escala desde cero, valores accesibles y detalle seleccionable. |
 | `src/lib/crew/research-scenarios.ts` | Fixtures sintéticos y resultados esperados de `/research`. |
 | `src/lib/crew/workspace.ts` | URLs personales y onboarding. `personalRecords()` combina/filtra registros; ninguna vista lo usa ahora. |
+| `src/routes/+page.svelte`, `src/lib/landing.css` | Landing para presentar ZENIT: propuesta, ejemplo interactivo ilustrativo sin persistencia ni IA, gestos, ciencia, alcance y acceso a la demo. CSS separado de los espacios de trabajo. |
 | `src/lib/components/crew/MissionWorkspace.svelte` | Orquestación compartida del monitor central y personal, conexión, acciones y sincronización de `?view=`. |
 | `src/lib/components/crew/PersonalHealth.svelte` | My health: figura conceptual, fases (bajo la figura), evaluación compacta, «Your readings» solo con lecturas y check-in oculto hasta «Record how I feel» (visible si hay check-ins guardados). |
 | `src/lib/components/crew/AutomaticHealth.svelte` | Contexto de episodio, ayuda y ciclo de petición/cancelación de explicación. |
@@ -380,8 +381,8 @@ Tras revertir la UI de `8d49964` a la de `7dab20f` (conservando su lógica):
    el árbol para facilitar la tarea. No hace falta releer todo el repositorio.
 2. Contrastar documentación con implementación. `PRODUCT.md` conserva decisiones
    visuales anteriores; para diseño actual consultar `DESIGN.md` y las hojas
-   `medbay*.css`. README, DEMO y el texto de exportación ya describen `/` como
-   selector, `/crew` como monitor y la explicación opcional de Gemini, sin
+   `medbay*.css`. `/` es la landing con selector de vistas en `#choose-view`;
+   `/crew` es el monitor. La explicación opcional de Gemini se presenta sin
    diagnóstico ni control de acciones.
 3. Para detalle adicional consultar: `README.md` (operación), `docs/DEMO.md`
    (demostración), `docs/CHALLENGE-ALIGNMENT.md` (alcance del reto),

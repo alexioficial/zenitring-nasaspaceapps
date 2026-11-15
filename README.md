@@ -15,7 +15,7 @@ Open `http://localhost:3000` on the server computer. For separate phones/tablets
 
 | Interface                  | Address                                        |
 | -------------------------- | ---------------------------------------------- |
-| Choose a view              | `http://192.168.1.20:3000/`                    |
+| Project landing / demo     | `http://192.168.1.20:3000/`                    |
 | Crew monitor               | `http://192.168.1.20:3000/crew`                |
 | Alexi personal monitor     | `http://192.168.1.20:3000/astronaut/vega`      |
 | Rivier personal monitor    | `http://192.168.1.20:3000/astronaut/nova`      |
@@ -24,7 +24,7 @@ Open `http://localhost:3000` on the server computer. For separate phones/tablets
 | Alexi spacesuit            | `http://192.168.1.20:3000/suit?astronaut=vega` |
 | Historical Apollo explorer | `/archive`                                     |
 
-Start at `/` and choose **Astronaut view** or **Crew monitor**. Choose an astronaut before opening the personal view. The header always names the current workspace and identity; **Switch view** returns to the chooser. Personal navigation has three primary sections: **My health**, **My records**, and **My devices**. **More** contains signal details, NASA resources, simulation settings, and research scenarios. The first time an astronaut link opens in a browser it lands on **My devices**; later visits open **My health**. A per-astronaut cookie (`zenit-onboarded-<id>`) remembers this, so clearing site data replays the first run, and a link that already names a view (`?view=records`) is never redirected. Views have reloadable links, and browser Back/Forward follows the selected section. Ring and suit simulators are separate demo tools; they open health views in another tab so their readings continue.
+Start at `/` to explore the project landing. Select **Explore the demo** (or open `/#choose-view`) and choose **Astronaut view** or **Crew monitor**. Choose an astronaut before opening the personal view. The header always names the current workspace and identity; **Switch view** returns to the chooser. Personal navigation has three primary sections: **My health**, **My records**, and **My devices**. **More** contains signal details, NASA resources, simulation settings, and research scenarios. The first time an astronaut link opens in a browser it lands on **My devices**; later visits open **My health**. A per-astronaut cookie (`zenit-onboarded-<id>`) remembers this, so clearing site data replays the first run, and a link that already names a view (`?view=records`) is never redirected. Views have reloadable links, and browser Back/Forward follows the selected section. Ring and suit simulators are separate demo tools; they open health views in another tab so their readings continue.
 
 Other crew IDs are `atlas` and `lyra`. The central monitor at `/crew` opens directly to the crew overview without the personal navigation bar. Its **Astronaut links** view offers one **Copy astronaut link** action per person. This opens their health workspace; **My devices → Open my ring** opens the simulator from there. Ring replacement is a secondary action inside **Replace a linked device**. Personal monitors have their own navigation and a fixed astronaut identity from the URL; their WebSocket session receives only that astronaut's records. These links select a demo context, not authenticated accounts.
 
@@ -80,7 +80,7 @@ The ring gesture surface renders a procedural **Three.js** concept: a rounded ti
 - `src/lib/three/ring-scene.ts` and `src/lib/components/RingScene.svelte`: shared 3D renderer, lifecycle cleanup and accessible gesture-surface integration for `/ring`.
 - `server/hub.ts`: validated WebSocket protocol, exclusive associations, heartbeat, server timestamps, acknowledgements and retry deduplication.
 - `server/repository.ts`: Bun SQLite persistence. Default `data/zenit.sqlite`, configurable via `MISSION_DB_PATH`.
-- `src/routes/+page.svelte`: role selector and direct guided-simulation entry.
+- `src/routes/+page.svelte` and `src/lib/landing.css`: English project landing, illustrative context interaction, role selector and direct guided-simulation entry. The landing example makes no AI requests and saves or sends no records.
 - `src/routes/crew/`: central crew monitor without personal navigation.
 - `src/routes/astronaut/[id]/`: validated personal links with fixed astronaut identity.
 - `src/lib/components/crew/MissionWorkspace.svelte`: shared monitor views, scoped personal navigation, detail/trends and links distributed from the central monitor.

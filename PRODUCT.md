@@ -12,9 +12,11 @@ The primary user is the astronaut assessing their own health: understand a chang
 
 Tablet-first central monitor for fictional astronaut biometrics, connected through real WebSockets to simulated ZENIT rings and spacesuits. Mission phases select a primary source without substituting another device during an outage. Crew can capture evidence by gesture, annotate it explicitly and track emergency response. NASA Space Apps demonstration. English interface.
 
-The entry page offers Astronaut view and Crew monitor as explicit choices. Every workspace header identifies the current view; astronaut views name the fixed identity from the URL. Switch view returns to the chooser. Personal navigation keeps My health, My records, and My devices prominent, with secondary tools under More. The separate crew monitor at /crew also distributes personal links. Ring, suit, and research simulators are labelled demo tools.
+The entry page at `/` is an English presentation landing for the project. It introduces astronaut context, crew communication, research sources and the prototype's scope, then offers Astronaut view and Crew monitor in `#choose-view`. Explore the demo links jump to that selector. Every workspace header identifies the current view; astronaut views name the fixed identity from the URL. Switch view returns to the landing. Personal navigation keeps My health, My records, and My devices prominent, with secondary tools under More. The separate crew monitor at /crew also distributes personal links. Ring, suit, and research simulators are labelled demo tools.
 
 ## Confirmed scope
+
+The landing includes an explicitly fictional pulse comparison with three context choices. Its explanatory copy is local and illustrative: it reads no live telemetry, requests no AI, persists no records and sends no alerts. The selected demo astronaut is carried into personal, guided-simulation and device-simulator links. ARCHeR and Radi-N2 source links remain separate from the synthetic exercises.
 
 Guided activity/recovery, sleep/attention, wellbeing and food/hydration check-ins; optional captured evidence attachment; NASA-linked explanations; persistent next-step completion and better/same/worse/contacted follow-ups. Explicit help prompts work locally in an already-loaded page. Saved records are shared with the crew; drafts are not. This is educational guidance and an assessment interface, not a validated diagnostic or treatment engine.
 
