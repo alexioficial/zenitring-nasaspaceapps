@@ -31,6 +31,32 @@ const { default: AutomaticHealth } =
 const { scenarioCrew } = await import('../src/lib/crew/research-scenarios');
 const now = Date.now();
 
+test('evidence charts keep zero and negative measurements finite and available as text', async () => {
+  const { default: EvidenceChart } =
+    await import('../src/lib/components/crew/EvidenceChart.svelte');
+  for (const values of [
+    [0, 0],
+    [-0.5, 0.2],
+  ]) {
+    const body = render(EvidenceChart, {
+      props: {
+        title: 'Synthetic measurements',
+        unit: '°C',
+        note: 'Demo data',
+        points: values.map((value, i) => ({
+          label: `Reading ${i + 1}`,
+          value,
+          detail: 'Recorded value',
+        })),
+      },
+    }).body;
+    expect(body).not.toContain('NaN');
+    expect(body).not.toContain('Infinity');
+    expect(body).toContain('aria-label="Reading 1:');
+    expect(body).toContain('Demo data');
+  }
+});
+
 const phoneAssessment = (member = initialCrew()[0], oncontext?: () => void) =>
   render(AutomaticHealth, {
     props: {

@@ -12,6 +12,9 @@ services:
       PORT: 3000
       ORIGIN: ${ORIGIN:?Set ORIGIN in .env or Coolify}
       MISSION_DB_PATH: /app/data/zenit.sqlite
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.8-flash}
+      GEMINI_DETAIL_MODEL: ${GEMINI_DETAIL_MODEL:-gemini-3.1-pro-preview}
     expose:
       - '3000'
     volumes:

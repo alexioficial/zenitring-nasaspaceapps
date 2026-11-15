@@ -228,7 +228,7 @@ export type LearningAnswer = 'schedule' | 'unsure' | 'unwell' | null;
 export type LearningStep = {
   title: string;
   period: string;
-  readings: { label: string; value: string; source: string }[];
+  readings: { label: string; value: string; source: string; amount?: number; unit?: string }[];
   observation: string;
   meaning: string;
   missing: string;
@@ -261,8 +261,20 @@ export const guidedScenarios: Record<GuidedScenario, GuidedContent> = {
         title: 'Start with context',
         period: 'Demo day 1',
         readings: [
-          { label: 'Sleep', value: '7.5 h', source: 'Synthetic sleep diary' },
-          { label: 'Activity', value: '30 min', source: 'Synthetic activity sensor' },
+          {
+            label: 'Sleep',
+            value: '7.5 h',
+            amount: 7.5,
+            unit: 'h',
+            source: 'Synthetic sleep diary',
+          },
+          {
+            label: 'Activity',
+            value: '30 min',
+            amount: 30,
+            unit: 'min',
+            source: 'Synthetic activity sensor',
+          },
           { label: 'Attention', value: 'As usual', source: 'Synthetic self-report' },
         ],
         observation:
@@ -276,8 +288,20 @@ export const guidedScenarios: Record<GuidedScenario, GuidedContent> = {
         title: 'A shorter night',
         period: 'Demo day 2',
         readings: [
-          { label: 'Sleep', value: '5.5 h', source: 'Synthetic sleep diary' },
-          { label: 'Activity', value: '30 min', source: 'Synthetic activity sensor' },
+          {
+            label: 'Sleep',
+            value: '5.5 h',
+            amount: 5.5,
+            unit: 'h',
+            source: 'Synthetic sleep diary',
+          },
+          {
+            label: 'Activity',
+            value: '30 min',
+            amount: 30,
+            unit: 'min',
+            source: 'Synthetic activity sensor',
+          },
           { label: 'Attention', value: 'Harder to concentrate', source: 'Synthetic self-report' },
         ],
         observation:
@@ -291,8 +315,14 @@ export const guidedScenarios: Record<GuidedScenario, GuidedContent> = {
         title: 'Follow up with new evidence',
         period: 'Demo day 3',
         readings: [
-          { label: 'Sleep', value: '7 h', source: 'Synthetic sleep diary' },
-          { label: 'Activity', value: '25 min', source: 'Synthetic activity sensor' },
+          { label: 'Sleep', value: '7 h', amount: 7, unit: 'h', source: 'Synthetic sleep diary' },
+          {
+            label: 'Activity',
+            value: '25 min',
+            amount: 25,
+            unit: 'min',
+            source: 'Synthetic activity sensor',
+          },
           { label: 'Attention', value: 'Follow-up needed', source: 'Ask the astronaut' },
         ],
         observation:
@@ -325,16 +355,22 @@ export const guidedScenarios: Record<GuidedScenario, GuidedContent> = {
           {
             label: 'Station location',
             value: '0 bubbles',
+            amount: 0,
+            unit: 'bubbles',
             source: 'Synthetic initial reader count',
           },
           {
             label: 'Sleeping quarters',
             value: '0 bubbles',
+            amount: 0,
+            unit: 'bubbles',
             source: 'Synthetic initial reader count',
           },
           {
             label: 'Personal detector',
             value: '0 bubbles',
+            amount: 0,
+            unit: 'bubbles',
             source: 'Synthetic initial reader count',
           },
         ],
@@ -353,16 +389,22 @@ export const guidedScenarios: Record<GuidedScenario, GuidedContent> = {
           {
             label: 'Station location',
             value: '24 bubbles',
+            amount: 24,
+            unit: 'bubbles',
             source: 'Synthetic final reader count',
           },
           {
             label: 'Sleeping quarters',
             value: '15 bubbles',
+            amount: 15,
+            unit: 'bubbles',
             source: 'Synthetic final reader count',
           },
           {
             label: 'Personal detector',
             value: '21 bubbles',
+            amount: 21,
+            unit: 'bubbles',
             source: 'Synthetic final reader count',
           },
         ],
@@ -378,9 +420,27 @@ export const guidedScenarios: Record<GuidedScenario, GuidedContent> = {
         title: 'Explain the comparison',
         period: 'Review of the same 7-day collection',
         readings: [
-          { label: 'Station location', value: '24 bubbles', source: 'Same synthetic record' },
-          { label: 'Sleeping quarters', value: '15 bubbles', source: 'Same synthetic record' },
-          { label: 'Personal detector', value: '21 bubbles', source: 'Same synthetic record' },
+          {
+            label: 'Station location',
+            value: '24 bubbles',
+            amount: 24,
+            unit: 'bubbles',
+            source: 'Same synthetic record',
+          },
+          {
+            label: 'Sleeping quarters',
+            value: '15 bubbles',
+            amount: 15,
+            unit: 'bubbles',
+            source: 'Same synthetic record',
+          },
+          {
+            label: 'Personal detector',
+            value: '21 bubbles',
+            amount: 21,
+            unit: 'bubbles',
+            source: 'Same synthetic record',
+          },
         ],
         observation:
           'The sleeping-quarter detector has 9 fewer bubbles than the station-location detector in this invented example.',

@@ -3,6 +3,7 @@ import { env } from '$env/dynamic/private';
 import { explainAutomatic, parseAutomaticRequest } from '$lib/server/automatic-ai';
 import { explainLearning, parseLearningRequest } from '$lib/server/learning-ai';
 import type { RequestHandler } from './$types';
+import { explanationDepth } from '$lib/crew/explanation';
 
 let windowStart = 0,
   requests = 0;
@@ -31,8 +32,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
   text += decoder.decode();
   let parsed;
   let learning;
+  let depth;
   try {
     const raw = JSON.parse(text);
+    depth = explanationDepth(raw?.depth);
+    if (!depth) return json({ error: 'Invalid explanation depth.' }, { status: 400, headers });
     learning = parseLearningRequest(raw);
     parsed = learning ? null : parseAutomaticRequest(raw);
   } catch {
@@ -48,6 +52,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
   const options = {
     apiKey: env.GEMINI_API_KEY,
     model: env.GEMINI_MODEL,
+    detailModel: env.GEMINI_DETAIL_MODEL,
+    depth,
   };
   const result = learning
     ? await explainLearning(learning, options)

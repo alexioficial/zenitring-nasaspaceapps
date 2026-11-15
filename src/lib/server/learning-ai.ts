@@ -1,3 +1,10 @@
+import type { EvidenceNote } from '../crew/explanation';
+import {
+  generateExplanation,
+  explanationSchema,
+  validEvidenceNotes,
+  type GeminiOptions,
+} from './gemini';
 import {
   guidedScenarios,
   learningResponse,
@@ -52,19 +59,13 @@ export function parseLearningRequest(raw: unknown): LearningRequest | null {
   return null;
 }
 export type LearningExplanation = {
+  evidenceNotes?: EvidenceNote[];
   summary: string;
   uncertainty: string;
   actionReason: string;
   sourceIds: string[];
 };
-export async function explainLearning(
-  request: LearningRequest,
-  options: {
-    apiKey?: string;
-    model?: string;
-    fetcher?: (url: string, init: RequestInit) => Promise<Response>;
-  } = {},
-) {
+export async function explainLearning(request: LearningRequest, options: GeminiOptions = {}) {
   if (request.kind === 'guided' && (request.answer === 'unwell' || request.outcome === 'worse'))
     return { mode: 'local' as const, reason: 'not-applicable' };
   if (!options.apiKey) return { mode: 'local' as const, reason: 'not-configured' };
@@ -78,95 +79,57 @@ export async function explainLearning(
     ...(scenario ? { study: scenario.source } : {}),
   };
   const allowedIds = Object.keys(background);
-  const model = options.model || 'gemini-3.5-flash-lite';
+  const evidenceItems = step
+    ? step.readings.map((r, i) => ({ evidenceId: `reading-${i}`, ...r }))
+    : [{ evidenceId: 'risk-context', label: risk.title, context: risk.meaning }];
+  const evidenceIds = evidenceItems.map((e) => e.evidenceId);
   try {
-    const response = await (options.fetcher ?? fetch)(
-      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
+    const result = await generateExplanation<LearningExplanation>(
       {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': options.apiKey },
-        signal: AbortSignal.timeout(12000),
-        body: JSON.stringify({
-          systemInstruction: {
-            parts: [
-              {
-                text: 'Explain space health education in English using only the supplied evidence and sources. Address the astronaut in plain language. This is a synthetic demonstration, not a clinical risk assessment. If mode is general education, no personal readings or symptoms are known: never imply this risk is occurring in the person. If mode is guided practice, all readings and responses are fictional; do not attribute them to a real astronaut. Summary: at most 45 words connecting observations to the relevant risk. Uncertainty: at most 25 words about missing information. actionReason: at most 45 words explaining why the supplied next step is useful and how the supplied context helps. Do not add, replace, or contradict the next step; the interface displays it independently. Do not give treatments, medications, numerical thresholds, emergency procedures, suit adjustments, dose conversions, risk probabilities or medical clearance. Do not infer causation, recovery, safe locations, sleep or mental state from sensors. Radiation bubble counts require calibration for dose. NASA research supports educational context, not validation of ZENIT. Cite only the supplied source IDs.',
-              },
-            ],
-          },
-          contents: [
-            {
-              role: 'user',
-              parts: [
-                {
-                  text: JSON.stringify({
-                    mode: scenario ? 'guided practice' : 'general education',
-                    evidence: step,
-                    context:
-                      request.kind === 'guided'
-                        ? {
-                            answer: request.answer,
-                            practiced: request.practiced,
-                            outcome: request.outcome,
-                            response: learningResponse(
-                              request.scenario,
-                              request.answer,
-                              request.practiced,
-                            ),
-                          }
-                        : null,
-                    nextStep: step?.action ?? risk.action,
-                    unknown: step?.missing ?? risk.missing,
-                    background,
-                  }),
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            maxOutputTokens: 1000,
-            responseMimeType: 'application/json',
-            responseJsonSchema: {
-              type: 'object',
-              properties: {
-                summary: { type: 'string' },
-                uncertainty: { type: 'string' },
-                actionReason: { type: 'string' },
-                sourceIds: { type: 'array', items: { type: 'string', enum: allowedIds } },
-              },
-              required: ['summary', 'uncertainty', 'actionReason', 'sourceIds'],
-              additionalProperties: false,
-            },
-          },
-        }),
+        instruction:
+          'Explain space health education. In general education, no personal readings or symptoms are known: never imply this risk is occurring in the person. In guided practice, all readings and responses are fictional; do not attribute them to a real astronaut. Bubble counts require calibration for dose: never convert them to dose, probabilities or safe locations. Do not infer a cause of concentration changes or recovery from longer sleep. The supplied reading sources distinguish diaries and self-reports from sensors.',
+        evidence: {
+          mode: scenario ? 'guided practice' : 'general education',
+          evidence: step,
+          evidenceItems,
+          context:
+            request.kind === 'guided'
+              ? {
+                  answer: request.answer,
+                  practiced: request.practiced,
+                  outcome: request.outcome,
+                  response: learningResponse(request.scenario, request.answer, request.practiced),
+                }
+              : null,
+          nextStep: step?.action ?? risk.action,
+          unknown: step?.missing ?? risk.missing,
+          background,
+        },
+        schema: explanationSchema(allowedIds, evidenceIds),
+        validate: (value): value is LearningExplanation => {
+          if (!value || typeof value !== 'object') return false;
+          const v = value as LearningExplanation;
+          return (
+            ['summary', 'uncertainty', 'actionReason'].every((k) => {
+              const text = v[k as keyof LearningExplanation];
+              return typeof text === 'string' && text.trim().length > 0 && text.length <= 700;
+            }) &&
+            Array.isArray(v.sourceIds) &&
+            v.sourceIds.length > 0 &&
+            v.sourceIds.length <= 2 &&
+            v.sourceIds.every((id) => allowedIds.includes(id)) &&
+            validEvidenceNotes(
+              v.evidenceNotes,
+              evidenceIds,
+              v.sourceIds,
+              options.depth === 'detailed',
+            )
+          );
+        },
       },
+      options,
     );
-    if (!response.ok) throw Error();
-    const body = await response.json();
-    const candidate = body.candidates?.[0];
-    if (candidate?.finishReason !== 'STOP' || !Array.isArray(candidate.content?.parts))
-      throw Error();
-    const result = JSON.parse(
-      candidate.content.parts
-        .filter(
-          (p: { thought?: boolean; text?: string }) => !p.thought && typeof p.text === 'string',
-        )
-        .map((p: { text: string }) => p.text)
-        .join(''),
-    );
-    if (
-      !result ||
-      !['summary', 'uncertainty', 'actionReason'].every(
-        (k) =>
-          typeof result[k] === 'string' && result[k].trim().length > 0 && result[k].length <= 700,
-      ) ||
-      !Array.isArray(result.sourceIds) ||
-      !result.sourceIds.length ||
-      result.sourceIds.length > 2 ||
-      !result.sourceIds.every((id: unknown) => typeof id === 'string' && allowedIds.includes(id))
-    )
-      throw Error();
-    return { mode: 'ai' as const, model, explanation: result as LearningExplanation };
+    return { mode: 'ai' as const, ...result };
   } catch {
     return { mode: 'local' as const, reason: 'unavailable' };
   }

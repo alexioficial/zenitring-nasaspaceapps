@@ -12,6 +12,9 @@
   import { clockLabel, freshness } from '$lib/crew/model';
   import type { CrewMember } from '$lib/crew/types';
   import '$lib/crew/automatic.css';
+  import EvidenceChart from './EvidenceChart.svelte';
+  import EvidenceNotes from './EvidenceNotes.svelte';
+  import type { EvidenceNote } from '$lib/crew/explanation';
   let {
     member,
     now,
@@ -73,6 +76,7 @@
     )[answer ?? ''],
   );
   let explanation = $state<{
+    evidenceNotes?: EvidenceNote[];
     summary: string;
     uncertainty: string;
     actionReason?: string;
@@ -82,11 +86,15 @@
   let model = $state('');
   let aiMeasuredAt = $state(0);
   let explanationKey = $state('');
-  let requestKey = $derived(
+  let detailedEpisode = $state('');
+  let retry = $state(0);
+  let baseKey = $derived(
     aiEnabled && online && assessment.state === 'review' && !context.help
-      ? `${assessment.id}:${answer ?? 'unknown'}`
+      ? `${member.id}:${activeSource(member).deviceId}:${member.phase}:${member.phaseHistory.at(-1)?.changedAt ?? 0}:${assessment.kind}:${answer ?? 'unknown'}`
       : '',
   );
+  let depth = $derived(detailedEpisode === baseKey ? 'detailed' : 'quick');
+  let requestKey = $derived(baseKey ? `${baseKey}:${depth}:${retry}` : '');
   let visibleExplanation = $derived(explanationKey === requestKey ? explanation : null);
   const questions = {
     activity: {
@@ -127,11 +135,18 @@
   $effect(() => {
     const key = requestKey;
     if (!key) {
+      detailedEpisode = '';
       explanation = null;
       aiState = 'Local analysis';
       return;
     }
     const controller = new AbortController();
+    const requestDepth = depth;
+    const timeout = setTimeout(
+      () => controller.abort(),
+      requestDepth === 'detailed' ? 60_000 : 30_000,
+    );
+    let disposed = false;
     const payload = untrack(() => {
       const source = activeSource(member),
         samples = source.type === 'ring' ? member.samples : member.suit.samples;
@@ -141,6 +156,7 @@
         phase: member.phase,
         phaseStart: member.phaseHistory.at(-1)?.changedAt ?? 0,
         answer,
+        depth: requestDepth,
         samples: samples
           .filter((s) => s.deviceId === source.deviceId && s.astronautId === member.id)
           .slice(-120)
@@ -178,9 +194,14 @@
               : 'Local analysis · Gemini unavailable';
       })
       .catch(() => {
-        if (!controller.signal.aborted) aiState = 'Local analysis · Gemini unavailable';
-      });
-    return () => controller.abort();
+        if (!disposed) aiState = 'Local analysis · Gemini unavailable';
+      })
+      .finally(() => clearTimeout(timeout));
+    return () => {
+      disposed = true;
+      clearTimeout(timeout);
+      controller.abort();
+    };
   });
 </script>
 
@@ -208,7 +229,63 @@
           : 'Suit'}{#if insight.moreChanges}
           · {insight.moreChanges} more in details{/if}
       </p>
+      <details class="signal-charts">
+        <summary>Compare the readings visually</summary>
+        {#each assessment.observations as observation}
+          <EvidenceChart
+            title={observation.label}
+            unit={observation.unit}
+            points={[
+              {
+                label: 'Earlier 6',
+                value: observation.earlier,
+                detail: 'Median of six earlier comparable readings from the same source and phase.',
+              },
+              {
+                label: 'Latest 3',
+                value: observation.recent,
+                detail:
+                  'Median of three recent readings. This is not a clinical baseline or safety threshold.',
+              },
+            ]}
+            note={observation.triggered
+              ? 'A sustained change matched a demo rule. Select a bar to understand the comparison.'
+              : 'No sustained change matched the demo rule for this measurement.'}
+          />
+        {/each}
+      </details>
     </div>
+  {/if}
+{/snippet}
+
+{#snippet enrichedExplanation()}
+  {#if baseKey}
+    <div class="explanation-controls">
+      <button
+        class="crew-button secondary"
+        disabled={aiState === 'Gemini is explaining this change…'}
+        onclick={() => {
+          detailedEpisode = baseKey;
+          retry += 1;
+        }}>Explore the evidence</button
+      >
+      {#if aiState.includes('unavailable')}
+        <button
+          class="crew-button secondary"
+          onclick={() => {
+            detailedEpisode = '';
+            retry += 1;
+          }}>Retry quick explanation</button
+        >
+      {/if}
+    </div>
+  {/if}
+  {#if visibleExplanation?.evidenceNotes}
+    <EvidenceNotes
+      notes={visibleExplanation.evidenceNotes}
+      labels={Object.fromEntries(assessment.observations.map((o) => [o.metric, o.label]))}
+      sources={automaticSources}
+    />
   {/if}
 {/snippet}
 
@@ -344,6 +421,7 @@
     </div>
 
     {@render evidence()}
+    {@render enrichedExplanation()}
     {@render contextQuestion()}
 
     {#if assessment.state === 'review' && !insight.help}<p class="insight-unknown">
@@ -441,6 +519,7 @@
         </p>{/if}
     </div>
 
+    {@render enrichedExplanation()}
     {@render contextQuestion()}
 
     {#if !insight.help && (answer || !assessment.question)}

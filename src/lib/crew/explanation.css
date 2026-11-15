@@ -1,0 +1,182 @@
+.evidence-chart {
+  margin: 18px 0;
+  min-width: 0;
+  color: #142b39;
+  font-variant-numeric: tabular-nums;
+}
+.evidence-chart figcaption {
+  font-weight: 750;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.evidence-chart figcaption span,
+.evidence-axis,
+.evidence-chart .evidence-chart-note {
+  color: #4c6474;
+  font-size: 12px;
+}
+.evidence-axis {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0 2px;
+}
+.evidence-bars {
+  display: grid;
+  gap: 2px;
+}
+.evidence-bars .evidence-bar {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 56px;
+  padding: 8px 4px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  text-align: left;
+  background: transparent;
+  color: #142b39;
+  cursor: pointer;
+  font: inherit;
+  box-shadow: none;
+}
+.evidence-bars .evidence-bar:hover,
+.evidence-bars .evidence-bar[aria-pressed='true'] {
+  background: #e3f0f3;
+  border-color: #b9cbd6;
+  box-shadow: none;
+}
+.evidence-bar-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+.evidence-bar-label strong {
+  white-space: nowrap;
+}
+.evidence-track {
+  position: relative;
+  display: block;
+  height: 10px;
+  background: #f1f5f8;
+}
+.evidence-fill {
+  position: absolute;
+  height: 100%;
+  background: #126f80;
+}
+.evidence-zero {
+  position: absolute;
+  height: 16px;
+  top: -3px;
+  border-left: 1px solid #4c6474;
+}
+.evidence-chart .evidence-chart-note {
+  line-height: 1.6;
+  min-height: 2.8em;
+  margin: 8px 0 0;
+}
+.explanation-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0 8px;
+}
+.explanation-controls button {
+  min-height: 44px;
+}
+.explanation-controls button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+.evidence-notes {
+  margin: 20px 0;
+}
+.evidence-notes h4 {
+  color: #142b39;
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+.evidence-note {
+  padding: 12px 0;
+  border-top: 1px solid #cbd8e2;
+}
+.evidence-note > strong {
+  color: #142b39;
+  font-size: 14px;
+}
+.evidence-note p {
+  font-size: 14px;
+  line-height: 1.65;
+  margin: 6px 0;
+  max-width: 72ch;
+}
+.evidence-note a {
+  color: #126f80;
+  font-size: 12px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  text-underline-offset: 4px;
+}
+.evidence-bar:focus-visible,
+.explanation-controls button:focus-visible,
+.evidence-note a:focus-visible {
+  outline: 3px solid #16899b;
+  outline-offset: 3px;
+}
+.guided-charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin: 12px 0 20px;
+}
+.guided-charts.single-chart {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 640px;
+}
+.signal-charts {
+  border-top: 1px solid #cbd8e2;
+  margin-top: 16px;
+}
+.signal-charts summary {
+  min-height: 44px;
+  padding: 12px 0;
+  cursor: pointer;
+  color: #126f80;
+  font-size: 14px;
+}
+.learning-ai {
+  border-top: 1px solid #cbd8e2;
+  margin-top: 24px;
+  padding-top: 6px;
+}
+/* Keep educational explanations readable inside the personal workspace's dense legacy cascade. */
+.medbay-shell .crew-app .health-learning p {
+  color: #4c6474;
+  font-size: 14px;
+  line-height: 1.65;
+  max-width: 72ch;
+}
+.medbay-shell .crew-app .health-learning h4 {
+  color: #142b39;
+  font-size: 15px;
+  font-weight: 700;
+}
+.medbay-shell .crew-app .health-learning .learning-readings dd {
+  font-family: inherit;
+}
+.medbay-shell .crew-app .health-learning .learning-disclosure {
+  color: #77511a;
+}
+.medbay-shell .crew-app .health-learning .learning-help {
+  color: #82272c;
+}
+@media (max-width: 650px) {
+  .guided-charts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+}

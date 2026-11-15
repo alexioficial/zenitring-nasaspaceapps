@@ -125,6 +125,8 @@ abren en otra pestaña. No convertir navegar a My health en cerrar el emisor.
 | `src/lib/crew/automatic.ts` | Detector determinista y contexto de respuestas cerradas. |
 | `src/lib/crew/health-insight.ts` | Presentación comprensible del resultado; no modifica la detección. |
 | `src/lib/server/automatic-ai.ts` | Validación de entrada, recálculo y petición privada a Gemini. |
+| `src/lib/server/gemini.ts` | Modelos por profundidad, JSON validado, timeout, caché acotada y consultas compartidas. |
+| `src/lib/components/crew/EvidenceChart.svelte` | Comparaciones de datos locales con escala desde cero, valores accesibles y detalle seleccionable. |
 | `src/lib/crew/research-scenarios.ts` | Fixtures sintéticos y resultados esperados de `/research`. |
 | `src/lib/crew/workspace.ts` | URLs personales y onboarding. `personalRecords()` combina/filtra registros; ninguna vista lo usa ahora. |
 | `src/lib/components/crew/MissionWorkspace.svelte` | Orquestación compartida del monitor central y personal, conexión, acciones y sincronización de `?view=`. |
@@ -211,6 +213,11 @@ RingClient / SuitClient -> MissionConnection -> /ws -> hub -> SQLite
 - La IA explica riesgos y el motivo del siguiente paso local (`actionReason`); no
   decide tratamientos ni reemplaza acciones. Una consulta de catálogo usa solo el
   tema y se etiqueta como general; práctica usa solo el paso sintético y respuestas.
+- `evidenceNotes` enlaza cada explicación con una observación y fuente permitidas.
+  `Explore the evidence` pide una explicación detallada en la misma pantalla.
+  Las gráficas usan números locales (`amount` y `unit` en práctica), nunca datos
+  generados por Gemini. ARCHeR muestra solo días alcanzados; Radi-N2 compara
+  ubicaciones del mismo periodo, sin convertir burbujas a dosis.
 - Radi-N2 muestra recuentos de burbujas inventados durante siete días, no medidas de
   David Saint-Jacques. No convertir a dosis ni mezclar con RadLab.
 
@@ -230,13 +237,20 @@ RingClient / SuitClient -> MissionConnection -> /ws -> hub -> SQLite
 - `POST /api/health-explanation`: exige mismo Origin, JSON, máximo 48000 bytes y
   entrada validada de 9–120 muestras para telemetría, o IDs acotados para educación. Recalcula el detector antes de llamar al modelo.
 - Credencial privada `GEMINI_API_KEY`; `GEMINI_MODEL` tiene como valor por defecto
-  `gemini-3.5-flash-lite` en esta implementación. Nunca enviar claves al navegador.
+  `gemini-3.8-flash`; `GEMINI_DETAIL_MODEL` usa `gemini-3.1-pro-preview` únicamente
+  a petición del usuario. Nunca enviar claves al navegador.
   No enviar nombres ni notas libres: solo observaciones calculadas, respuesta
-  cerrada y contexto NASA seleccionado. Timeout 12 s y límite global de demo de
-  15 solicitudes/minuto por proceso. Salida JSON validada y fuentes permitidas.
+  cerrada y contexto NASA seleccionado. Timeout de servidor 25 s rápido / 55 s
+  detallado (cliente 30 / 60 s), 4096 / 8192 tokens máximos y thinking low / medium.
+  Límite global de 15 solicitudes/minuto por proceso. Caché de resultados validados
+  de 5 minutos y 100 entradas; consultas idénticas simultáneas comparten llamada.
+  No hay reintentos ni escalado de modelo automáticos. IDs de evidencia y fuentes
+  se validan contra la petición; el cliente no elige nombres de modelos.
 - La petición depende del episodio/contexto, no de cada muestra entrante. Conservar
   cancelación, asociación de respuesta con evidencia y fallback local. Gemini no
   cambia acciones, controla el traje, diagnostica ni concede autorización médica.
+  La clave de consulta automática no depende del inicio de la ventana deslizante;
+  conserva la hora de la evidencia explicada mientras las lecturas siguen entrando.
 
 ### Procedencia y unidades
 
@@ -292,7 +306,7 @@ RingClient / SuitClient -> MissionConnection -> /ws -> hub -> SQLite
 ## 8. Entorno y despliegue
 
 - Variables: `MISSION_DB_PATH`, `HOST` (por defecto `0.0.0.0`), `PORT` (3000),
-  `ORIGIN`, `PUBLIC_ORIGIN` opcional, `GEMINI_API_KEY`, `GEMINI_MODEL`.
+  `ORIGIN`, `PUBLIC_ORIGIN` opcional, `GEMINI_API_KEY`, `GEMINI_MODEL`, `GEMINI_DETAIL_MODEL`.
   `.env.example` también incluye variables del perfil opcional PostgreSQL y puertos.
   No copiar valores privados de `.env` a documentación, logs o commits.
 - WS/WSS se deriva del origen de la página y usa `/ws` en el mismo puerto HTTP.
@@ -306,8 +320,8 @@ RingClient / SuitClient -> MissionConnection -> /ws -> hub -> SQLite
 - Desarrollo Docker: `docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build -d`.
   El override publica 3000 en LAN y activa polling. PostgreSQL 17 es solo el perfil
   `database`; no participa en telemetría y no hay ORM ni migraciones PostgreSQL.
-- Compose no declara actualmente las variables Gemini: al usar contenedor hay que
-  suministrarlas explícitamente en su entorno, no asumir que copiar `.env` las inyecta.
+- Compose declara las tres variables Gemini. Configurar la clave en el entorno de
+  despliegue; los modelos tienen los mismos valores predeterminados que el servidor.
 - No borrar `data/`, reservas ni volúmenes. `docker compose down -v` destruye datos.
   No editar `build/`, `.svelte-kit/`, `node_modules/` ni perfiles de navegador como código.
 - `.taste-skill/` son perfiles/reportes de revisión y está excluido del watcher de
@@ -326,7 +340,7 @@ RingClient / SuitClient -> MissionConnection -> /ws -> hub -> SQLite
 | Gestos, simulación y frescura | `tests/crew.test.ts` |
 | Salud y evidencia | `tests/health.test.ts` |
 | Detector y presentación comprensible | `tests/automatic.test.ts` |
-| Validación y fallback Gemini | `tests/automatic-ai.test.ts`, `tests/learning-ai.test.ts` (proveedor simulado) |
+| Validación y fallback Gemini | `tests/automatic-ai.test.ts`, `tests/learning-ai.test.ts`, `tests/gemini.test.ts` (proveedor simulado, caché y modelos) |
 | Riesgos y escenarios guiados | `tests/health-learning.test.ts` |
 | Navegación, onboarding y registros | `tests/personal-workspace.test.ts` |
 | Renderizado de superficies y estados | `tests/suit-display.test.ts` |

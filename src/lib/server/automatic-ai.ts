@@ -1,3 +1,10 @@
+import type { EvidenceNote } from '../crew/explanation';
+import {
+  generateExplanation,
+  explanationSchema,
+  validEvidenceNotes,
+  type GeminiOptions,
+} from './gemini';
 import { initialCrew, validMetrics } from '../crew/model';
 import { validSuitMetrics } from '../crew/suit';
 import {
@@ -10,6 +17,7 @@ import type { CrewMember } from '../crew/types';
 import { healthInsight } from '../crew/health-insight';
 
 export type AIExplanation = {
+  evidenceNotes?: EvidenceNote[];
   summary: string;
   uncertainty: string;
   actionReason?: string;
@@ -92,17 +100,6 @@ export function parseAutomaticRequest(
   c.suit.latest = c.suit.samples.at(-1) ?? null;
   return { member: c, answer: v.answer as AutomaticAnswer | null };
 }
-const schema = {
-  type: 'object',
-  properties: {
-    summary: { type: 'string' },
-    uncertainty: { type: 'string' },
-    actionReason: { type: 'string' },
-    sourceIds: { type: 'array', items: { type: 'string', enum: Object.keys(automaticSources) } },
-  },
-  required: ['summary', 'uncertainty', 'actionReason', 'sourceIds'],
-  additionalProperties: false,
-};
 export function validAIExplanation(v: unknown): v is AIExplanation {
   if (!v || typeof v !== 'object') return false;
   const x = v as AIExplanation;
@@ -126,18 +123,12 @@ export function validAIExplanation(v: unknown): v is AIExplanation {
 export async function explainAutomatic(
   member: CrewMember,
   answer: AutomaticAnswer | null,
-  options: {
-    apiKey?: string;
-    model?: string;
-    fetcher?: (url: string, init: RequestInit) => Promise<Response>;
-    now?: number;
-  } = {},
+  options: GeminiOptions & { now?: number } = {},
 ): Promise<AIResult> {
   const assessment = analyzeSignals(member, options.now ?? Date.now());
   if (assessment.state !== 'review' || answer === 'unwell' || answer === 'alert')
     return { mode: 'local', reason: 'not-applicable' };
   if (!options.apiKey) return { mode: 'local', reason: 'not-configured' };
-  const model = options.model || 'gemini-3.5-flash-lite';
   const sourceIds = [...new Set([assessment.sourceId, 'medical'])];
   if (assessment.kind === 'pulse-rise') sourceIds.push('cardiovascularRisk');
   if (assessment.kind === 'suit-change') sourceIds.push('spacewalkRisk');
@@ -155,64 +146,35 @@ export async function explainAutomatic(
       ];
     }),
   );
+  const evidenceIds = assessment.observations.map((o) => o.metric);
   try {
-    const response = await (options.fetcher ?? fetch)(
-      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
+    const result = await generateExplanation<AIExplanation>(
       {
-        method: 'POST',
-        headers: { 'x-goog-api-key': options.apiKey, 'Content-Type': 'application/json' },
-        signal: AbortSignal.timeout(12000),
-        body: JSON.stringify({
-          systemInstruction: {
-            parts: [
-              {
-                text: 'You explain synthetic telemetry for ZENIT, a NASA Space Apps proof of concept. Write English. Explain possible contributors, never a diagnosis. Use only supplied observations and explicitly confirmed context. Do not invent symptoms, probabilities, baseline health, sensor accuracy or treatment. Do not give medication, suit controls or medical clearance. Do not declare the user safe. State only the unknowns relevant to this pattern. Discuss only the supplied source: do not mention suit atmosphere for ring data. If no activity was confirmed, do not claim exercise occurred. Suit atmosphere is not blood oxygen or body temperature. NASA context is background, not validation of this algorithm. Use everyday words, short sentences and direct address (you). Start with what this could mean for the astronaut, not a list of numbers or a generic disclaimer. Summary: at most two sentences and 45 words. Uncertainty: one sentence and 25 words. Never repeat a raw list of metrics; the interface shows those separately. Do not add unrelated possible diseases. If the cause is unknown, say so plainly. The interface supplies the next action. In actionReason, explain in at most 45 words why that supplied nextStep fits the observed pattern and confirmed context. Use the supplied NASA risk background when relevant, without claiming a risk has been diagnosed. Do not add, replace or contradict actions. Explain what context the astronaut should bring to that next step, only if already supplied. Cite only supplied source IDs. Your output cannot change the detector or next steps.',
-              },
-            ],
-          },
-          contents: [
-            {
-              role: 'user',
-              parts: [
-                {
-                  text: JSON.stringify({
-                    observations: assessment.observations,
-                    pattern: assessment.kind,
-                    source: assessment.source,
-                    confirmedAnswer: answer,
-                    localContext: contextualize(assessment, answer),
-                    nextStep: healthInsight(assessment, answer).action,
-                    background,
-                  }),
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            maxOutputTokens: 1000,
-            responseMimeType: 'application/json',
-            responseJsonSchema: schema,
-          },
-        }),
+        instruction:
+          'You explain synthetic telemetry for ZENIT. Interpret only the supplied device and phase. Suit atmosphere is not blood oxygen or body temperature. If no activity was confirmed, do not claim exercise occurred. Never infer sleep, mood, recovery or exertion safety from these signals. Earlier and recent values are short-window medians, not a clinical baseline. Prioritize observations with triggered=true; mention unchanged observations only when useful.',
+        evidence: {
+          observations: assessment.observations.map((o) => ({ ...o, evidenceId: o.metric })),
+          pattern: assessment.kind,
+          source: assessment.source,
+          confirmedAnswer: answer,
+          localContext: contextualize(assessment, answer),
+          nextStep: healthInsight(assessment, answer).action,
+          background,
+        },
+        schema: explanationSchema(sourceIds, evidenceIds),
+        validate: (value): value is AIExplanation =>
+          validAIExplanation(value) &&
+          value.sourceIds.every((id) => sourceIds.includes(id)) &&
+          validEvidenceNotes(
+            value.evidenceNotes,
+            evidenceIds,
+            value.sourceIds,
+            options.depth === 'detailed',
+          ),
       },
+      options,
     );
-    if (!response.ok) return { mode: 'local', reason: 'unavailable' };
-    const body = await response.json();
-    const candidate = body.candidates?.[0];
-    if (candidate?.finishReason !== 'STOP' || !Array.isArray(candidate.content?.parts))
-      return { mode: 'local', reason: 'unavailable' };
-    const text = candidate.content.parts
-      .filter(
-        (part: { thought?: boolean; text?: string }) =>
-          !part.thought && typeof part.text === 'string',
-      )
-      .map((part: { text: string }) => part.text)
-      .join('');
-    const explanation: unknown = JSON.parse(text);
-    return validAIExplanation(explanation) &&
-      explanation.sourceIds.every((id) => sourceIds.includes(id))
-      ? { mode: 'ai', model, measuredAt: assessment.measuredAt!, explanation }
-      : { mode: 'local', reason: 'unavailable' };
+    return { mode: 'ai', ...result, measuredAt: assessment.measuredAt! };
   } catch {
     return { mode: 'local', reason: 'unavailable' };
   }

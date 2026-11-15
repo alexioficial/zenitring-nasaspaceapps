@@ -1,5 +1,6 @@
 <script lang="ts">
   import LearningExplanation from './LearningExplanation.svelte';
+  import EvidenceChart from './EvidenceChart.svelte';
   import { tick } from 'svelte';
   import {
     guidedScenarios,
@@ -71,6 +72,39 @@
         <span>{reading.source}</span>
       </div>{/each}
   </dl>
+  <div class="guided-charts" class:single-chart={scenario === 'radin2'}>
+    {#if scenario === 'archer'}
+      {#each [0, 1] as metric}
+        <EvidenceChart
+          title={metric === 0
+            ? 'Sleep across the practice days'
+            : 'Activity across the practice days'}
+          unit={current.readings[metric].unit!}
+          points={content.steps.slice(0, step + 1).map((s, i) => ({
+            label: `Day ${i + 1}`,
+            value: s.readings[metric].amount!,
+            detail: `${s.readings[metric].source}. ${metric === 0 ? 'Reported sleep duration, not a measurement from the ring.' : 'Duration alone does not show intensity or readiness.'}`,
+          }))}
+          note="Synthetic records through this step. Select a bar for its source. Scale starts at zero."
+        />
+      {/each}
+    {:else}
+      <EvidenceChart
+        title={step === 0 ? 'Initial detector counts' : 'Detector counts after seven days'}
+        unit="bubbles"
+        points={current.readings
+          .filter((r) => r.amount !== undefined)
+          .map((r) => ({
+            label: r.label,
+            value: r.amount!,
+            detail: `${r.source}. Counts require calibration before any dose interpretation.`,
+          }))}
+        note={step === 0
+          ? 'Zero initial counts do not establish environmental safety.'
+          : 'Synthetic counts over the same seven days. Differences do not establish a safe location.'}
+      />
+    {/if}
+  </div>
   <div class="learning-columns">
     <div>
       <h4>What we observe</h4>
