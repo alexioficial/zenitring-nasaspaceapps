@@ -7,12 +7,14 @@
     pulse = 0,
     emergency = false,
     compact = false,
+    language = 'en',
   }: {
     connected?: boolean;
     pressed?: boolean;
     pulse?: number;
     emergency?: boolean;
     compact?: boolean;
+    language?: 'en' | 'es';
   } = $props();
   let host: HTMLSpanElement;
   let loaded = $state(false);
@@ -53,7 +55,15 @@
   <span class="ring-shadow"></span>
   <span class="canvas-host" bind:this={host}></span>
   {#if !loaded}<span class="fallback-band"></span>{/if}
-  <span class="visual-label">{failed ? 'RING CONCEPT · 2D VIEW' : 'RING CONCEPT · 3D VIEW'}</span>
+  <span class="visual-label"
+    >{language === 'es'
+      ? failed
+        ? 'CONCEPTO DE ANILLO · VISTA 2D'
+        : 'CONCEPTO DE ANILLO · VISTA 3D'
+      : failed
+        ? 'RING CONCEPT · 2D VIEW'
+        : 'RING CONCEPT · 3D VIEW'}</span
+  >
 </span>
 
 <style>

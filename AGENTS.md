@@ -70,7 +70,7 @@ No hay un script `lint` ni configuración de CI versionada en el estado revisado
 
 | Ruta | Responsabilidad |
 | --- | --- |
-| `/` | Landing de presentación en inglés; explica el proyecto y conserva el selector de identidad y vistas en `#choose-view`. |
+| `/` | Landing de presentación: inglés por defecto y selector EN/ES (`?lang=es`). Conserva el selector de identidad y vistas en `#choose-view`. El idioma solo aplica a la landing. |
 | `/crew` | Monitor central: tripulación, detalles, historial y enlaces personales. |
 | `/astronaut/[id]` | Espacio personal con identidad fija y validada en servidor. |
 | `/ring?astronaut=vega` | Emisor de anillo, superficie de gestos y controles de simulación. |

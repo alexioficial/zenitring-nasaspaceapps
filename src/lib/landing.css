@@ -91,7 +91,21 @@
   font-size: 13px;
   font-weight: 650;
 }
+.landing-language {
+  width: 66px;
+  flex: 0 0 66px;
+  min-height: 44px;
+  min-width: 66px;
+  padding: 8px;
+  border: 1px solid var(--landing-line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--landing-ink);
+  font: inherit;
+  cursor: pointer;
+}
 .landing-header nav > a {
+  white-space: nowrap;
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -1062,5 +1076,10 @@
   .zenit-landing *::after {
     transition: none;
     scroll-behavior: auto;
+  }
+}
+@media (max-width: 420px) {
+  .landing-header nav > .landing-button {
+    display: none;
   }
 }
