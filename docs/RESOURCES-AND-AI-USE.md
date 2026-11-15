@@ -1,0 +1,103 @@
+# Scientific resources and use of artificial intelligence in ZENIT
+
+ZENIT Team · Supporting document for the proposal · November 15, 2026
+
+## Purpose and scientific foundation
+
+ZENIT is a space health monitoring demonstration designed to help astronauts understand their readings, add context and identify a next step. This document identifies the scientific resources used, their specific applications and the role of artificial intelligence in the product and its development.
+
+The proposal combines information from NASA and the Canadian Space Agency with simulated personal readings, educational scenarios and separate historical archives. The sources provide scientific context; the team implemented the rules, scenarios and educational actions. The prototype has neither clinical validation nor endorsement from these agencies.
+
+The project addresses the [NASA Space Apps 2026 Health Monitoring Software challenge](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/?tab=details).
+
+### Starting resources
+
+The following five links were supplied to the project as challenge resources. Additional studies and archives are identified separately to preserve their provenance.
+
+| Resource | Application in ZENIT |
+| --- | --- |
+| [NASA Five Hazards of Human Spaceflight](https://www.nasa.gov/hrp/hazards/) | Framework for the space environment: radiation, isolation, distance from Earth, changes in gravity, and closed or hostile environments. Establishes why monitoring needs context. |
+| [NASA Risks of Human Spaceflight](https://www.nasa.gov/hrp/risks/) | Foundation for the educational catalog of 17 topics. Each entry explains why the topic matters, what the application cannot determine and an educational next step. |
+| [NASA Ongoing HRP Research](https://www.nasa.gov/hrp/ongoing-hrp-research/) | Connects the proposal to ongoing Human Research Program studies. This reference led to the ARCHeR study. |
+| [CSA Monitoring radiation for astronaut health](https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp) | Context for radiation monitoring and instrument development. The image of David Saint-Jacques with bubble detectors connects to Radi-N2; it does not imply that he used CANS. |
+| [CSA Why do we conduct science experiments in space](https://www.asc-csa.gc.ca/eng/iss/science/why-do-we-conduct-science-experiments-in-space.asp) | Explains the rationale for studying changes in the body in space and developing protective measures. Supports the motivation for the proposal. |
+
+The catalog covers sleep, circulation, nutrition, wellbeing, extravehicular activity, radiation, physical conditioning, bones, vision, immunity, balance, decompression, microorganisms, oxygen availability, teamwork, operational support and dynamic loads. Displaying a topic related to the context does not mean detecting a condition or calculating an individual's risk.
+
+## Research and data provenance
+
+### Reference on AI medical support
+
+The record [Artificial Intelligence Medical Support for Long-Duration Space Missions](https://ntrs.nasa.gov/citations/20240000754), by Lauren Marie Sanders and Ryan Thomas Scott, describes a white paper published on February 2, 2024. We consulted the abstract available in NASA NTRS; the record does not provide a document download.
+
+Its proposed initial work includes data and model infrastructure, synthetic streams, known alterations and evaluation against expected answers. ZENIT draws on this idea to build controlled scenarios and test software rules. This is partial methodological inspiration: it does not validate the research or demonstrate the medical effectiveness of an AI system. ZENIT also does not implement the paper's vision of continuous learning or onboard computing. This is an additional reference, not a confirmed entry in the challenge's Resources list.
+
+### Research translated into simulations
+
+**ARCHeR.** The [Artemis Research for Crew Health and Readiness](https://www.nasa.gov/reference/archer/) study inspires the sleep, activity and wellbeing topics. ZENIT's walkthrough presents three fictional days: reviewing records, adding context after a shorter night and following up. Sleep duration, activity and responses are synthetic; they are not measurements from the Artemis crew. The demonstration ring does not measure sleep.
+
+**Radi-N2.** The [Canadian Space Agency's Radi-N2 resource](https://www.asc-csa.gc.ca/eng/sciences/radi-n2.asp) describes eight bubble detectors used over one week and documents David Saint-Jacques's participation. ZENIT illustrates three placements with fictional counts and teaches users to retain the instrument, location and observation period. It does not reproduce David's measurements or convert bubble counts into dose, disease probability or safety clearance.
+
+### Types of data displayed in the product
+
+| Data | Origin and treatment |
+| --- | --- |
+| Ring and suit signals | Generated by ZENIT's simulators for four fictional identities. Transmission, persistence and acknowledgments are real; measurements are simulated. |
+| ARCHeR and Radi-N2 walkthroughs | Synthetic examples written for the demonstration. Guided steps and practice responses remain separate from mission records. |
+| RadLab | 84 historical observations from DosTel1 in ISS Columbus, spanning April 1–2, 2022. Provenance and absorbed dose rate in μGy/h are preserved. These are historical environmental data, not personal dose or current conditions. |
+| Apollo 11 | 42 selected, approximately digitized observations from a chart in the mission report. They are a historical transcription, not raw telemetry or clinical thresholds. |
+
+RadLab is available under **More → NASA resources**. Apollo is at **/archive**. Walkthroughs open through **Start guided simulation** or **Explore a guided simulation** in My health. Links to the historical sources appear at the end of this document.
+
+## Use of artificial intelligence
+
+### Gemini within the product
+
+Gemini writes brief explanations in English about the evidence presented, missing information and the reason for the next step. It operates in three contexts: changes in simulated signals, education about a risk topic and steps in guided simulations.
+
+The flow is: simulated evidence or selected topic → server validation → local rules and action → optional Gemini explanation. Program rules determine detection results and next steps. The model's response does not modify those rules, health records or suit controls.
+
+| Context | Information supplied to the model |
+| --- | --- |
+| Simulated signals | Calculated observations, context confirmed through predefined answer choices, the next step and selected references. |
+| Risk education | The selected topic, educational information and permitted sources. This mode does not supply personal readings. |
+| Guided simulation | A synthetic step reconstructed on the server, predefined practice responses, the planned action and scenario references. |
+
+These requests do not include astronaut names or personal free-text notes. Credentials remain on the server. The implementation validates the response structure and its source identifiers; these checks do not guarantee the medical accuracy of every sentence.
+
+The model configured by default in the code is **gemini-3.5-flash-lite**, configurable through GEMINI_MODEL. Selected context is supplied with each request; no custom clinical model was trained or fine-tuned on NASA data.
+
+Gemini requires a connection to the provider. If a request fails or times out, the interface retains its local explanation and action. In guided scenarios, reporting feeling unwell or worse triggers local guidance to seek help without waiting for the model. ZENIT does not claim that Gemini runs onboard without internet access or can diagnose conditions or authorize an activity.
+
+### AI during project development
+
+**Codex.** Codex assisted with programming, code review, writing and running tests, and documentation. This support is part of the prototype development process; it is not an independent clinical review.
+
+**Image generation.** The astronaut figure in the interface was created with an AI image generation tool. It is a fictional representation, not a photograph of a real astronaut or a certified spacesuit design. Its provenance file preserves the prompt and creation date; it does not identify a specific model.
+
+**Historical transcription.** The approximate Apollo digitization was inherited from the prototype and is documented as AI-assisted. It must be interpreted with the limitations of reading a chart and must not be presented as the original telemetry dataset.
+
+## Additional references and traceability
+
+### Educational sources used in the guidance
+
+- [NASA Fundamentals of Human Health](https://www.nasa.gov/reference/fundamentals-of-human-health/): context for physical activity, nutrition and health maintenance.
+- [NASA Human Research Roadmap on sleep and workload](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=100) and [Behavioral Health Risk](https://www.nasa.gov/directorates/esdmd/hhp/behavioral-health-risk/): references for sleep, attention and wellbeing records.
+- [NASA Medical Operations](https://www.nasa.gov/reference/6-0-medical-operations/): context for communicating concerns and following mission procedures.
+- [NASA Spacesuits section 11](https://www.nasa.gov/reference/11-0-spacesuits-vol-2/): reference for suit variables. ZENIT's values and triggers are not certified operational limits.
+
+Specific pages linked by the catalog and explanations cover [sleep and irregular schedules](https://www.nasa.gov/reference/risk-from-inadequate-sleep-and-irregular-schedules/), [cardiovascular adaptations](https://www.nasa.gov/reference/risk-of-cardiovascular-adaptations/), [food and nutrition](https://www.nasa.gov/reference/risk-of-inadequate-food-and-nutrition/), [behavioral changes](https://www.nasa.gov/reference/risk-of-behavioral-changes-and-psychiatric-disorders/) and [extravehicular activity](https://www.nasa.gov/reference/risk-of-injury-and-compromised-performance-from-extravehicular-activity-eva/). Other topics refer to NASA's general risk catalog.
+
+### Historical archives and background references
+
+- [NASA OSDR RadLab Data API](https://visualization.osdr.nasa.gov/radlab/gui/data-api/): query and provenance of the DosTel1 environmental archive. The application retains a local fallback for unavailable queries.
+- [Apollo 11 Mission Report](https://www.nasa.gov/wp-content/uploads/static/apollo50th/pdf/A11_MissionReport.pdf#page=268): figure 12-3(a), PDF page 268, showing the commander's heart rate during extravehicular activity; activity annotations come from table 12-II, page 265.
+- Background references preserved in the documentation: [NASA Exercise Overview](https://www.nasa.gov/ochmo-tb-031-exercise-overview-2/), [Behavioral Health Evidence Report](https://humanresearchroadmap.nasa.gov/evidence/reports/HRP-ER-BMED-HFBP-20250210.pdf#page=43) and the [suit water intrusion investigation report](https://www.nasa.gov/wp-content/uploads/2023/07/suit_water_intrusion_mishap_investigation_report.pdf#page=39). These provide research context; they are not presented as sources automatically sent to Gemini.
+
+### Verification performed and scope
+
+The project includes tests for rules, transport, persistence, request and response validation, synthetic scenarios and rendering. Navigation and guided walkthroughs were also checked in a browser. AI integration tests use simulated provider responses; they do not evaluate Gemini's medical accuracy.
+
+Assessing clinical usefulness would require reference cases, specialist review and validation with appropriate data and instruments. In its current form, ZENIT demonstrates an educational monitoring and explanation experience using simulated data.
+
+The implementation is available in the [ZENIT repository](https://github.com/alexioficial/zenitring-nasaspaceapps): catalog and scenarios in src/lib/crew/health-learning.ts; AI integration in src/lib/server/automatic-ai.ts and learning-ai.ts; RadLab in src/lib/nasa/; Apollo in src/lib/apollo.ts; visual provenance in static/images/medbay-astronaut.webp.json.
