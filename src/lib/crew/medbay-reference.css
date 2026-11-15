@@ -336,7 +336,7 @@
   height: 26px;
 }
 .medbay-overview .medbay-phase {
-  margin: 18px 0 0;
+  margin: 18px 0 24px;
   padding: 12px 20px;
   gap: 25px;
   background: rgb(255 255 255 / 94%);
@@ -351,15 +351,20 @@
   margin-top: 5px;
 }
 .medbay-overview .medbay-phase .phase-track {
+  /* Depth of each chevron's point and notch, neighbour overlap, and room around the text. */
+  --phase-arrow: 22px;
+  --phase-overlap: 7px;
+  --phase-inset: 12px;
   display: flex;
   gap: 0;
   background: transparent;
   overflow: visible;
   border: 0;
 }
+/* Text is centred in each chevron's solid body, between its notch and its point. */
 .medbay-overview .medbay-phase .phase-track button {
   position: relative;
-  flex: 1;
+  flex: 1 1 0;
   display: grid;
   grid-template-columns: auto auto;
   grid-template-rows: auto auto;
@@ -368,22 +373,41 @@
   align-items: center;
   column-gap: 12px;
   min-height: 59px;
-  padding: 7px 24px;
-  margin-left: -7px;
+  padding: 7px calc(var(--phase-arrow) + var(--phase-inset));
+  margin-left: calc(-1 * var(--phase-overlap));
   border: 0;
   border-radius: 0;
   background: #dce8ee;
   color: #173847;
-  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 50%, calc(100% - 22px) 100%, 0 100%, 22px 50%);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--phase-arrow)) 0,
+    100% 50%,
+    calc(100% - var(--phase-arrow)) 100%,
+    0 100%,
+    var(--phase-arrow) 50%
+  );
+}
+/* A middle chevron loses both a notch and a point; this keeps every solid body equally wide. */
+.medbay-overview .medbay-phase .phase-track button:not(:first-child, :last-child) {
+  flex-basis: var(--phase-arrow);
 }
 .medbay-overview .medbay-phase .phase-track button:first-child {
   margin-left: 0;
+  padding-left: var(--phase-inset);
   border-radius: 12px 0 0 12px;
-  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 50%, calc(100% - 22px) 100%, 0 100%);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--phase-arrow)) 0,
+    100% 50%,
+    calc(100% - var(--phase-arrow)) 100%,
+    0 100%
+  );
 }
 .medbay-overview .medbay-phase .phase-track button:last-child {
+  padding-right: var(--phase-inset);
   border-radius: 0 12px 12px 0;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 22px 50%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, var(--phase-arrow) 50%);
 }
 .medbay-overview .medbay-phase .phase-track button.phase-active {
   background: #167d8c;
@@ -417,13 +441,6 @@
   height: 1px;
   overflow: hidden;
   clip-path: inset(50%);
-}
-.medbay-scene-credit {
-  text-align: right;
-  color: #415968;
-  font-size: 11px;
-  font-style: italic;
-  margin: 10px 4px 18px;
 }
 @media (min-width: 1101px) {
   .medbay-shell .astronaut-workspace .view-header {
@@ -605,11 +622,14 @@
 @media (max-width: 650px) {
   .medbay-shell .astronaut-workspace .medbay-navigation {
     flex-wrap: wrap;
+    padding-right: 0;
   }
+  /* Tabs span the full screen width, so each option gets more room around it. */
   .medbay-shell .astronaut-workspace .medbay-navigation .crew-navigation {
     width: 100%;
     flex-basis: 100%;
     justify-content: space-around;
+    padding: 0;
   }
   .medbay-shell .astronaut-workspace .crew-navigation button {
     font-size: 12px;
@@ -625,7 +645,7 @@
     margin: 4px auto 4px 14px;
   }
   .medbay-shell .astronaut-workspace .medbay-navigation .workspace-more {
-    margin: 0;
+    margin: 0 12px 0 0;
   }
   .medbay-shell .astronaut-workspace .crew-content {
     padding: 18px 14px !important;
@@ -681,23 +701,28 @@
   .medbay-overview .medbay-phase > div {
     margin-bottom: 12px;
   }
+  .medbay-overview .medbay-phase .phase-track {
+    --phase-inset: 8px;
+  }
   .medbay-overview .medbay-phase .phase-track button {
     grid-template-columns: 1fr;
     justify-items: center;
-    gap: 3px;
-    padding: 10px 12px;
+    row-gap: 3px;
+    padding-block: 10px;
     min-height: 84px;
   }
   .medbay-overview .medbay-phase .phase-track svg {
     grid-row: auto;
     width: 23px;
     height: 23px;
+    margin-bottom: 3px;
   }
   .medbay-overview .medbay-phase .phase-track strong {
     font-size: 12px;
   }
   .medbay-overview .medbay-phase .phase-track small {
     font-size: 9px;
+    margin-top: 0;
   }
 }
 

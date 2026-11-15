@@ -44,7 +44,7 @@
     </div>
     <span class="source-tag historical">HISTORICAL DATA</span>
   </div>
-  <p>Actual instrument observations, kept separate from this mission’s health signals.</p>
+  <p>Actual instrument observations, kept separate from this mission’s simulated health signals.</p>
   <div class="radiation-layout">
     <div>
       <div class="radiation-value">

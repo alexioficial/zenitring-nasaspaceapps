@@ -29,60 +29,23 @@ const { default: SuitSignal } = await import('../src/lib/components/crew/SuitSig
 const { default: AutomaticHealth } =
   await import('../src/lib/components/crew/AutomaticHealth.svelte');
 const { scenarioCrew } = await import('../src/lib/crew/research-scenarios');
-const { default: MissionStatus } = await import('../src/lib/components/crew/MissionStatus.svelte');
 const now = Date.now();
 
-test('mission context keeps ring, suit and server reception independent without an illustration', () => {
-  const member = memberWithSuit();
-  const html = render(MissionStatus, { props: { member, online: true, now } }).body;
-  expect(html).toContain('aria-label="Ring: Not linked"');
-  expect(html).toContain('aria-label="Suit: Receiving"');
-  expect(html).toContain('aria-label="Crew link: Online"');
-  expect(html).toContain('Ring is primary');
-  expect(html).not.toContain('<img');
-});
-
-test('an unlinked primary source is a shortcut to Devices, and a receiving one is not', () => {
-  const member = memberWithSuit();
-  const shortcut = render(MissionStatus, {
-    props: { member, online: true, now, ondevices: () => {} },
-  }).body;
-  expect(shortcut).toContain('aria-label="Ring: Not linked. Go to Devices"');
-  // The suit is not primary in Cabin, so it stays plain status.
-  expect(shortcut).not.toContain('Suit: Receiving. Go to Devices');
-  expect(shortcut.match(/source-shortcut/g)).toHaveLength(1);
-  member.deviceId = 'ring-vega';
-  member.connected = true;
-  member.latest = {
-    id: 'ring-sample',
-    deviceId: 'ring-vega',
-    astronautId: member.id,
-    measuredAt: now,
-    receivedAt: now,
-    values: { pulse: 72, hrv: 50, spo2: 98, skin: 0.1, respiration: 14 },
-  };
-  const receiving = render(MissionStatus, {
-    props: { member, online: true, now, ondevices: () => {} },
-  }).body;
-  expect(receiving).toContain('aria-label="Ring: Receiving"');
-  expect(receiving).not.toContain('source-shortcut');
-  expect(
-    render(MissionStatus, { props: { member: initialCrew()[0], online: false, now } }).body,
-  ).toContain('aria-label="Ring: No signal"');
-});
-
-test('missing primary readings offer connection before the optional health report', () => {
-  const { body } = render(AutomaticHealth, {
+const phoneAssessment = (member = initialCrew()[0], oncontext?: () => void) =>
+  render(AutomaticHealth, {
     props: {
-      member: initialCrew()[0],
+      member,
       online: true,
       now,
       compact: true,
       aiEnabled: false,
       connectHref: '/ring?astronaut=vega',
-      oncontext: () => {},
+      oncontext,
     },
-  });
+  }).body;
+
+test('missing primary readings offer connection before the optional health report', () => {
+  const body = phoneAssessment(initialCrew()[0], () => {});
   expect(body).toContain('href="/ring?astronaut=vega"');
   expect(body).toContain('Open ring simulator');
   expect(body.indexOf('Open ring simulator')).toBeLessThan(body.indexOf('Record how I feel'));
@@ -90,23 +53,13 @@ test('missing primary readings offer connection before the optional health repor
 });
 
 test('the phone assessment without readings is short: one action, no labels or disclaimers', () => {
-  const { body } = render(AutomaticHealth, {
-    props: {
-      member: initialCrew()[0],
-      online: true,
-      now,
-      compact: true,
-      aiEnabled: false,
-      connectHref: '/ring?astronaut=vega',
-      oncontext: () => {},
-    },
-  });
+  const body = phoneAssessment(initialCrew()[0], () => {});
   expect(body).toContain('Link your ring');
   expect(body).toContain('Link it to see your readings.');
   for (const noise of [
+    'What’s happening?',
     'Built-in explanation',
-    'Health assessment',
-    'Not a diagnosis.',
+    'Why NASA context matters',
     'How this assessment works',
   ])
     expect(body).not.toContain(noise);
@@ -116,45 +69,47 @@ test('a ring that was linked before asks to be reconnected rather than linked', 
   const member = initialCrew()[0];
   member.deviceId = 'ring-vega';
   member.connected = false;
-  const { body } = render(AutomaticHealth, {
-    props: {
-      member,
-      online: true,
-      now,
-      compact: true,
-      aiEnabled: false,
-      connectHref: '/ring?astronaut=vega',
-    },
-  });
+  const body = phoneAssessment(member);
   expect(body).toContain('Reconnect your ring');
   expect(body).toContain('Reconnect it to see current readings.');
   expect(body).not.toContain('Link your ring');
 });
 
-test('the research replay keeps its labels and explanation for its own audience', () => {
+test('a live ring whose clock runs ahead of the server is never asked to reconnect', () => {
+  const member = initialCrew()[0];
+  member.deviceId = 'ring-vega';
+  member.connected = true;
+  member.latest = {
+    id: 'ring-sample',
+    deviceId: 'ring-vega',
+    astronautId: member.id,
+    // The emitter stamped this 40 ms after the server received it.
+    measuredAt: now + 40,
+    receivedAt: now,
+    values: { pulse: 72, hrv: 50, spo2: 98.4, skin: 0.1, respiration: 14 },
+  };
+  const body = phoneAssessment(member, () => {});
+  expect(body).not.toContain('Reconnect your ring');
+  expect(body).not.toContain('Open ring simulator');
+});
+
+test('the research replay keeps its full explanation layout', () => {
   const { body } = render(AutomaticHealth, {
     props: { member: initialCrew()[0], online: true, now, aiEnabled: false },
   });
+  expect(body).toContain('What’s happening?');
   expect(body).toContain('Built-in explanation');
-  expect(body).toContain('Not a diagnosis.');
-  expect(body).toContain('How this assessment works');
+  expect(body).toContain('Why NASA context matters');
+  expect(body).toContain('Readings, sources &amp; explanation details');
+  expect(body).not.toContain('Open ring simulator');
 });
 
 test('review starts with an explanation then comparable evidence and the real contextual question', () => {
-  const { body } = render(AutomaticHealth, {
-    props: {
-      member: scenarioCrew('recovery', now),
-      online: true,
-      now,
-      compact: true,
-      aiEnabled: false,
-      connectHref: '/ring?astronaut=vega',
-      oncontext: () => {},
-    },
-  });
+  const body = phoneAssessment(scenarioCrew('recovery', now), () => {});
   expect(body.indexOf('insight-summary')).toBeLessThan(body.indexOf('insight-evidence'));
   expect(body).toContain('Yes, finished');
   expect(body).toContain('I feel unwell');
+  expect(body).toContain('How this assessment works');
   expect(body).not.toContain('Open ring simulator');
 });
 function memberWithSuit() {

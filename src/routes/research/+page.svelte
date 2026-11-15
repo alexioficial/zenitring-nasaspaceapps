@@ -36,15 +36,15 @@
     content="Evaluate automatic health interpretations against known synthetic ring and spacesuit scenarios."
   /></svelte:head
 >
-<div class="crew-app astronaut-workspace research-app">
-  <ViewHeader title="Not saved to health records" context="Demo tool" />
+<div class="crew-app">
+  <ViewHeader title="Research scenarios" context="Demo tool · Separate from crew health records" />
   <main class="research-shell">
     <header class="research-intro">
-      <h1>Research scenarios</h1>
+      <h1>Known changes.<br />Explainable responses.</h1>
       <p>
-        Known changes, explainable responses. A synthetic experiment inspired by NASA’s proposal for
-        AI medical support: introduce a change, observe the response and compare it with a
-        predefined expectation. These readings never enter the crew’s mission records.
+        A synthetic experiment inspired by NASA’s proposal for AI medical support: introduce a known
+        change, observe the response and compare it with a predefined expectation. These readings
+        never enter the crew’s mission records.
       </p>
       <a href={researchSource} target="_blank" rel="noreferrer">Read the NASA research proposal ↗</a
       >

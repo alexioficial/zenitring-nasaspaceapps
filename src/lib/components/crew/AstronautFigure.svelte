@@ -1,7 +1,6 @@
 <script lang="ts">
   import Icon from '../Icon.svelte';
   import { freshness } from '$lib/crew/model';
-  import { activeSource } from '$lib/crew/suit';
   import type { CrewMember } from '$lib/crew/types';
   let {
     member,
@@ -40,19 +39,6 @@
 </script>
 
 <figure class="medbay-figure" class:medbay-decorative={decorative}>
-  {#if member}<div class="medbay-mobile-mission">
-      <h2>Your mission, at a glance</h2>
-      <p>
-        {member.phase === 'spacewalk'
-          ? 'Spacewalk'
-          : member.phase === 'recovery'
-            ? 'Recovery'
-            : 'Cabin'} · {activeSource(member).label} is primary
-      </p>
-      <span class:mission-offline={!online}
-        ><span class="status-dot"></span>Crew link {online ? 'online' : 'offline'}</span
-      >
-    </div>{/if}
   <img
     src="/images/medbay-astronaut.webp"
     width="1024"
@@ -79,5 +65,5 @@
       </div>
     </div>
   {/if}
-  <figcaption>{member ? `${member.callsign} · ` : ''}Concept illustration</figcaption>
+  <figcaption>{member ? `${member.callsign} · ` : ''}AI-generated concept illustration</figcaption>
 </figure>

@@ -82,26 +82,28 @@ No hay un script `lint` ni configuración de CI versionada en el estado revisado
 | `/ws` | Protocolo JSON WebSocket de misión; no es una ruta HTTP de SvelteKit. |
 
 `src/routes/astronaut/[id]/+page.server.ts` rechaza IDs desconocidos con 404.
-La primera visita sin `?view=` redirige a Devices antes de renderizar y guarda
+La primera visita sin `?view=` redirige a My devices antes de renderizar y guarda
 `zenit-onboarded-<id>` durante un año. Un enlace con vista explícita la respeta;
-las visitas posteriores sin vista abren Health. La cookie admite HTTP de LAN.
+las visitas posteriores sin vista abren My health. La cookie admite HTTP de LAN.
 
-La navegación personal visible es **Health / Records / Devices / Tools**.
-`src/lib/crew/workspace.ts` traduce los identificadores internos:
+La navegación personal visible es **My health / My records / My devices**, más
+el desplegable **More** (Signal details, NASA resources, Simulation settings y
+Research scenarios). `src/lib/crew/workspace.ts` traduce los identificadores
+internos y `MissionWorkspace.svelte` sincroniza la vista con `?view=`:
 
 | Vista interna | Valor de `?view=` |
 | --- | --- |
 | `personal` | `health` (la URL canónica omite el parámetro) |
 | `events` | `records` |
 | `pair` | `devices` |
-| `more` | `more` |
+| `more` | `more` (esta UI no tiene página Tools: abre My health) |
 | `overview` | `signals` |
 | `lab` | `settings` |
 | `nasa` | `nasa` |
 
 Mantener recarga, Back/Forward, identidad y parámetros ajenos al cambiar de vista.
 Los simuladores deben seguir abiertos para emitir: sus enlaces al monitor se
-abren en otra pestaña. No convertir navegar a Health en cerrar el emisor.
+abren en otra pestaña. No convertir navegar a My health en cerrar el emisor.
 
 ## 4. Mapa del código
 
@@ -124,14 +126,12 @@ abren en otra pestaña. No convertir navegar a Health en cerrar el emisor.
 | `src/lib/crew/health-insight.ts` | Presentación comprensible del resultado; no modifica la detección. |
 | `src/lib/server/automatic-ai.ts` | Validación de entrada, recálculo y petición privada a Gemini. |
 | `src/lib/crew/research-scenarios.ts` | Fixtures sintéticos y resultados esperados de `/research`. |
-| `src/lib/crew/workspace.ts` | URLs personales, onboarding y combinación/filtro de registros. |
-| `src/lib/components/crew/MissionWorkspace.svelte` | Orquestación compartida del monitor central y personal, conexión y acciones. |
-| `src/lib/components/crew/PersonalHealth.svelte` | Composición de salud, fuente primaria, tendencia y check-in opcional. |
+| `src/lib/crew/workspace.ts` | URLs personales y onboarding. `personalRecords()` combina/filtra registros; ninguna vista lo usa ahora. |
+| `src/lib/components/crew/MissionWorkspace.svelte` | Orquestación compartida del monitor central y personal, conexión, acciones y sincronización de `?view=`. |
+| `src/lib/components/crew/PersonalHealth.svelte` | My health: figura conceptual, fases (bajo la figura), evaluación compacta, «Your readings» solo con lecturas y check-in oculto hasta «Record how I feel» (visible si hay check-ins guardados). |
 | `src/lib/components/crew/AutomaticHealth.svelte` | Contexto de episodio, ayuda y ciclo de petición/cancelación de explicación. |
 | `src/lib/components/crew/HealthCheckIn.svelte` | Borrador local, preview, guardado explícito y seguimiento confirmado. |
-| `src/lib/components/crew/PersonalRecords.svelte` | Check-ins y capturas ordenados, filtros y acceso a informes. |
-| `src/lib/components/crew/MissionStatus.svelte` | Fase, fuente primaria y recepción independiente de anillo/traje/servidor. |
-| Otros componentes de `crew/` | `EventCard`, `MissionSources`, `SuitSignal`, `VitalReadings`, `Trend`, `RadiationContext`, `SimulationSettings`, `ViewHeader`. |
+| Otros componentes de `crew/` | `AstronautFigure`, `EventCard`, `MissionSources`, `SuitSignal`, `VitalReadings`, `Trend`, `RadiationContext`, `SimulationSettings`, `ViewHeader`. |
 | `src/lib/nasa/` | Parser RadLab y respuesta histórica con procedencia incluida. |
 | `src/lib/three/ring-scene.ts` | Modelo procedural, render y liberación de recursos Three.js. |
 | `src/lib/components/RingScene.svelte` | Carga solo en navegador, ciclo de vida y fallback estático. |
@@ -247,19 +247,25 @@ RingClient / SuitClient -> MissionConnection -> /ws -> hub -> SQLite
 - Los clientes son clases mutables con `onChange`; los simuladores usan un contador
   `revision` para que Svelte vuelva a derivar su UI. No asumir reactividad automática
   de propiedades de una clase ni enviar proxies en lugar de snapshots de evidencia.
-- Diseño vigente: **`DESIGN.md`**. Espacio personal blanco, Geist/Geist Mono locales,
-  acciones azules, mediciones tabulares y detalles secundarios desplegables. No
-  reintroducir el astronauta decorativo como centro de My health. La portada, el
-  monitor central y los archivos conservan parte de su identidad anterior.
+- Diseño vigente: **`DESIGN.md`** («Orbital medbay»): Manrope local, acento teal
+  clínico, figura conceptual del astronauta en My health y detalles secundarios
+  desplegables. El rediseño Taste/Geist del commit `8d49964` se revirtió en la UI
+  (se conservó su lógica de navegación y onboarding); no reintroducirlo sin petición.
+  Excepción pedida por el usuario: en My health, la evaluación (`AutomaticHealth`
+  con `compact`), «Your readings», el check-in y el pie usan la estructura de `8d49964`
+  con colores y fuente medbay (`src/lib/crew/my-health.css`). Cabecera, figura y fases
+  siguen como medbay; My records y My devices no cambian. `/research` usa el modo
+  no compacto de `AutomaticHealth`, con su diseño completo. La exportación personal
+  está en More.
 - `+layout.svelte` importa en este orden: `app.css`, `medbay.css`,
-  `medbay-reference.css`, `insight.css`, `taste-workspace.css`, `taste-surfaces.css`.
-  Componentes importan además CSS de dominio (`crew`, `health`, `automatic`, etc.).
-  Hay cascada heredada y selectores con alta especificidad: comprobar el alcance
-  antes de editar globales. Los estilos nuevos se centran en `.astronaut-workspace`,
-  aunque `taste-workspace.css` también define tokens `:root`.
-- Conservar estado de foco, navegación accesible, objetivos táctiles de al menos
-  44 px, safe areas y espacio para la barra inferior. Diferenciar estado con texto,
-  además de color. Reducir movimiento según preferencias; no animar cifras ficticias.
+  `medbay-reference.css`, `insight.css`. Componentes importan además CSS de dominio
+  (`crew`, `health`, `automatic`, `my-health`, etc.). Hay cascada heredada y selectores con alta
+  especificidad: comprobar el alcance antes de editar globales. El espacio personal
+  se estiliza con `.medbay-shell .astronaut-workspace` en `medbay-reference.css`.
+- Conservar estado de foco, navegación accesible y objetivos táctiles de al menos
+  44 px. Al cambiar de vista, el foco pasa al `h1` de la vista. Diferenciar estado
+  con texto, además de color. Reducir movimiento según preferencias; no animar
+  cifras ficticias.
 - Three.js se importa dinámicamente desde `RingScene` después del montaje. Preservar
   fallback sin WebGL, cleanup de GPU/observers/listeners, pausa fuera de pantalla,
   respeto a reduced motion, máximo 30 fps y pixel ratio 1.5.
@@ -303,7 +309,7 @@ RingClient / SuitClient -> MissionConnection -> /ws -> hub -> SQLite
 | Detector y presentación comprensible | `tests/automatic.test.ts` |
 | Validación y fallback Gemini | `tests/automatic-ai.test.ts` (proveedor simulado) |
 | Navegación, onboarding y registros | `tests/personal-workspace.test.ts` |
-| Renderizado de superficies y estados | `tests/suit-display.test.ts`, `tests/astronaut-surfaces.test.ts` |
+| Renderizado de superficies y estados | `tests/suit-display.test.ts` |
 | NASA | `tests/radlab.test.ts` |
 | Prototipo anterior | `tests/mission.test.ts` |
 
@@ -319,21 +325,18 @@ entorno en cambios arbitrarios del código.
 
 ### Verificación de referencia del 2026-11-15
 
-- `bun run test`, fuera de las restricciones del sandbox: **97 pass, 0 fail**,
-  12 archivos y 417 aserciones. El error SQLite provocado por la prueba de
-  almacenamiento transitorio es esperado; esa prueba también pasa.
-- Dentro del sandbox hubo EPERM al leer dependencias y al lanzar esbuild.
-  Repetir con permisos adecuados permitió separar ese problema del siguiente.
-- `bun run check`, fuera del sandbox: **2 errores, 0 warnings**, ambos en
-  `src/lib/three/ring-scene.ts`, por resolución de `three` y `RoomEnvironment`.
-  Se confirmó que faltaban `node_modules/three` y `node_modules/@types/three`,
-  aunque ambos paquetes estaban declarados. Verificar instalación con
-  `bun install --frozen-lockfile` antes de alterar imports o tipos.
-- No se ejecutó build, navegador ni Docker en esta revisión documental. Los
-  resultados antiguos de `docs/taste-mobile-review.md` no validan este checkout.
-- El formateo de esta guía con `bunx --no-install prettier --write AGENTS.md`
-  tampoco pudo ejecutarse: Prettier no estaba instalado localmente. Se comprobó
-  el archivo directamente, sin instalar paquetes ni cambiar el lockfile.
+Tras revertir la UI de `8d49964` a la de `7dab20f` (conservando su lógica):
+
+- `bun run test`: **84 pass, 0 fail**, 11 archivos y 346 aserciones. Las pruebas
+  de la UI revertida (`astronaut-surfaces` y casos nuevos de `suit-display`) se
+  retiraron con ella. El error SQLite de la prueba de almacenamiento transitorio
+  es esperado; esa prueba también pasa.
+- `bun run check`: **0 errores, 0 warnings**, con `three` y `@types/three` instalados.
+  Si reaparecen errores de `three`, verificar `bun install --frozen-lockfile`
+  antes de alterar imports o tipos.
+- Con `core.autocrlf=true`, `prettier --check` avisa por CRLF en archivos
+  recién extraídos; `--end-of-line crlf` confirma el formato real.
+- No se ejecutó build, navegador ni Docker en esta revisión.
 
 ## 10. Cómo retomar y mantener el contexto
 
@@ -343,7 +346,7 @@ entorno en cambios arbitrarios del código.
 2. Contrastar documentación con implementación. El README todavía describe `/`
    como monitor en una entrada del mapa, pero ahora es el selector y `/crew` es
    el monitor. `PRODUCT.md` conserva decisiones visuales anteriores; para diseño
-   actual consultar `DESIGN.md` y los estilos Taste. Algunos textos del README,
+   actual consultar `DESIGN.md` y las hojas `medbay*.css`. Algunos textos del README,
    DEMO y exportación dicen que ningún modelo interpreta salud: ya existe la
    explicación opcional de Gemini, sin diagnóstico ni control de acciones.
 3. Para detalle adicional consultar: `README.md` (operación), `docs/DEMO.md`

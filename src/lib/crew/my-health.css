@@ -1,0 +1,647 @@
+/*
+ * My health: the medbay scene (astronaut, sources, mission phases) with the shorter assessment,
+ * readings and check-in of the minimal phone layout. Colours stay on the medbay teal.
+ * Scoped to the personal workspace; specificity beats medbay.css, medbay-reference.css and
+ * insight.css without relying on stylesheet order.
+ */
+
+/* ───────────── Layout ───────────── */
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-console > .medbay-telemetry {
+  grid-area: telemetry;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-console > .medbay-figure {
+  grid-area: figure;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-console > .medbay-assessment {
+  grid-area: assessment;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-console > .medbay-phase {
+  grid-area: phase;
+  margin: 0;
+}
+/* Desktop: readings · astronaut · assessment, with the mission phases right under the scene. */
+@media (min-width: 1101px) {
+  .medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-console {
+    grid-template-areas:
+      'telemetry figure assessment'
+      'phase phase phase';
+  }
+  /* Before the first reading there is no readings panel: the scene and assessment share the row. */
+  .medbay-shell .crew-app.astronaut-workspace .medbay-overview.medbay-solo .medbay-console {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      'figure assessment'
+      'phase phase';
+  }
+  .medbay-shell .crew-app.astronaut-workspace .medbay-overview.medbay-solo::before {
+    display: none;
+  }
+  .medbay-shell .crew-app.astronaut-workspace .medbay-overview.medbay-solo .medbay-figure {
+    margin: 0;
+    min-height: 560px;
+    border-radius: 12px;
+    background: url('/images/medbay-cabin.webp') center / cover;
+  }
+  .medbay-shell .crew-app.astronaut-workspace .medbay-overview.medbay-solo .medbay-assessment {
+    align-self: start;
+  }
+}
+@media (min-width: 651px) and (max-width: 1100px) {
+  .medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-console {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    grid-template-areas:
+      'figure assessment'
+      'phase phase'
+      'telemetry telemetry';
+  }
+  .medbay-shell .crew-app.astronaut-workspace .medbay-overview.medbay-solo .medbay-console {
+    grid-template-areas:
+      'figure assessment'
+      'phase phase';
+  }
+}
+/* Phone: astronaut, mission phases, assessment, then readings. */
+@media (max-width: 650px) {
+  .medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-console > .medbay-figure {
+    order: 1;
+  }
+  .medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-console > .medbay-phase {
+    order: 2;
+  }
+  .medbay-shell
+    .crew-app.astronaut-workspace
+    .medbay-overview
+    .medbay-console
+    > .medbay-assessment {
+    order: 3;
+  }
+  .medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-console > .medbay-telemetry {
+    order: 4;
+  }
+}
+
+/* ───────────── Assessment ───────────── */
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .assessment-title {
+  display: block;
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #142b39;
+  font-size: clamp(28px, 2.4vw, 34px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .assessment-title
+  > svg {
+  display: none;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight.insight-help
+  .assessment-title {
+  background: transparent;
+  color: #a62e32;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .insight-meaning {
+  padding: 0;
+  border: 0;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .insight-summary {
+  margin: 0;
+  color: #142b39;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  :is(.insight-ai-status, .insight-unavailable-note, .insight-unknown) {
+  margin: 14px 0 0;
+  color: #4c6474;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .insight-urgent {
+  margin: 0 0 14px;
+  font-size: 16px;
+}
+
+/* What changed: earlier → recent, read across. The heading stays for screen readers. */
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .insight-evidence {
+  margin: 20px 0 0;
+  padding: 10px 0;
+  border-top: 1px solid #d7e2ea;
+  border-bottom: 1px solid #d7e2ea;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .insight-evidence h3 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .insight-evidence
+  dl
+  > div {
+  gap: 4px 16px;
+  padding: 8px 0;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .insight-evidence dt {
+  font-size: 14px;
+  font-weight: 650;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .insight-evidence dd {
+  gap: 10px;
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .insight-evidence
+  dd
+  strong {
+  color: #142b39;
+  font-weight: 800;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .insight-evidence
+  dd
+  small {
+  color: #4c6474;
+  font-size: 13px;
+  letter-spacing: 0;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .insight-evidence p {
+  margin: 6px 0 0;
+  font-size: 13px;
+}
+
+/* Context question: two columns of plain choices. */
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .automatic-question {
+  display: block;
+  margin: 22px 0 0;
+  padding: 0;
+  border: 0;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .automatic-question
+  legend {
+  margin: 0 0 12px;
+  padding: 0;
+  color: #142b39;
+  font-size: 16px;
+  font-weight: 750;
+  line-height: 1.4;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .insight-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .insight-options
+  button {
+  justify-content: flex-start;
+  min-height: 48px;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid #b0c3d0;
+  border-radius: 8px;
+  background: #fff;
+  color: #142b39;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .insight-options
+  button
+  > svg {
+  display: none;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .insight-options
+  button:hover {
+  background: #edf6f8;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .insight-options
+  button[aria-pressed='true'] {
+  border-color: #126f80;
+  background: #e3f0f3;
+  color: #126f80;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .insight-answer {
+  margin: 18px 0 0;
+  padding: 10px 0;
+  border-radius: 0;
+  border-bottom: 1px solid #d7e2ea;
+  background: transparent;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .insight-answer
+  > span {
+  font-size: 14px;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .insight-answer
+  button {
+  min-height: 44px;
+  font-size: 13px;
+}
+
+/* Next step: plain text under a rule, not another tinted box. */
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .automatic-next {
+  margin: 18px 0 0;
+  padding: 16px 0 0;
+  border: 0;
+  border-top: 1px solid #d7e2ea;
+  border-radius: 0;
+  background: transparent;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .automatic-next
+  strong {
+  color: #142b39;
+  font-size: 14px;
+  font-weight: 750;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .automatic-next p {
+  margin: 6px 0 0;
+  color: #142b39;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+/* Actions: the simulator first when there is nothing to read, otherwise the check-in. */
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .assessment-connect {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 50px;
+  margin: 22px 0 0;
+  font-size: 16px !important;
+  text-decoration: none;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .medbay-add-context {
+  justify-content: space-between;
+  min-height: 50px;
+  margin: 22px 0 0;
+  padding: 12px 18px;
+  border: 1px solid #126f80;
+  border-radius: 8px;
+  background: #126f80;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .medbay-add-context:hover {
+  background: #0a5969;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .medbay-add-context
+  > svg:first-child {
+  display: none;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .medbay-add-context.assessment-secondary {
+  margin-top: 10px;
+  border-color: #b0c3d0;
+  background: #fff;
+  color: #183b4a;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .medbay-add-context.assessment-secondary:hover {
+  background: #e7f1f5;
+}
+
+/* Disclosures with a chevron that turns down when open. */
+.medbay-shell
+  .crew-app.astronaut-workspace
+  :is(.compact-insight .assessment-evidence, .medbay-trend, .medbay-report)
+  > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  cursor: pointer;
+  list-style: none;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  :is(.compact-insight .assessment-evidence, .medbay-trend, .medbay-report)
+  > summary::-webkit-details-marker {
+  display: none;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  :is(.compact-insight .assessment-evidence, .medbay-trend, .medbay-report)
+  > summary
+  > svg {
+  flex-shrink: 0;
+  transition: transform 150ms ease-out;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  :is(.compact-insight .assessment-evidence, .medbay-trend, .medbay-report)[open]
+  > summary
+  > svg {
+  transform: rotate(90deg);
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .compact-insight .assessment-evidence {
+  margin-top: 8px;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .assessment-evidence
+  > summary {
+  color: #183b4a;
+  font-size: 14px;
+  font-weight: 650;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .assessment-evidence
+  p {
+  color: #344f62;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .compact-insight
+  .assessment-evidence
+  > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  color: #126f80;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+/* ───────────── Your readings ───────────── */
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-telemetry {
+  padding: 20px;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-vitals-heading {
+  align-items: baseline;
+  margin: 0 0 12px;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-vitals-heading h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-vitals-heading .vitals-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #4c6474;
+  font-size: 13px;
+  font-weight: 650;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .vitals-state.is-live {
+  color: #2d6f2a;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .vitals-state.is-live::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #378b33;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-vitals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-vitals > div {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 104px;
+  padding: 14px 0;
+  border-top: 1px solid #d7e2ea;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-vitals > div:nth-child(even) {
+  padding-left: 18px;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-vitals dt {
+  gap: 0;
+  color: #142b39;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-vitals dt > svg {
+  display: none;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-vitals dd {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: #142b39;
+  font-size: clamp(30px, 2.6vw, 38px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-vitals dd small {
+  margin-left: 4px;
+  color: #4c6474;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-vitals.medbay-retained dd {
+  color: #5f7684;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-secondary-metric {
+  gap: 8px;
+  margin: 0;
+  padding: 12px 0;
+  border-top: 1px solid #d7e2ea;
+  color: #4c6474;
+  font-size: 13px;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-secondary-metric > svg {
+  display: none;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-secondary-metric strong {
+  color: #142b39;
+  font-weight: 750;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-measured {
+  margin: 2px 0 0;
+  color: #4c6474;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-trend {
+  margin: 14px 0 0;
+  border-top: 1px solid #d7e2ea;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-trend > summary {
+  color: #183b4a;
+  font-size: 14px;
+  font-weight: 650;
+}
+.medbay-shell
+  .crew-app.astronaut-workspace
+  .medbay-overview
+  .medbay-telemetry
+  > .crew-inline-button {
+  min-height: 44px;
+  margin-top: 6px;
+  padding: 8px 0;
+  font-size: 14px;
+}
+@media (max-width: 650px) {
+  .medbay-shell .crew-app.astronaut-workspace .medbay-overview .medbay-vitals dd {
+    font-size: clamp(30px, 9vw, 36px);
+  }
+}
+
+/* ───────────── Health check-in ───────────── */
+/* Opened from "Record how I feel"; a saved check-in keeps the row so it can be reviewed. */
+.medbay-shell .crew-app.astronaut-workspace .medbay-report:not([open]):not(.has-checkins) {
+  display: none;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-report {
+  margin: 24px 0 0;
+  padding: 0 22px;
+  border: 1px solid #c6d6e1;
+  border-radius: 12px;
+  background: #fff;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-report > summary {
+  justify-content: flex-start;
+  min-height: 64px;
+  padding: 14px 0;
+  color: #142b39;
+  font-size: 17px;
+  font-weight: 750;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-report > summary > svg {
+  margin-left: auto;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-report .medbay-summary-note {
+  display: inline;
+  margin: 0;
+  color: #4c6474;
+  font-size: 13px;
+  font-weight: 500;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-report .health-checkin {
+  margin: 0;
+  padding: 4px 0 22px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-report .checkin-heading {
+  margin-bottom: 20px;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-report .checkin-heading h2 {
+  margin: 4px 0 8px;
+  font-size: 30px;
+  font-weight: 800;
+}
+.medbay-shell .crew-app.astronaut-workspace .medbay-report .checkin-heading p {
+  color: #4c6474;
+  font-size: 15px;
+  line-height: 1.55;
+}
+@media (max-width: 650px) {
+  .medbay-shell .crew-app.astronaut-workspace .medbay-report {
+    padding: 0 16px;
+  }
+  .medbay-shell .crew-app.astronaut-workspace .medbay-report .checkin-heading h2 {
+    font-size: 27px;
+  }
+}
+
+/* ───────────── Footer ───────────── */
+.medbay-shell .crew-app.astronaut-workspace .personal-footer {
+  display: block;
+  margin-top: 32px;
+  padding: 22px 0 8px;
+  border-top: 1px solid #cbd8e2;
+  color: #4c6474;
+  font-size: 13px;
+}
+.medbay-shell .crew-app.astronaut-workspace .personal-footer strong {
+  font-size: 13px;
+  font-weight: 500;
+}

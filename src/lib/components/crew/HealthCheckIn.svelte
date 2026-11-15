@@ -26,7 +26,6 @@
     online,
     now,
     send,
-    initialCheckId,
     startNew = false,
   }: {
     member: CrewMember;
@@ -34,7 +33,7 @@
     online: boolean;
     now: number;
     send: (m: ClientMessage & { id: string }) => Promise<boolean>;
-    initialCheckId?: string;
+    /** Open on a blank report even when a saved check-in exists. */
     startNew?: boolean;
   } = $props();
   let topic = $state<HealthTopic>('recovery');
@@ -49,7 +48,7 @@
   let error = $state('');
   let storageReady = $state(false);
   let storageWarning = $state('');
-  let selected = $state<string | null>(untrack(() => initialCheckId ?? null));
+  let selected = $state<string | null>(null);
   let input = $derived<HealthInput>({
     topic,
     feeling: feeling ?? 'usual',
@@ -273,7 +272,7 @@
       <p class="checkin-evidence">
         {evidence
           ? `${evidence.eventId ? 'Saved moment' : 'Available reading'}: ${evidence.source === 'spacesuit' ? 'suit' : 'ring'}, measured ${clockLabel(evidence.measuredAt)}.`
-          : 'No primary-source reading available. You can still record how you feel.'}
+          : 'No primary-source reading available. You can still record how you feel.'} Telemetry is simulated.
       </p>
       <button class="crew-button" disabled={!feeling}>Understand my signals</button>
     </form>

@@ -91,5 +91,5 @@
     >
   </div>
   <p class="gesture-hint">Double tap saves a snapshot.<br />Hold for 0.7 s to add a symptom.</p>
-  <p class="ring-scope">Gestures · cabin use concept</p>
+  <p class="ring-scope">Simulated gestures · cabin use concept</p>
 </aside>

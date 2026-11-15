@@ -19,6 +19,7 @@
       <h2 id="auto-title">Already collected for you</h2>
       <p>Every saved moment keeps its readings, source and measurement period.</p>
     </div>
+    <span class="tag">All values simulated</span>
   </div>
   <Observations observations={[...current, ...nightSummary]} />
   <details class="source-details instruments">

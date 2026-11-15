@@ -13,13 +13,14 @@ export const suitInfo: Record<
     label: 'Suit ECG heart rate',
     unit: 'bpm',
     digits: 0,
-    description: 'Rate derived from a conceptual suit ECG. No waveform or rhythm diagnosis.',
+    description:
+      'Simulated rate derived from a conceptual suit ECG. No waveform or rhythm diagnosis.',
   },
   pressure: {
     label: 'Suit pressure',
     unit: 'kPa',
     digits: 2,
-    description: 'Total pressure in the suit atmosphere.',
+    description: 'Total pressure in the simulated suit atmosphere.',
   },
   ppO2: {
     label: 'O₂ partial pressure',
@@ -31,13 +32,14 @@ export const suitInfo: Record<
     label: 'CO₂ partial pressure',
     unit: 'kPa',
     digits: 3,
-    description: 'Atmosphere measurement; not a measurement of inspired CO₂ or a clinical limit.',
+    description:
+      'Simulated atmosphere measurement; not a measurement of inspired CO₂ or a clinical limit.',
   },
   temperature: {
     label: 'Suit air temperature',
     unit: '°C',
     digits: 1,
-    description: 'Air temperature, not skin or core body temperature.',
+    description: 'Simulated air temperature, not skin or core body temperature.',
   },
   battery: {
     label: 'Suit battery',
